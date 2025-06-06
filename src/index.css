@@ -1,0 +1,16 @@
+@import 'tailwindcss';
+
+@layer base {
+   button {
+      @apply cursor-pointer rounded-lg text-lg font-bold uppercase transition-all delay-100;
+   }
+
+   input,
+   button {
+      @apply transition-all;
+   }
+
+   input[type='checkbox'] {
+      @apply scale-200 cursor-pointer rounded;
+   }
+}
