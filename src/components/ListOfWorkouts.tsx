@@ -18,19 +18,19 @@ const ListOfWorkouts = ({ workouts, exercises }: IListOfWorkoutsProps) => {
                         .replace(/^./, (c) => c.toUpperCase())}
                   </p>
                   <div className="flex w-full flex-row items-center justify-between">
-                     <p className="w-1/10 rounded-tl-lg border text-center text-ellipsis">
+                     <p className="w-1/10 overflow-x-auto rounded-tl-lg border text-center">
                         №
                      </p>
-                     <p className="w-3/10 border text-center text-ellipsis">
+                     <p className="w-3/10 overflow-x-auto border text-center">
                         Назва
                      </p>
-                     <p className="w-2/10 border text-center text-ellipsis">
+                     <p className="w-2/10 overflow-x-auto border text-center">
                         Повтори
                      </p>
-                     <p className="w-2/10 border text-center text-ellipsis">
+                     <p className="w-2/10 overflow-x-auto border text-center">
                         Вага
                      </p>
-                     <p className="w-2/10 rounded-tr-lg border text-center text-ellipsis">
+                     <p className="w-2/10 overflow-x-auto rounded-tr-lg border text-center">
                         Час
                      </p>
                   </div>
