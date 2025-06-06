@@ -41,7 +41,6 @@ const ListOfWorkouts = ({ workouts, exercises }: IListOfWorkoutsProps) => {
                            ?.push(workoutItem)
                      }
                      setsOfExercises.set(workout.date, exerciseMap)
-                     console.log('setsOfExercises:', setsOfExercises)
                      return null
                   })}
                   {Array.from(
@@ -102,66 +101,6 @@ const ListOfWorkouts = ({ workouts, exercises }: IListOfWorkoutsProps) => {
          )}
       </div>
    )
-}
-{
-   /* // 		<div
-                     // 		className="flex w-full flex-row items-center justify-between"
-                     // 		key={workoutItem._id}
-                     //  >
-                     // 		{/* <p className="w-1/10 overflow-x-auto border text-center">
-                     // 			 {setsOfExercises.get(workoutItem.exercise_id)}
-                     // 		</p>
-                     // 		<p className="w-3/10 overflow-x-auto border text-center whitespace-nowrap">
-                     // 			 {exercise.name}
-                     // 		</p>
-                     // 		<p className="w-2/10 overflow-x-auto border text-center">
-                     // 			 {exercise.hasReps ? workoutItem.reps : '-'}
-                     // 		</p>
-                     // 		<p className="w-2/10 overflow-x-auto border text-center">
-                     // 			 {exercise.hasWeight ? workoutItem.weight : '-'}
-                     // 		</p>
-                     // 		<p className="w-2/10 overflow-x-auto border text-center">
-                     // 			 {exercise.hasTime ? workoutItem.time : '-'}
-                     // 		</p> 
-										 // </div>*/
-}
-{
-   /* // Array.from(setsOfExercises.entries()).map(
-                     //            ([exerciseId, workoutItems]) => {
-                     //               const exercise = exercises.find(
-                     //                  (exerciseItem) =>
-                     //                     exerciseItem._id === exerciseId
-                     //               ) || {
-                     //                  name: 'Невідома вправа',
-                     //                  _id: 'unknown',
-                     //                  hasReps: false,
-                     //                  hasWeight: false,
-                     //                  hasTime: false,
-                     //               }
-                     //               return (
-                     //                  <details>
-                     //                     <summary>{exercise.name}</summary>
-                     //                     <div className="flex w-full flex-row items-center justify-between">
-                     //                        <p className="w-1/10 overflow-x-auto rounded-tl-lg border text-center">
-                     //                           №
-                     //                        </p>
-                     //                        <p className="w-3/10 overflow-x-auto border text-center">
-                     //                           Назва
-                     //                        </p>
-                     //                        <p className="w-2/10 overflow-x-auto border text-center">
-                     //                           Повтори
-                     //                        </p>
-                     //                        <p className="w-2/10 overflow-x-auto border text-center">
-                     //                           Вага
-                     //                        </p>
-                     //                        <p className="w-2/10 overflow-x-auto rounded-tr-lg border text-center">
-                     //                           Час
-                     //                        </p>
-                     //                     </div>
-                     //                  </details>
-                     //               )
-                     //            }
-                     //         ) */
 }
 
 export default ListOfWorkouts

@@ -112,12 +112,19 @@ const Workouts = ({
                onClick={() => {
                   setFilteredWorkouts(() => {
                      const updatedWorkouts = [...workouts]
-                     return updatedWorkouts.filter((workout) => {
+                     const selectedExercise = exercises.find(
+                        (exercise) => exercise.name === selectedExerciseName
+                     ) || {
+                        name: 'none',
+                        _id: 'none',
+                        hasReps: false,
+                        hasWeight: false,
+                        hasTime: false,
+                     }
+                     return updatedWorkouts.flatMap((workout) => {
                         const isWithinDateRange =
                            workout.date >= dateBegin && workout.date <= dateEnd
-                        const selectedExercise = exercises.find(
-                           (exercise) => exercise.name === selectedExerciseName
-                        )
+
                         const isSelectedExercise =
                            selectedExerciseName === 'all' ||
                            (selectedExercise !== undefined &&
@@ -126,7 +133,21 @@ const Workouts = ({
                                     item.exercise_id === selectedExercise._id
                               ))
 
-                        return isWithinDateRange && isSelectedExercise
+                        if (isWithinDateRange && isSelectedExercise) {
+                           if (selectedExerciseName === 'all') {
+                              return [workout]
+                           }
+                           return [
+                              {
+                                 ...workout,
+                                 workouts: workout.workouts.filter(
+                                    (item) =>
+                                       item.exercise_id === selectedExercise._id
+                                 ),
+                              },
+                           ]
+                        }
+                        return []
                      })
                   })
                }}
