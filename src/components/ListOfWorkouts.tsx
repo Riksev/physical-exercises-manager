@@ -1,7 +1,7 @@
 import type { IListOfWorkoutsProps, IWorkout } from '../interfaces'
 
 const ListOfWorkouts = ({ workouts, exercises }: IListOfWorkoutsProps) => {
-   const setsOfExercises: Map<string, IWorkout[]> = new Map()
+   const setsOfExercises: Map<string, Map<string, IWorkout[]>> = new Map()
 
    return (
       <div className="mt-4 flex w-full flex-col gap-2">
@@ -30,70 +30,73 @@ const ListOfWorkouts = ({ workouts, exercises }: IListOfWorkoutsProps) => {
                      </button>
                   </div>
                   {workout.workouts.map((workoutItem) => {
-                     if (!setsOfExercises.has(workoutItem.exercise_id)) {
-                        setsOfExercises.set(workoutItem.exercise_id, [
-                           workoutItem,
-                        ])
+                     const exerciseMap =
+                        setsOfExercises.get(workout.date) ||
+                        new Map<string, IWorkout[]>()
+                     if (!exerciseMap.has(workoutItem.exercise_id)) {
+                        exerciseMap.set(workoutItem.exercise_id, [workoutItem])
                      } else {
-                        setsOfExercises
+                        exerciseMap
                            .get(workoutItem.exercise_id)
                            ?.push(workoutItem)
                      }
+                     setsOfExercises.set(workout.date, exerciseMap)
+                     console.log('setsOfExercises:', setsOfExercises)
                      return null
                   })}
-                  {Array.from(setsOfExercises.entries()).map(
-                     ([exerciseId, workoutItems]) => {
-                        const exercise = exercises.find(
-                           (exerciseItem) => exerciseItem._id === exerciseId
-                        ) || {
-                           name: 'Невідома вправа',
-                           _id: 'unknown',
-                           hasReps: false,
-                           hasWeight: false,
-                           hasTime: false,
-                        }
-                        return (
-                           <details key={exerciseId} className="mb-2 w-full">
-                              <summary className="w-full cursor-pointer rounded-lg border-2 border-gray-400 bg-gray-300 p-2 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:bg-gray-400/50 hover:shadow-xl active:border-gray-500 active:bg-gray-400/50">
-                                 {exercise.name}
-                              </summary>
-                              <div className="flex w-full flex-row items-center justify-between">
+                  {Array.from(
+                     setsOfExercises.get(workout.date)?.entries() ?? new Map()
+                  ).map(([exerciseId, workoutItems]: [string, IWorkout[]]) => {
+                     const exercise = exercises.find(
+                        (exerciseItem) => exerciseItem._id === exerciseId
+                     ) || {
+                        name: 'Невідома вправа',
+                        _id: 'unknown',
+                        hasReps: false,
+                        hasWeight: false,
+                        hasTime: false,
+                     }
+                     return (
+                        <details key={exerciseId} className="mb-2 w-full">
+                           <summary className="w-full cursor-pointer rounded-lg border-2 border-gray-400 bg-gray-300 p-2 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:bg-gray-400/50 hover:shadow-xl active:border-gray-500 active:bg-gray-400/50">
+                              {exercise.name}
+                           </summary>
+                           <div className="flex w-full flex-row items-center justify-between">
+                              <p className="w-1/10 overflow-x-auto border text-center">
+                                 №
+                              </p>
+                              <p className="w-3/10 overflow-x-auto border text-center">
+                                 Повтори
+                              </p>
+                              <p className="w-3/10 overflow-x-auto border text-center">
+                                 Вага
+                              </p>
+                              <p className="w-3/10 overflow-x-auto border text-center">
+                                 Час
+                              </p>
+                           </div>
+                           {workoutItems.map((item: IWorkout, id: number) => (
+                              <div
+                                 key={item._id + id + 1}
+                                 className="flex w-full flex-row items-center justify-between"
+                              >
                                  <p className="w-1/10 overflow-x-auto border text-center">
-                                    №
+                                    {id + 1}
                                  </p>
                                  <p className="w-3/10 overflow-x-auto border text-center">
-                                    Повтори
+                                    {exercise.hasReps ? item.reps : '-'}
                                  </p>
                                  <p className="w-3/10 overflow-x-auto border text-center">
-                                    Вага
+                                    {exercise.hasWeight ? item.weight : '-'}
                                  </p>
                                  <p className="w-3/10 overflow-x-auto border text-center">
-                                    Час
+                                    {exercise.hasTime ? item.time : '-'}
                                  </p>
                               </div>
-                              {workoutItems.map((item, id) => (
-                                 <div
-                                    key={item._id + id + 1}
-                                    className="flex w-full flex-row items-center justify-between"
-                                 >
-                                    <p className="w-1/10 overflow-x-auto border text-center">
-                                       {id + 1}
-                                    </p>
-                                    <p className="w-3/10 overflow-x-auto border text-center">
-                                       {exercise.hasReps ? item.reps : '-'}
-                                    </p>
-                                    <p className="w-3/10 overflow-x-auto border text-center">
-                                       {exercise.hasWeight ? item.weight : '-'}
-                                    </p>
-                                    <p className="w-3/10 overflow-x-auto border text-center">
-                                       {exercise.hasTime ? item.time : '-'}
-                                    </p>
-                                 </div>
-                              ))}
-                           </details>
-                        )
-                     }
-                  )}
+                           ))}
+                        </details>
+                     )
+                  })}
                </div>
             ))
          )}
