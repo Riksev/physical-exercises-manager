@@ -130,16 +130,19 @@ const Workouts = ({
                      })
                   })
                }}
-               disabled={error1 !== '' || error2 !== ''}
+               disabled={
+                  error1 !== '' || error2 !== '' || exercises.length === 0
+               }
             >
                пошук
             </button>
          </div>
          <button
-            className="w-full bg-green-500 p-4 hover:bg-green-600 active:bg-green-600"
+            className="w-full bg-green-500 p-4 hover:bg-green-600 active:bg-green-600 disabled:cursor-not-allowed disabled:bg-green-600 disabled:opacity-50"
             onClick={() => {
                setIsAddWorkoutModalOpen(true)
             }}
+            disabled={exercises.length === 0}
          >
             додати
          </button>

@@ -35,14 +35,22 @@ const RemoveExerciseModal = ({
 
                         setWorkouts((prevWorkouts) => {
                            const updatedWorkouts = [...prevWorkouts]
-                           return updatedWorkouts.map((workout) => ({
-                              ...workout,
-                              workouts: workout.workouts.filter(
+                           return updatedWorkouts.flatMap((workout) => {
+                              const filteredWorkouts = workout.workouts.filter(
                                  (workoutItem) =>
                                     workoutItem.exercise_id !==
                                     activeExercise._id
-                              ),
-                           }))
+                              )
+                              if (filteredWorkouts.length !== 0) {
+                                 return [
+                                    {
+                                       ...workout,
+                                       workouts: filteredWorkouts,
+                                    },
+                                 ]
+                              }
+                              return []
+                           })
                         })
 
                         setIsRemoveExerciseModalOpen(false)
