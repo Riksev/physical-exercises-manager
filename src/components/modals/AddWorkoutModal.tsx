@@ -261,8 +261,7 @@ const AddWorkoutModal = ({
                      disabled={
                         error1 !== '' ||
                         selectedExercise.name === 'none' ||
-                        error2 !== '' ||
-                        (selectedExercise.hasTime && time === '')
+                        (selectedExercise.hasTime && error2 !== '')
                      }
                   >
                      додати

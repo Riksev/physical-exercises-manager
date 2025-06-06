@@ -24,7 +24,7 @@ const Exercise = ({
          </h2>
          <div className="flex w-full flex-col items-center gap-2">
             <button
-               className="w-full bg-blue-500 px-4 py-2 hover:bg-blue-600 active:bg-blue-600"
+               className="w-full bg-blue-500 p-4 hover:bg-blue-600 active:bg-blue-600"
                onClick={() => {
                   setActivePage(pages.WORKOUTS)
                }}
@@ -32,13 +32,13 @@ const Exercise = ({
                тренування
             </button>
             <button
-               className="w-full bg-blue-500 px-4 py-2 hover:bg-blue-600 active:bg-blue-600 disabled:cursor-not-allowed disabled:bg-blue-600 disabled:opacity-50"
+               className="w-full bg-blue-500 p-4 hover:bg-blue-600 active:bg-blue-600 disabled:cursor-not-allowed disabled:bg-blue-600 disabled:opacity-50"
                disabled={true}
             >
                аналітика
             </button>
             <button
-               className="w-full bg-yellow-500 px-4 py-2 hover:bg-yellow-600 active:bg-yellow-600 disabled:cursor-not-allowed disabled:bg-yellow-600"
+               className="w-full bg-yellow-500 p-4 hover:bg-yellow-600 active:bg-yellow-600 disabled:cursor-not-allowed disabled:bg-yellow-600"
                onClick={() => {
                   setIsEditExerciseModalOpen(true)
                }}
@@ -46,7 +46,7 @@ const Exercise = ({
                редагування
             </button>
             <button
-               className="w-full bg-red-500 px-4 py-2 hover:bg-red-800 active:bg-red-800 disabled:cursor-not-allowed disabled:bg-red-800"
+               className="w-full bg-red-500 p-4 hover:bg-red-800 active:bg-red-800 disabled:cursor-not-allowed disabled:bg-red-800"
                onClick={() => {
                   setIsRemoveExerciseModalOpen(true)
                }}
@@ -54,7 +54,7 @@ const Exercise = ({
                видалення
             </button>
             <button
-               className="w-full bg-blue-500 px-4 py-2 hover:bg-blue-600 active:bg-blue-600"
+               className="w-full bg-blue-500 p-4 hover:bg-blue-600 active:bg-blue-600"
                onClick={() => {
                   setActiveExercise({
                      _id: 'none',
