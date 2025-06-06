@@ -41,10 +41,28 @@ const AddWorkoutModal = ({
 
    const [reps, setReps] = useState<string>('1')
    const [weight, setWeight] = useState<string>('100')
-   const [time, setTime] = useState<string>('00:00:00')
+   const [time, setTime] = useState<string>('')
 
    const [error1, setError1] = useState<string>('')
    const [error2, setError2] = useState<string>('')
+
+   useEffect(() => {
+      if (!date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+         setError1('Дата не може бути порожньою.')
+      } else {
+         setError1('')
+      }
+   }, [date])
+
+   useEffect(() => {
+      if (!time.match(/^\d{2}:\d{2}:\d{2}$/)) {
+         setError2('Невірний формат часу. Використовуйте HH:MM:SS.')
+      } else if (time === '00:00:00') {
+         setError2('Час не може бути 00:00:00.')
+      } else {
+         setError2('')
+      }
+   }, [time])
 
    useEffect(() => {
       document.body.style.overflow = 'hidden'
@@ -70,16 +88,14 @@ const AddWorkoutModal = ({
                      className="w-full rounded border border-gray-300 p-2 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                      value={date}
                      onChange={(e) => {
-                        const value = e.target.value
-                        setDate(value)
-                        if (!value.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                           setError1('Дата не може бути порожньою.')
-                        } else {
-                           setError1('')
-                        }
+                        setDate(e.target.value)
                      }}
                   />
-                  {error1 && <p className="mt-1 text-red-600">{error1}</p>}
+                  {error1 && (
+                     <p className="mt-1 block text-left text-red-600">
+                        {error1}
+                     </p>
+                  )}
                </div>
                <div className="mb-4">
                   <label className="mb-2 block text-left" htmlFor="exercise">
@@ -124,7 +140,11 @@ const AddWorkoutModal = ({
                            setReps(e.target.value)
                         }}
                         onKeyDown={(e) => {
-                           if (e.key === '-' || e.key === 'e') {
+                           if (
+                              e.key === '-' ||
+                              e.key === 'e' ||
+                              e.key === 'Enter'
+                           ) {
                               e.preventDefault()
                            }
                         }}
@@ -147,7 +167,11 @@ const AddWorkoutModal = ({
                         value={weight}
                         onChange={(e) => setWeight(e.target.value)}
                         onKeyDown={(e) => {
-                           if (e.key === '-' || e.key === 'e') {
+                           if (
+                              e.key === '-' ||
+                              e.key === 'e' ||
+                              e.key === 'Enter'
+                           ) {
                               e.preventDefault()
                            }
                         }}
@@ -166,18 +190,25 @@ const AddWorkoutModal = ({
                         className="w-full rounded border border-gray-300 p-2 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         placeholder="Введіть час виконання HH:MM:SS"
                         value={time}
-                        onChange={(e) => setTime(e.target.value)}
-                        onBlur={() => {
-                           if (!time.match(/^\d{2}:\d{2}:\d{2}$/)) {
-                              setError2(
-                                 'Невірний формат часу. Використовуйте HH:MM:SS.'
-                              )
-                           } else {
-                              setError2('')
+                        onChange={(e) => {
+                           setTime(e.target.value)
+                        }}
+                        onKeyDown={(e) => {
+                           if (
+                              e.key === '-' ||
+                              e.key === 'e' ||
+                              e.key === 'Enter'
+                           ) {
+                              e.preventDefault()
                            }
                         }}
+                        onPaste={(e) => e.preventDefault()}
                      />
-                     {error2 && <p className="mt-1 text-red-600">{error2}</p>}
+                     {error2 && (
+                        <p className="mt-1 block text-left text-red-600">
+                           {error2}
+                        </p>
+                     )}
                   </div>
                )}
                <h2 className="mb-4 w-full border-b-2 border-black/70 pb-4 text-xl font-semibold"></h2>
@@ -230,8 +261,8 @@ const AddWorkoutModal = ({
                      disabled={
                         error1 !== '' ||
                         selectedExercise.name === 'none' ||
-                        (selectedExercise.hasTime &&
-                           (error1 !== '' || time === '00:00:00'))
+                        error2 !== '' ||
+                        (selectedExercise.hasTime && time === '')
                      }
                   >
                      додати

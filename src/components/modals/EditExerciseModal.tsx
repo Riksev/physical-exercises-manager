@@ -31,6 +31,14 @@ const EditExerciseModal = ({
       }
    }, [])
 
+   useEffect(() => {
+      if (name === '') {
+         setError('Назва вправи не може бути порожньою.')
+      } else {
+         setError('')
+      }
+   }, [name])
+
    return (
       <div className="fixed top-0 left-0 z-100 flex h-full w-full items-center justify-center bg-black/50">
          <div className="text-md mx-4 max-h-[90vh] w-full overflow-y-auto rounded-xl border-2 border-black/70 bg-white p-6 font-medium shadow-lg sm:w-2/3 lg:w-1/3">
@@ -50,22 +58,26 @@ const EditExerciseModal = ({
                         placeholder="Введіть назву вправи"
                         value={name}
                         onChange={(e) => {
-                           const value =
+                           setName(
                               e.target.value.trim() === '' ? '' : e.target.value
-                           setName(value)
-                           if (value === '') {
-                              setError('Назва вправи не може бути порожньою.')
-                           } else {
-                              setError('')
+                           )
+                        }}
+                        onKeyDown={(e) => {
+                           if (e.key === 'Enter') {
+                              e.preventDefault()
                            }
                         }}
                         autoComplete="off"
                      />
-                     {error && <p className="mt-1 text-red-600">{error}</p>}
+                     {error && (
+                        <p className="mt-1 block text-left text-red-600">
+                           {error}
+                        </p>
+                     )}
                   </div>
                   <div className="mb-4 flex flex-row items-center justify-between rounded-md p-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
                      <label className="block" htmlFor="reps">
-                        Повторення:
+                        Фікусувати кількість повторень:
                      </label>
                      <input
                         type="checkbox"
@@ -76,7 +88,7 @@ const EditExerciseModal = ({
                   </div>
                   <div className="mb-4 flex flex-row items-center justify-between rounded-md p-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
                      <label className="block" htmlFor="weight">
-                        Додаткова вага:
+                        Фіксувати додаткову вагу:
                      </label>
                      <input
                         type="checkbox"
@@ -87,7 +99,7 @@ const EditExerciseModal = ({
                   </div>
                   <div className="mb-4 flex flex-row items-center justify-between rounded-md p-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
                      <label className="block" htmlFor="time">
-                        Час виконання:
+                        Фіксувати час виконання:
                      </label>
                      <input
                         type="checkbox"

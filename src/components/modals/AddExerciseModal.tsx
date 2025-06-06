@@ -13,6 +13,14 @@ const AddExerciseModal = ({
    const [error, setError] = useState<string>('')
 
    useEffect(() => {
+      if (name === '') {
+         setError('Назва вправи не може бути порожньою.')
+      } else {
+         setError('')
+      }
+   }, [name])
+
+   useEffect(() => {
       document.body.style.overflow = 'hidden'
       return () => {
          document.body.style.overflow = 'auto'
@@ -38,21 +46,25 @@ const AddExerciseModal = ({
                      autoComplete="off"
                      value={name}
                      onChange={(e) => {
-                        const value =
+                        setName(
                            e.target.value.trim() === '' ? '' : e.target.value
-                        setName(value)
-                        if (value === '') {
-                           setError('Назва вправи не може бути порожньою.')
-                        } else {
-                           setError('')
+                        )
+                     }}
+                     onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                           e.preventDefault()
                         }
                      }}
                   />
-                  {error && <p className="mt-1 text-red-600">{error}</p>}
+                  {error && (
+                     <p className="mt-1 block text-left text-red-600">
+                        {error}
+                     </p>
+                  )}
                </div>
                <div className="mb-4 flex flex-row items-center justify-between rounded-md p-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
                   <label className="block" htmlFor="reps">
-                     Повторення:
+                     Фікусувати кількість повторень:
                   </label>
                   <input
                      type="checkbox"
@@ -62,7 +74,7 @@ const AddExerciseModal = ({
                </div>
                <div className="mb-4 flex flex-row items-center justify-between rounded-md p-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
                   <label className="block" htmlFor="weight">
-                     Додаткова вага:
+                     Фіксувати додаткову вагу:
                   </label>
                   <input
                      type="checkbox"
@@ -72,7 +84,7 @@ const AddExerciseModal = ({
                </div>
                <div className="mb-4 flex flex-row items-center justify-between rounded-md p-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
                   <label className="block" htmlFor="time">
-                     Час виконання:
+                     Фіксувати час виконання:
                   </label>
                   <input
                      type="checkbox"

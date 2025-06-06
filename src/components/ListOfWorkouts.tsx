@@ -6,7 +6,11 @@ const ListOfWorkouts = ({ workouts, exercises }: IListOfWorkoutsProps) => {
    return (
       <div className="mt-4 flex w-full flex-col gap-2">
          {workouts.length === 0 ? (
-            <p>Записи відсутні.</p>
+            exercises.length === 0 ? (
+               <p>Додайте хоч одну вправу для додавання тренувань.</p>
+            ) : (
+               <p>Записи тренувань відсутні.</p>
+            )
          ) : (
             workouts.map((workout, index) => (
                <div
