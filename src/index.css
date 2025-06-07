@@ -1,6 +1,9 @@
 @import 'tailwindcss';
 
 @layer base {
+   html {
+      @apply overflow-y-hidden;
+   }
    button {
       @apply cursor-pointer rounded-lg text-lg font-bold uppercase transition-all delay-100;
    }
@@ -14,3 +17,5 @@
       @apply scale-200 cursor-pointer rounded;
    }
 }
+
+/* [{"date":"2025-06-06","workouts":[{"_id":"1749253358463","exercise_id":"1749252961405","reps":8,"weight":100},{"_id":"1749253369196","exercise_id":"1749252981120","time":"00:30:00"}]},{"date":"2025-06-07","workouts":[{"_id":"1749253323160","exercise_id":"1749252961405","reps":10,"weight":100},{"_id":"1749253331863","exercise_id":"1749252972471","reps":4,"weight":200},{"_id":"1749253339678","exercise_id":"1749252972471","reps":3,"weight":180}]}] */

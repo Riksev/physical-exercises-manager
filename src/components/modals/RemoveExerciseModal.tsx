@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import type { IRemoveExerciseModalProps } from '../../interfaces'
 
 const RemoveExerciseModal = ({
@@ -9,13 +8,6 @@ const RemoveExerciseModal = ({
    setActiveExercise,
    setWorkouts,
 }: IRemoveExerciseModalProps) => {
-   useEffect(() => {
-      document.body.style.overflow = 'hidden'
-      return () => {
-         document.body.style.overflow = 'auto'
-      }
-   }, [])
-
    return (
       <div className="fixed top-0 left-0 z-100 flex h-full w-full items-center justify-center bg-black/50">
          <div className="mx-4 max-h-[90vh] w-full overflow-y-auto rounded-xl border-2 border-black/70 bg-white p-6 shadow-lg sm:w-2/3 lg:w-1/3">
@@ -36,16 +28,17 @@ const RemoveExerciseModal = ({
                         setWorkouts((prevWorkouts) => {
                            const updatedWorkouts = [...prevWorkouts]
                            return updatedWorkouts.flatMap((workout) => {
-                              const filteredWorkouts = workout.workouts.filter(
-                                 (workoutItem) =>
-                                    workoutItem.exercise_id !==
-                                    activeExercise._id
-                              )
-                              if (filteredWorkouts.length !== 0) {
+                              const filteredExercises =
+                                 workout.exercises.filter(
+                                    (exercise) =>
+                                       exercise.exercise_id !==
+                                       activeExercise._id
+                                 )
+                              if (filteredExercises.length !== 0) {
                                  return [
                                     {
                                        ...workout,
-                                       workouts: filteredWorkouts,
+                                       exercises: filteredExercises,
                                     },
                                  ]
                               }

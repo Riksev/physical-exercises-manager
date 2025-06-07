@@ -30,8 +30,24 @@ const Workouts = ({
       setFilteredWorkouts(workouts)
    }, [workouts])
 
-   const [error1, setError1] = useState<string>('')
-   const [error2, setError2] = useState<string>('')
+   useEffect(() => {
+      if (!dateBegin.match(/^\d{4}-\d{2}-\d{2}$/)) {
+         setErrorDateBegin('Дата не може бути порожньою.')
+      } else if (dateBegin > dateEnd) {
+         setErrorDateBegin('Дата початку не може бути пізніше дати закінчення.')
+      } else {
+         setErrorDateBegin('')
+      }
+
+      if (!dateEnd.match(/^\d{4}-\d{2}-\d{2}$/)) {
+         setErrorDateEnd('Дата не може бути порожньою.')
+      } else {
+         setErrorDateEnd('')
+      }
+   }, [dateBegin, dateEnd])
+
+   const [errorDateBegin, setErrorDateBegin] = useState<string>('')
+   const [errorDateEnd, setErrorDateEnd] = useState<string>('')
 
    const [isAddWorkoutModalOpen, setIsAddWorkoutModalOpen] =
       useState<boolean>(false)
@@ -53,21 +69,13 @@ const Workouts = ({
                   id="dateBegin"
                   value={dateBegin}
                   onChange={(e) => {
-                     const value = e.target.value
-                     setDateBegin(value)
-                     if (!value.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                        setError1('Дата не може бути порожньою.')
-                     } else if (value > dateEnd) {
-                        setError1(
-                           'Дата початку не може бути пізніше дати закінчення.'
-                        )
-                     } else {
-                        setError1('')
-                     }
+                     setDateBegin(e.target.value)
                   }}
                />
             </div>
-            {error1 && <p className="mt-1 text-red-600">{error1}</p>}
+            {errorDateBegin && (
+               <p className="mt-1 text-red-600">{errorDateBegin}</p>
+            )}
             <div className="flex w-full flex-row items-center justify-between">
                <label htmlFor="dateEnd">До:</label>
                <input
@@ -75,17 +83,13 @@ const Workouts = ({
                   id="dateEnd"
                   value={dateEnd}
                   onChange={(e) => {
-                     const value = e.target.value
-                     setDateEnd(value)
-                     if (!value.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                        setError2('Дата не може бути порожньою.')
-                     } else {
-                        setError2('')
-                     }
+                     setDateEnd(e.target.value)
                   }}
                />
             </div>
-            {error2 && <p className="mt-1 text-red-600">{error2}</p>}
+            {errorDateEnd && (
+               <p className="mt-1 text-red-600">{errorDateEnd}</p>
+            )}
             <div className="flex w-full flex-row items-center justify-between">
                <label htmlFor="exercise">Вправа:</label>
                <select
@@ -121,38 +125,45 @@ const Workouts = ({
                         hasWeight: false,
                         hasTime: false,
                      }
-                     return updatedWorkouts.flatMap((workout) => {
-                        const isWithinDateRange =
-                           workout.date >= dateBegin && workout.date <= dateEnd
 
-                        const isSelectedExercise =
-                           selectedExerciseName === 'all' ||
-                           (selectedExercise !== undefined &&
-                              workout.workouts.some(
+                     return updatedWorkouts.flatMap((workout) => {
+                        if (!workout.exercises) {
+                           return []
+                        }
+                        if (
+                           workout.date < dateBegin ||
+                           workout.date > dateEnd
+                        ) {
+                           return []
+                        }
+                        if (
+                           selectedExerciseName !== 'all' &&
+                           !workout.exercises.some(
+                              (item) =>
+                                 item.exercise_id === selectedExercise._id
+                           )
+                        ) {
+                           return []
+                        }
+                        if (selectedExerciseName === 'all') {
+                           return [workout]
+                        }
+                        return [
+                           {
+                              ...workout,
+                              exercises: workout.exercises.filter(
                                  (item) =>
                                     item.exercise_id === selectedExercise._id
-                              ))
-
-                        if (isWithinDateRange && isSelectedExercise) {
-                           if (selectedExerciseName === 'all') {
-                              return [workout]
-                           }
-                           return [
-                              {
-                                 ...workout,
-                                 workouts: workout.workouts.filter(
-                                    (item) =>
-                                       item.exercise_id === selectedExercise._id
-                                 ),
-                              },
-                           ]
-                        }
-                        return []
+                              ),
+                           },
+                        ]
                      })
                   })
                }}
                disabled={
-                  error1 !== '' || error2 !== '' || exercises.length === 0
+                  errorDateBegin !== '' ||
+                  errorDateEnd !== '' ||
+                  exercises.length === 0
                }
             >
                пошук

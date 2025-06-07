@@ -1,13 +1,14 @@
 import type { Dispatch, SetStateAction } from 'react'
 
-interface IRecord {
+interface IWorkout {
    readonly date: string
-   workouts: IWorkout[]
+   exercises: {
+      exercise_id: string
+      records: IRecord[]
+   }[]
 }
 
-interface IWorkout {
-   readonly _id: string
-   exercise_id: string
+interface IRecord {
    reps?: number
    weight?: number
    time?: string
@@ -35,7 +36,7 @@ interface IAddWorkoutModalProps {
    setIsAddWorkoutModalOpen: Dispatch<SetStateAction<boolean>>
    selectedExerciseName: string
    exercises: IExercise[]
-   setWorkouts: Dispatch<SetStateAction<IRecord[]>>
+   setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
 }
 
 interface IRemoveExerciseModalProps {
@@ -44,7 +45,7 @@ interface IRemoveExerciseModalProps {
    exercises: IExercise[]
    activeExercise: IExercise
    setActiveExercise: Dispatch<SetStateAction<IExercise>>
-   setWorkouts: Dispatch<SetStateAction<IRecord[]>>
+   setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
 }
 
 interface IEditExerciseModalProps {
@@ -67,7 +68,7 @@ interface IExercisesProps {
    activeExercise: IExercise
    setActiveExercise: Dispatch<SetStateAction<IExercise>>
    setActivePage: Dispatch<SetStateAction<string>>
-   setWorkouts: Dispatch<SetStateAction<IRecord[]>>
+   setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
 }
 
 interface IExerciseProps {
@@ -76,18 +77,18 @@ interface IExerciseProps {
    exercises: IExercise[]
    setExercises: Dispatch<SetStateAction<IExercise[]>>
    setActivePage: Dispatch<SetStateAction<string>>
-   setWorkouts: Dispatch<SetStateAction<IRecord[]>>
+   setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
 }
 
 interface IWorkoutsProps {
    exercises: IExercise[]
    activeExercise: IExercise
-   setWorkouts: Dispatch<SetStateAction<IRecord[]>>
-   workouts: IRecord[]
+   setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
+   workouts: IWorkout[]
 }
 
 interface IListOfWorkoutsProps {
-   workouts: IRecord[]
+   workouts: IWorkout[]
    exercises: IExercise[]
 }
 

@@ -22,20 +22,23 @@ const EditExerciseModal = ({
    const [hasTime, setHasTime] = useState<boolean>(
       exercise ? exercise.hasTime : false
    )
-   const [error, setError] = useState<string>('')
+
+   const [errorName, setErrorName] = useState<string>('')
+   const [errorCheckboxes, setErrorCheckboxes] = useState<string>('')
 
    useEffect(() => {
-      document.body.style.overflow = 'hidden'
-      return () => {
-         document.body.style.overflow = 'auto'
+      if (!hasReps && !hasWeight && !hasTime) {
+         setErrorCheckboxes('Хоча б один з параметрів має бути обраний.')
+      } else {
+         setErrorCheckboxes('')
       }
-   }, [])
+   }, [hasReps, hasWeight, hasTime])
 
    useEffect(() => {
       if (name === '') {
-         setError('Назва вправи не може бути порожньою.')
+         setErrorName('Назва вправи не може бути порожньою.')
       } else {
-         setError('')
+         setErrorName('')
       }
    }, [name])
 
@@ -69,9 +72,9 @@ const EditExerciseModal = ({
                         }}
                         autoComplete="off"
                      />
-                     {error && (
+                     {errorName && (
                         <p className="mt-1 block text-left text-red-600">
-                           {error}
+                           {errorName}
                         </p>
                      )}
                   </div>
@@ -108,6 +111,11 @@ const EditExerciseModal = ({
                         onChange={(e) => setHasTime(e.target.checked)}
                      />
                   </div>
+                  {errorCheckboxes && (
+                     <p className="mt-1 block text-left text-red-600">
+                        {errorCheckboxes}
+                     </p>
+                  )}
                </div>
                <h2 className="mb-4 w-full border-b-2 border-black/70 pb-4 text-xl font-semibold"></h2>
                <div className="flex flex-col gap-4">
@@ -133,7 +141,7 @@ const EditExerciseModal = ({
                         setIsEditExerciseModalOpen(false)
                      }}
                      disabled={
-                        error !== '' || (!hasReps && !hasWeight && !hasTime)
+                        errorName !== '' || (!hasReps && !hasWeight && !hasTime)
                      }
                   >
                      редагувати

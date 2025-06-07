@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 import Menu from './components/Menu'
 import Workouts from './components/Workouts'
 import Exercises from './components/Exercises'
-import type { IExercise, IRecord } from './interfaces'
+import type { IExercise, IWorkout } from './interfaces'
 import Statistics from './components/Statistics'
 import pages from './utilities'
 
 function App() {
    const [exercises, setExercises] = useState<IExercise[]>([])
-   const [workouts, setWorkouts] = useState<IRecord[]>([])
+   const [workouts, setWorkouts] = useState<IWorkout[]>([])
 
    const [activePage, setActivePage] = useState<string>(pages.EXERCISES)
    const [activeExercise, setActiveExercise] = useState<IExercise>({
@@ -26,7 +26,7 @@ function App() {
       }
       const storedWorkouts = localStorage.getItem('workouts')
       if (storedWorkouts) {
-         setWorkouts(JSON.parse(storedWorkouts) as IRecord[])
+         setWorkouts(JSON.parse(storedWorkouts) as IWorkout[])
       }
    }, [])
 
@@ -40,7 +40,7 @@ function App() {
 
    return (
       <div className="flex min-h-screen w-full flex-col items-center">
-         <div className="flex min-h-screen w-full flex-col items-center gap-4 bg-gradient-to-br from-fuchsia-200 to-cyan-200 p-4 pb-20 text-center md:w-3/4 lg:w-1/2">
+         <div className="flex h-screen min-h-screen w-full flex-col items-center gap-4 overflow-y-scroll bg-gradient-to-br from-fuchsia-200 to-cyan-200 p-4 pb-20 text-center md:w-3/4 lg:w-1/2">
             {activePage === pages.EXERCISES && (
                <Exercises
                   exercises={exercises}

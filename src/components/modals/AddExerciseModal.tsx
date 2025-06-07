@@ -10,22 +10,24 @@ const AddExerciseModal = ({
    const [hasWeight, setHasWeight] = useState<boolean>(false)
    const [hasTime, setHasTime] = useState<boolean>(false)
 
-   const [error, setError] = useState<string>('')
+   const [errorName, setErrorName] = useState<string>('')
+   const [errorCheckboxes, setErrorCheckboxes] = useState<string>('')
 
    useEffect(() => {
       if (name === '') {
-         setError('Назва вправи не може бути порожньою.')
+         setErrorName('Назва вправи не може бути порожньою.')
       } else {
-         setError('')
+         setErrorName('')
       }
    }, [name])
 
    useEffect(() => {
-      document.body.style.overflow = 'hidden'
-      return () => {
-         document.body.style.overflow = 'auto'
+      if (!hasReps && !hasWeight && !hasTime) {
+         setErrorCheckboxes('Хоча б один з параметрів має бути обраний.')
+      } else {
+         setErrorCheckboxes('')
       }
-   }, [])
+   }, [hasReps, hasWeight, hasTime])
 
    return (
       <div className="fixed top-0 left-0 z-100 flex h-full w-full items-center justify-center bg-black/50">
@@ -56,9 +58,9 @@ const AddExerciseModal = ({
                         }
                      }}
                   />
-                  {error && (
+                  {errorName && (
                      <p className="mt-1 block text-left text-red-600">
-                        {error}
+                        {errorName}
                      </p>
                   )}
                </div>
@@ -92,6 +94,11 @@ const AddExerciseModal = ({
                      onChange={(e) => setHasTime(e.target.checked)}
                   />
                </div>
+               {errorCheckboxes && (
+                  <p className="mt-1 block text-left text-red-600">
+                     {errorCheckboxes}
+                  </p>
+               )}
                <h2 className="mb-4 w-full border-b-2 border-black/70 pb-4 text-xl font-semibold"></h2>
                <div className="flex flex-col gap-4">
                   <button
@@ -137,7 +144,7 @@ const AddExerciseModal = ({
                         setIsAddExerciseModalOpen(false)
                      }}
                      disabled={
-                        error !== '' || (!hasReps && !hasWeight && !hasTime)
+                        errorName !== '' || (!hasReps && !hasWeight && !hasTime)
                      }
                   >
                      додати

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import type {
    IAddWorkoutModalProps,
    IExercise,
-   IWorkout,
+   IRecord,
 } from '../../interfaces'
 
 const AddWorkoutModal = ({
@@ -43,33 +43,26 @@ const AddWorkoutModal = ({
    const [weight, setWeight] = useState<string>('100')
    const [time, setTime] = useState<string>('')
 
-   const [error1, setError1] = useState<string>('')
-   const [error2, setError2] = useState<string>('')
+   const [errorDate, setErrorDate] = useState<string>('')
+   const [errorTime, setErrorTime] = useState<string>('')
 
    useEffect(() => {
       if (!date.match(/^\d{4}-\d{2}-\d{2}$/)) {
-         setError1('Дата не може бути порожньою.')
+         setErrorDate('Дата не може бути порожньою.')
       } else {
-         setError1('')
+         setErrorDate('')
       }
    }, [date])
 
    useEffect(() => {
       if (!time.match(/^\d{2}:\d{2}:\d{2}$/)) {
-         setError2('Невірний формат часу. Використовуйте HH:MM:SS.')
+         setErrorTime('Невірний формат часу. Використовуйте HH:MM:SS.')
       } else if (time === '00:00:00') {
-         setError2('Час не може бути 00:00:00.')
+         setErrorTime('Час не може бути 00:00:00.')
       } else {
-         setError2('')
+         setErrorTime('')
       }
    }, [time])
-
-   useEffect(() => {
-      document.body.style.overflow = 'hidden'
-      return () => {
-         document.body.style.overflow = 'auto'
-      }
-   }, [])
 
    return (
       <div className="fixed top-0 left-0 z-100 flex h-full w-full items-center justify-center bg-black/50">
@@ -91,9 +84,9 @@ const AddWorkoutModal = ({
                         setDate(e.target.value)
                      }}
                   />
-                  {error1 && (
+                  {errorDate && (
                      <p className="mt-1 block text-left text-red-600">
-                        {error1}
+                        {errorDate}
                      </p>
                   )}
                </div>
@@ -204,9 +197,9 @@ const AddWorkoutModal = ({
                         }}
                         onPaste={(e) => e.preventDefault()}
                      />
-                     {error2 && (
+                     {errorTime && (
                         <p className="mt-1 block text-left text-red-600">
-                           {error2}
+                           {errorTime}
                         </p>
                      )}
                   </div>
@@ -218,9 +211,7 @@ const AddWorkoutModal = ({
                      className="w-full bg-green-500 px-4 py-2 hover:bg-green-600 active:bg-green-600 disabled:cursor-not-allowed disabled:bg-green-600 disabled:opacity-50"
                      onClick={() => {
                         setWorkouts((prev) => {
-                           const newWorkout: IWorkout = {
-                              _id: Date.now().toString(),
-                              exercise_id: selectedExercise._id,
+                           const newRecord: IRecord = {
                               ...(selectedExercise.hasReps && {
                                  reps: parseFloat(reps),
                               }),
@@ -235,23 +226,64 @@ const AddWorkoutModal = ({
                            let inserted = false
                            for (let i = 0; i < updated.length; i++) {
                               if (updated[i].date === date) {
-                                 updated[i].workouts.push(newWorkout)
+                                 // If date already exists
+                                 if (updated[i].exercises) {
+                                    // If exercises array exists for this date
+                                    const exerciseIndex = updated[
+                                       i
+                                    ].exercises.findIndex(
+                                       (ex) =>
+                                          ex.exercise_id ===
+                                          selectedExercise._id
+                                    )
+                                    if (exerciseIndex !== -1) {
+                                       // If exercise already exists for this date
+                                       updated[i].exercises[
+                                          exerciseIndex
+                                       ].records.push(newRecord)
+                                    } else {
+                                       // If exercises array does not contain the selected exercise
+                                       updated[i].exercises.push({
+                                          exercise_id: selectedExercise._id,
+                                          records: [newRecord],
+                                       })
+                                    }
+                                 } else {
+                                    // If exercises array does not exist for this date
+                                    updated[i].exercises = [
+                                       {
+                                          exercise_id: selectedExercise._id,
+                                          records: [newRecord],
+                                       },
+                                    ]
+                                 }
                                  inserted = true
                                  break
-                              }
-                              if (updated[i].date > date) {
+                              } else if (updated[i].date > date) {
+                                 // If date is less than current date
                                  updated.splice(i, 0, {
                                     date,
-                                    workouts: [newWorkout],
+                                    exercises: [
+                                       {
+                                          exercise_id: selectedExercise._id,
+                                          records: [newRecord],
+                                       },
+                                    ],
                                  })
                                  inserted = true
                                  break
                               }
                            }
                            if (!inserted) {
+                              // If date is greater than all existing dates
                               updated.push({
                                  date,
-                                 workouts: [newWorkout],
+                                 exercises: [
+                                    {
+                                       exercise_id: selectedExercise._id,
+                                       records: [newRecord],
+                                    },
+                                 ],
                               })
                            }
                            return updated
@@ -259,9 +291,9 @@ const AddWorkoutModal = ({
                         setIsAddWorkoutModalOpen(false)
                      }}
                      disabled={
-                        error1 !== '' ||
+                        errorDate !== '' ||
                         selectedExercise.name === 'none' ||
-                        (selectedExercise.hasTime && error2 !== '')
+                        (selectedExercise.hasTime && errorTime !== '')
                      }
                   >
                      додати
