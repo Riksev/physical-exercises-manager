@@ -11,6 +11,7 @@ const Workouts = ({
    workouts,
    activeWorkout,
    setActiveWorkout,
+   scrollRef,
 }: IWorkoutsProps) => {
    const [dateBegin, setDateBegin] = useState<string>(() => {
       const now = new Date()
@@ -47,6 +48,12 @@ const Workouts = ({
    useEffect(() => {
       setFilteredWorkouts(workouts)
    }, [workouts])
+
+   useEffect(() => {
+      if (scrollRef.current) {
+         scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+   }, [activeWorkout, scrollRef])
 
    useEffect(() => {
       if (!dateBegin.match(/^\d{4}-\d{2}-\d{2}$/)) {

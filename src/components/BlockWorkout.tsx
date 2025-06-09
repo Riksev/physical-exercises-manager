@@ -45,7 +45,7 @@ const BlockWorkout = ({ workout, exercises, clicker }: IBlockWorkoutProps) => {
                               )}
                               {exerciseInfo.hasWeight && (
                                  <p className="flex-1 overflow-x-auto border text-center">
-                                    Вага
+                                    Вага (кг)
                                  </p>
                               )}
                               {exerciseInfo.hasTime && (

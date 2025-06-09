@@ -30,7 +30,7 @@ const AddExerciseToWorkoutModal = ({
    const exerciseInteraction = (exercise: IExercise) => {
       setWorkouts((prev) => {
          const updated = [...prev]
-         const workoutIndex = updated.findIndex((w) => w.date === workout.date)
+         const workoutIndex = updated.findIndex((w) => w._id === workout._id)
          if (workoutIndex !== -1) {
             updated[workoutIndex].exercises.push({
                exercise_id: exercise._id,

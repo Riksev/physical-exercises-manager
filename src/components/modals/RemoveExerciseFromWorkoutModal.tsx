@@ -34,7 +34,7 @@ const RemoveExerciseFromWorkoutModal = ({
                   setWorkouts((prevWorkouts) => {
                      const updatedWorkouts = [...prevWorkouts]
                      const workoutIndex = updatedWorkouts.findIndex(
-                        (w) => w.date === activeWorkout.date
+                        (w) => w._id === activeWorkout._id
                      )
                      if (workoutIndex !== -1) {
                         updatedWorkouts[workoutIndex].exercises =

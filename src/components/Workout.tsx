@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
-import type { IExercise, IWorkoutProps } from '../interfaces'
+import type { IExercise, IRecord, IWorkoutProps } from '../interfaces'
 import AddExerciseToWorkoutModal from './modals/AddExerciseToWorkoutModal'
 import RemoveWorkoutModal from './modals/RemoveWorkoutModal'
 import RemoveExerciseFromWorkoutModal from './modals/RemoveExerciseFromWorkoutModal'
 import AddRecordModal from './modals/AddRecordModal'
+import EditWorkoutModal from './modals/EditWorkoutModal'
+import RemoveRecordModal from './modals/RemoveRecordModal'
+import EditRecordModal from './modals/EditRecordModal'
 
 const Workout = ({
    activeWorkout,
@@ -11,20 +14,29 @@ const Workout = ({
    exercises,
    setWorkouts,
 }: IWorkoutProps) => {
-   const [isAddExerciseToWorkoutModalOpen, setIsAddExerciseToWorkoutModalOpen] =
-      useState<boolean>(false)
    const [isRemoveWorkoutModalOpen, setIsRemoveWorkoutModalOpen] =
+      useState<boolean>(false)
+   const [isEditWorkoutModalOpen, setIsEditWorkoutModalOpen] =
+      useState<boolean>(false)
+
+   const [isAddExerciseToWorkoutModalOpen, setIsAddExerciseToWorkoutModalOpen] =
       useState<boolean>(false)
    const [
       isRemoveExerciseFromWorkoutModalOpen,
       setIsRemoveExerciseFromWorkoutModalOpen,
    ] = useState<boolean>(false)
+
    const [isAddRecordModalOpen, setIsAddRecordModalOpen] =
+      useState<boolean>(false)
+   const [isEditRecordModalOpen, setIsEditRecordModalOpen] =
+      useState<boolean>(false)
+   const [isRemoveRecordModalOpen, setIsRemoveRecordModalOpen] =
       useState<boolean>(false)
 
    const [selectedExercise, setSelectedExercise] = useState<IExercise | null>(
       null
    )
+   const [selectedRecord, setSelectedRecord] = useState<IRecord | null>(null)
 
    const [errorExercises, setErrorExercises] = useState<string>('')
 
@@ -110,7 +122,7 @@ const Workout = ({
                                              )}
                                              {exerciseInfo?.hasWeight && (
                                                 <p className="flex-1 overflow-x-auto border text-center">
-                                                   Вага
+                                                   Вага (кг)
                                                 </p>
                                              )}
                                              {exerciseInfo?.hasTime && (
@@ -121,29 +133,60 @@ const Workout = ({
                                           </div>
                                           {exercise.records.map(
                                              (record, id) => (
-                                                <div
+                                                <details
                                                    key={id}
-                                                   className="flex w-full flex-row items-center justify-between"
+                                                   onClick={() => {
+                                                      setSelectedRecord(record)
+                                                   }}
                                                 >
-                                                   <p className="w-1/10 overflow-x-auto border text-center">
-                                                      {id + 1}
-                                                   </p>
-                                                   {exerciseInfo?.hasReps && (
-                                                      <p className="flex-1 overflow-x-auto border text-center">
-                                                         {record?.reps ?? '-'}
-                                                      </p>
-                                                   )}
-                                                   {exerciseInfo?.hasWeight && (
-                                                      <p className="flex-1 overflow-x-auto border text-center">
-                                                         {record?.weight ?? '-'}
-                                                      </p>
-                                                   )}
-                                                   {exerciseInfo?.hasTime && (
-                                                      <p className="flex-1 overflow-x-auto border text-center">
-                                                         {record?.time ?? '-'}
-                                                      </p>
-                                                   )}
-                                                </div>
+                                                   <summary>
+                                                      <div className="flex w-full flex-row items-center justify-between">
+                                                         <p className="w-1/10 overflow-x-auto border text-center">
+                                                            {id + 1}
+                                                         </p>
+                                                         {exerciseInfo?.hasReps && (
+                                                            <p className="flex-1 overflow-x-auto border text-center">
+                                                               {record?.reps ??
+                                                                  '-'}
+                                                            </p>
+                                                         )}
+                                                         {exerciseInfo?.hasWeight && (
+                                                            <p className="flex-1 overflow-x-auto border text-center">
+                                                               {record?.weight ??
+                                                                  '-'}
+                                                            </p>
+                                                         )}
+                                                         {exerciseInfo?.hasTime && (
+                                                            <p className="flex-1 overflow-x-auto border text-center">
+                                                               {record?.time ??
+                                                                  '-'}
+                                                            </p>
+                                                         )}
+                                                      </div>
+                                                   </summary>
+                                                   <div className="flex w-full flex-row items-center justify-between">
+                                                      <button
+                                                         className="w-full rounded-none bg-yellow-500 px-4 py-1 hover:bg-yellow-600 active:bg-yellow-600 disabled:cursor-not-allowed disabled:bg-yellow-600"
+                                                         onClick={() => {
+                                                            setIsEditRecordModalOpen(
+                                                               true
+                                                            )
+                                                         }}
+                                                      >
+                                                         редагувати
+                                                      </button>
+                                                      <button
+                                                         className="w-full rounded-none bg-red-500 px-4 py-1 hover:bg-red-800 active:bg-red-800 disabled:cursor-not-allowed disabled:bg-red-800"
+                                                         onClick={() => {
+                                                            setIsRemoveRecordModalOpen(
+                                                               true
+                                                            )
+                                                         }}
+                                                      >
+                                                         видалити
+                                                      </button>
+                                                   </div>
+                                                </details>
                                              )
                                           )}
                                        </div>
@@ -174,6 +217,14 @@ const Workout = ({
                )}
             </div>
             <button
+               className="w-full bg-yellow-500 p-4 hover:bg-yellow-600 active:bg-yellow-600 disabled:cursor-not-allowed disabled:bg-yellow-600 disabled:opacity-50"
+               onClick={() => {
+                  setIsEditWorkoutModalOpen(true)
+               }}
+            >
+               редагувати тренування
+            </button>
+            <button
                className="w-full bg-red-500 p-4 hover:bg-red-800 active:bg-red-800 disabled:cursor-not-allowed disabled:bg-red-800"
                onClick={() => {
                   setIsRemoveWorkoutModalOpen(true)
@@ -190,6 +241,21 @@ const Workout = ({
                назад
             </button>
          </div>
+
+         {isRemoveWorkoutModalOpen && (
+            <RemoveWorkoutModal
+               setIsRemoveWorkoutModalOpen={setIsRemoveWorkoutModalOpen}
+               setWorkouts={setWorkouts}
+               activeWorkout={activeWorkout}
+            />
+         )}
+         {isEditWorkoutModalOpen && (
+            <EditWorkoutModal
+               setIsEditWorkoutModalOpen={setIsEditWorkoutModalOpen}
+               setWorkouts={setWorkouts}
+               activeWorkout={activeWorkout}
+            />
+         )}
          {isAddExerciseToWorkoutModalOpen && (
             <AddExerciseToWorkoutModal
                setAddExerciseToWorkoutModalOpen={
@@ -198,13 +264,6 @@ const Workout = ({
                exercises={exercises}
                setWorkouts={setWorkouts}
                workout={activeWorkout}
-            />
-         )}
-         {isRemoveWorkoutModalOpen && (
-            <RemoveWorkoutModal
-               setIsRemoveWorkoutModalOpen={setIsRemoveWorkoutModalOpen}
-               setWorkouts={setWorkouts}
-               activeWorkout={activeWorkout}
             />
          )}
          {isRemoveExerciseFromWorkoutModalOpen && selectedExercise && (
@@ -223,6 +282,24 @@ const Workout = ({
                selectedExercise={selectedExercise}
                setWorkouts={setWorkouts}
                selectedWorkout={activeWorkout}
+            />
+         )}
+         {isEditRecordModalOpen && selectedExercise && selectedRecord && (
+            <EditRecordModal
+               setIsEditRecordModalOpen={setIsEditRecordModalOpen}
+               setWorkouts={setWorkouts}
+               selectedWorkout={activeWorkout}
+               selectedExercise={selectedExercise}
+               selectedRecord={selectedRecord}
+            />
+         )}
+         {isRemoveRecordModalOpen && selectedExercise && selectedRecord && (
+            <RemoveRecordModal
+               setIsRemoveRecordModalOpen={setIsRemoveRecordModalOpen}
+               setWorkouts={setWorkouts}
+               selectedWorkout={activeWorkout}
+               selectedExercise={selectedExercise}
+               selectedRecord={selectedRecord}
             />
          )}
       </>

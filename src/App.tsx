@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Menu from './components/Menu'
 import Workouts from './components/Workouts'
 import Exercises from './components/Exercises'
 import {
    Pages,
    type IExercise,
+   type IRecord,
    type IWorkout,
    type PageNames,
 } from './interfaces'
@@ -18,6 +19,8 @@ function App() {
    const [activeExercise, setActiveExercise] = useState<IExercise | null>(null)
    const [activeWorkout, setActiveWorkout] = useState<IWorkout | null>(null)
 
+   const scrollRef = useRef<HTMLDivElement>(null)
+
    useEffect((): void => {
       const storedExercises = localStorage.getItem('exercises')
       if (storedExercises) {
@@ -25,7 +28,66 @@ function App() {
       }
       const storedWorkouts = localStorage.getItem('workouts')
       if (storedWorkouts) {
-         setWorkouts(JSON.parse(storedWorkouts) as IWorkout[])
+         setWorkouts(() => {
+            const updated = JSON.parse(storedWorkouts) as IWorkout[]
+            return updated.map((workout, index) => {
+               if (!workout.exercises) {
+                  workout.exercises = []
+               } else {
+                  workout.exercises = workout.exercises.map((ex) => {
+                     ex.records = ex.records.map((rec, indexInner) => {
+                        if (!rec._id) {
+                           return {
+                              ...rec,
+                              _id: (
+                                 new Date().getTime() + indexInner
+                              ).toString(),
+                           }
+                        }
+                        return rec
+                     })
+                     return ex
+                  })
+               }
+               if (workout.workouts) {
+                  workout.workouts.forEach((w) => {
+                     const newRecord: IRecord = {
+                        _id: (new Date().getTime() + index).toString(),
+                        ...(w.reps && { reps: w.reps }),
+                        ...(w.weight && { weight: w.weight }),
+                        ...(w.time && { time: w.time }),
+                     }
+
+                     if (
+                        exercises.findIndex(
+                           (ex) => ex._id === w.exercise_id
+                        ) !== -1
+                     ) {
+                        const exerciseId = workout.exercises.findIndex(
+                           (ex) => ex.exercise_id === w.exercise_id
+                        )
+
+                        if (exerciseId === -1) {
+                           workout.exercises.push({
+                              exercise_id: w.exercise_id,
+                              records: [newRecord],
+                           })
+                        } else {
+                           workout.exercises[exerciseId].records.push(newRecord)
+                        }
+                     }
+                  })
+               }
+               if (workout._id) {
+                  return workout
+               }
+               return {
+                  _id: (new Date().getTime() + index).toString(),
+                  date: workout.date,
+                  exercises: workout.exercises,
+               }
+            })
+         })
       }
    }, [])
 
@@ -48,14 +110,17 @@ function App() {
    useEffect((): void => {
       if (activeWorkout) {
          setActiveWorkout(
-            workouts.find((w) => w.date === activeWorkout.date) || null
+            workouts.find((w) => w._id === activeWorkout._id) || null
          )
       }
    }, [activeWorkout, workouts])
 
    return (
       <div className="flex min-h-screen w-full flex-col items-center">
-         <div className="flex h-screen min-h-screen w-full flex-col items-center gap-4 overflow-y-scroll bg-gradient-to-br from-fuchsia-200 to-cyan-200 p-4 pb-20 text-center md:w-3/4 lg:w-1/2">
+         <div
+            className="flex h-screen min-h-screen w-full flex-col items-center gap-4 overflow-y-scroll bg-gradient-to-br from-fuchsia-200 to-cyan-200 p-4 pb-20 text-center md:w-3/4 lg:w-1/2"
+            ref={scrollRef}
+         >
             {activePage === Pages.EXERCISES && (
                <Exercises
                   exercises={exercises}
@@ -72,6 +137,7 @@ function App() {
                   workouts={workouts}
                   activeWorkout={activeWorkout}
                   setActiveWorkout={setActiveWorkout}
+                  scrollRef={scrollRef}
                />
             )}
             {activePage === Pages.STATISTICS && <Statistics />}
@@ -80,6 +146,7 @@ function App() {
                setActivePage={setActivePage}
                setActiveExercise={setActiveExercise}
                setActiveWorkout={setActiveWorkout}
+               scrollRef={scrollRef}
             />
          </div>
       </div>

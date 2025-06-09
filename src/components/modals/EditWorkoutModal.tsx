@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import type { IAddWorkoutModalProps, IWorkout } from '../../interfaces'
+import type { IEditWorkoutModalProps, IWorkout } from '../../interfaces'
 
-const AddWorkoutModal = ({
-   setIsAddWorkoutModalOpen,
+const EditWorkoutModal = ({
+   setIsEditWorkoutModalOpen,
    setWorkouts,
-   setActiveWorkout,
-}: IAddWorkoutModalProps) => {
+   activeWorkout,
+}: IEditWorkoutModalProps) => {
    const [date, setDate] = useState<string>(() => {
       const now = new Date()
       const year = now.getFullYear()
@@ -21,7 +21,8 @@ const AddWorkoutModal = ({
          setErrorDate('Дата не може бути порожньою.')
       } else {
          setWorkouts((prev) => {
-            if (prev.findIndex((w) => w.date === date) === -1) {
+            const workoutOnDate = prev.find((w) => w.date === date)
+            if (!workoutOnDate) {
                setErrorDate('')
             } else {
                setErrorDate('Тренування на цю дату вже існує.')
@@ -29,20 +30,20 @@ const AddWorkoutModal = ({
             return prev
          })
       }
-   }, [date, setWorkouts])
+   }, [date, setWorkouts, activeWorkout])
 
    return (
       <div className="fixed top-0 left-0 z-100 flex h-full w-full items-center justify-center bg-black/50">
          <div className="mx-4 flex max-h-[90vh] w-full flex-col overflow-y-auto rounded-xl border-2 border-black/70 bg-white p-6 text-lg font-medium shadow-lg sm:w-2/3 lg:w-1/3">
             <div className="sticky top-0 z-120 mb-8 flex items-center justify-between border-b-2 border-black/70 bg-white pb-4">
                <h2 className="text-xl font-semibold text-wrap">
-                  Додавання тренування
+                  Редагування тренування
                </h2>
                <button
                   type="button"
                   aria-label="Закрити"
                   onClick={() => {
-                     setIsAddWorkoutModalOpen(false)
+                     setIsEditWorkoutModalOpen(false)
                   }}
                   className="flex h-10 w-10 items-center justify-center rounded-full border-0 bg-white p-0 text-center text-5xl leading-none font-bold text-red-500 hover:bg-red-100"
                >
@@ -75,35 +76,38 @@ const AddWorkoutModal = ({
                <div className="flex flex-col gap-4">
                   <button
                      type="button"
-                     className="w-full bg-green-500 px-4 py-2 hover:bg-green-600 active:bg-green-600 disabled:cursor-not-allowed disabled:bg-green-600 disabled:opacity-50"
+                     className="w-full bg-yellow-500 px-4 py-2 hover:bg-yellow-600 active:bg-yellow-600 disabled:cursor-not-allowed disabled:bg-yellow-600 disabled:opacity-50"
                      onClick={() => {
                         setWorkouts((prev) => {
-                           const newWorkout: IWorkout = {
-                              _id: new Date().getTime().toString(),
+                           const editedWorkout: IWorkout = {
+                              ...activeWorkout,
                               date,
-                              exercises: [],
                            }
                            const updated = [...prev]
-                           let isInserted = false
-                           for (let i = 0; i < updated.length; i++) {
-                              if (updated[i].date > newWorkout.date) {
-                                 updated.splice(i, 0, newWorkout)
-                                 setActiveWorkout(newWorkout)
-                                 isInserted = true
-                                 break
+                           const workoutIndex = updated.findIndex(
+                              (w) => w._id === activeWorkout._id
+                           )
+                           if (workoutIndex !== -1) {
+                              updated.splice(workoutIndex, 1)
+                              let isInserted = false
+                              for (let i = 0; i < updated.length; i++) {
+                                 if (updated[i].date > editedWorkout.date) {
+                                    updated.splice(i, 0, editedWorkout)
+                                    isInserted = true
+                                    break
+                                 }
+                              }
+                              if (!isInserted) {
+                                 updated.push(editedWorkout)
                               }
                            }
-                           if (!isInserted) {
-                              updated.push(newWorkout)
-                              setActiveWorkout(newWorkout)
-                           }
-                           setIsAddWorkoutModalOpen(false)
+                           setIsEditWorkoutModalOpen(false)
                            return updated
                         })
                      }}
                      disabled={errorDate !== ''}
                   >
-                     додати
+                     редагувати
                   </button>
                </div>
             </div>
@@ -112,4 +116,4 @@ const AddWorkoutModal = ({
    )
 }
 
-export default AddWorkoutModal
+export default EditWorkoutModal

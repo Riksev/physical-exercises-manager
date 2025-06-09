@@ -5,6 +5,7 @@ const Menu = ({
    setActivePage,
    setActiveExercise,
    setActiveWorkout,
+   scrollRef,
 }: IMenuProps) => {
    return (
       <nav className="fixed bottom-0 z-99 flex w-full items-center bg-gradient-to-br from-fuchsia-900 to-blue-600 p-2 shadow-md md:w-3/4 lg:w-1/2">
@@ -15,7 +16,12 @@ const Menu = ({
                   if (prev === Pages.EXERCISES) {
                      setActiveExercise(null)
                   }
-                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                  if (scrollRef.current) {
+                     scrollRef.current.scrollTo({
+                        top: 0,
+                        behavior: 'smooth',
+                     })
+                  }
                   return Pages.EXERCISES
                })
             }}
@@ -35,7 +41,12 @@ const Menu = ({
                   if (prev === Pages.WORKOUTS) {
                      setActiveWorkout(null)
                   }
-                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                  if (scrollRef.current) {
+                     scrollRef.current.scrollTo({
+                        top: 0,
+                        behavior: 'smooth',
+                     })
+                  }
                   return Pages.WORKOUTS
                })
             }}
@@ -52,7 +63,12 @@ const Menu = ({
             className="flex h-full w-1/3 cursor-pointer items-center justify-center hover:brightness-70 active:brightness-70"
             onClick={(): void => {
                setActivePage(Pages.STATISTICS)
-               window.scrollTo({ top: 0, behavior: 'smooth' })
+               if (scrollRef.current) {
+                  scrollRef.current.scrollTo({
+                     top: 0,
+                     behavior: 'smooth',
+                  })
+               }
             }}
          >
             <svg

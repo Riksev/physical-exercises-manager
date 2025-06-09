@@ -9,14 +9,26 @@ export const Pages = {
 }
 
 export interface IWorkout {
+   readonly _id: string
    date: string
-   exercises: {
+   exercises: IWorkoutExercise[]
+   // Workouts was renamed to exercises in the original code, but keeping it for compatibility
+   workouts?: {
+      _id: string
       exercise_id: string
-      records: IRecord[]
+      reps?: number
+      weight?: number
+      time?: string
    }[]
 }
 
+export interface IWorkoutExercise {
+   exercise_id: string
+   records: IRecord[]
+}
+
 export interface IRecord {
+   readonly _id: string
    reps?: number
    weight?: number
    time?: string
@@ -69,6 +81,7 @@ export interface IMenuProps {
    setActivePage: Dispatch<SetStateAction<PageNames>>
    setActiveExercise: Dispatch<SetStateAction<IExercise | null>>
    setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
+   scrollRef: React.RefObject<HTMLDivElement | null>
 }
 
 export interface IExercisesProps {
@@ -92,6 +105,7 @@ export interface IWorkoutsProps {
    workouts: IWorkout[]
    activeWorkout: IWorkout | null
    setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
+   scrollRef: React.RefObject<HTMLDivElement | null>
 }
 
 export interface IListOfWorkoutsProps {
@@ -144,4 +158,26 @@ export interface IAddRecordModalProps {
    selectedExercise: IExercise
    setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
    selectedWorkout: IWorkout
+}
+
+export interface IEditWorkoutModalProps {
+   setIsEditWorkoutModalOpen: Dispatch<SetStateAction<boolean>>
+   setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
+   activeWorkout: IWorkout
+}
+
+export interface IRemoveRecordModalProps {
+   setIsRemoveRecordModalOpen: Dispatch<SetStateAction<boolean>>
+   setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
+   selectedWorkout: IWorkout
+   selectedExercise: IExercise
+   selectedRecord: IRecord
+}
+
+export interface IEditRecordModalProps {
+   setIsEditRecordModalOpen: Dispatch<SetStateAction<boolean>>
+   setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
+   selectedWorkout: IWorkout
+   selectedExercise: IExercise
+   selectedRecord: IRecord
 }

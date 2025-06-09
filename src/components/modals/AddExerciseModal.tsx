@@ -89,7 +89,7 @@ const AddExerciseModal = ({
                   </div>
                   <div className="mb-4 flex flex-row items-center justify-between rounded-md py-2 pr-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
                      <label className="block" htmlFor="weight">
-                        Фіксувати додаткову вагу:
+                        Фіксувати робочу вагу:
                      </label>
                      <input
                         type="checkbox"
