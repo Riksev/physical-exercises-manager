@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { IEditRecordModalProps, IRecord } from '../../interfaces'
+import type { IEditRecordModalProps } from '../../interfaces'
 
 const EditRecordModal = ({
    setIsEditRecordModalOpen,
