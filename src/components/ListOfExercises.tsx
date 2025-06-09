@@ -1,27 +1,34 @@
 import type { IListOfExercisesProps } from '../interfaces'
+import BlockExercise from './BlockExercise'
 
 const ListOfExercises = ({
    exercises,
-   setActiveExercise,
+   clicker,
+   showAll = false,
 }: IListOfExercisesProps) => {
    return (
       <div className="flex w-full flex-col gap-4">
-         {exercises.length === 0 ? (
+         {showAll && (
+            <BlockExercise
+               key={'all'}
+               exercise={{
+                  _id: 'all',
+                  name: 'Всі вправи',
+               }}
+               clicker={clicker}
+            />
+         )}
+         {exercises.map((exercise) => (
+            <BlockExercise
+               key={exercise._id}
+               exercise={exercise}
+               clicker={clicker}
+            />
+         ))}
+         {exercises.length === 0 && !showAll && (
             <p className="text-xl font-semibold text-gray-700">
                Вправ не знайдено.
             </p>
-         ) : (
-            exercises.map((exercise, index) => (
-               <div
-                  key={index}
-                  onClick={() => {
-                     setActiveExercise(exercise)
-                  }}
-                  className="cursor-pointer rounded-lg bg-gradient-to-tr from-fuchsia-500 to-cyan-500 p-4 font-semibold transition-all hover:font-bold hover:drop-shadow-lg hover:saturate-200 active:font-bold active:drop-shadow-lg active:saturate-200"
-               >
-                  <p className="text-xl">{exercise.name}</p>
-               </div>
-            ))
          )}
       </div>
    )

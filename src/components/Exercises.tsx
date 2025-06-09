@@ -9,7 +9,6 @@ const Exercises = ({
    setExercises,
    activeExercise,
    setActiveExercise,
-   setActivePage,
    setWorkouts,
 }: IExercisesProps) => {
    const [isAddExerciseModalOpen, setIsAddExerciseModalOpen] =
@@ -25,7 +24,7 @@ const Exercises = ({
 
    return (
       <>
-         {activeExercise.name === 'none' && (
+         {!activeExercise ? (
             <div className="w-full text-xl font-medium">
                <h2 className="mb-4 w-full border-b-2 border-black/70 pb-4 text-3xl font-bold">
                   Вправи
@@ -47,8 +46,8 @@ const Exercises = ({
                      className="w-full bg-blue-500 px-4 py-2 hover:bg-blue-600 active:bg-blue-600"
                      onClick={() => {
                         setFilteredExercises(
-                           exercises.filter((exercise) =>
-                              exercise.name
+                           exercises.filter((ex) =>
+                              ex.name
                                  .toLowerCase()
                                  .includes(searchName.toLowerCase())
                            )
@@ -69,17 +68,14 @@ const Exercises = ({
                </button>
                <ListOfExercises
                   exercises={filteredExercises}
-                  setActiveExercise={setActiveExercise}
+                  clicker={setActiveExercise}
                />
             </div>
-         )}
-         {activeExercise.name !== 'none' && (
+         ) : (
             <Exercise
                activeExercise={activeExercise}
                setActiveExercise={setActiveExercise}
-               exercises={exercises}
                setExercises={setExercises}
-               setActivePage={setActivePage}
                setWorkouts={setWorkouts}
             />
          )}

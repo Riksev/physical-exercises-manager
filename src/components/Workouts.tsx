@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
 import AddWorkoutModal from './modals/AddWorkoutModal'
-import type { IWorkoutsProps } from '../interfaces'
+import type { IExercise, IWorkoutsProps } from '../interfaces'
 import ListOfWorkouts from './ListOfWorkouts'
+import Workout from './Workout'
+import SelectExerciseModal from './modals/SelectExerciseModal'
 
 const Workouts = ({
    exercises,
-   activeExercise,
    setWorkouts,
    workouts,
+   activeWorkout,
+   setActiveWorkout,
 }: IWorkoutsProps) => {
    const [dateBegin, setDateBegin] = useState<string>(() => {
       const now = new Date()
@@ -23,8 +26,23 @@ const Workouts = ({
       const day = String(now.getDate()).padStart(2, '0')
       return `${year}-${month}-${day}`
    })
-
+   const [selectedExercise, setSelectedExercise] = useState<IExercise | null>(
+      null
+   )
    const [filteredWorkouts, setFilteredWorkouts] = useState(workouts)
+
+   const [errorDateBegin, setErrorDateBegin] = useState<string>('')
+   const [errorDateEnd, setErrorDateEnd] = useState<string>('')
+
+   const [isAddWorkoutModalOpen, setIsAddWorkoutModalOpen] =
+      useState<boolean>(false)
+   const [isSelectExerciseModalOpen, setIsSelectExerciseModalOpen] =
+      useState<boolean>(false)
+
+   const exerciseInteraction = (exercise: IExercise) => {
+      setSelectedExercise(exercise)
+      setIsSelectExerciseModalOpen(false)
+   }
 
    useEffect(() => {
       setFilteredWorkouts(workouts)
@@ -46,17 +64,7 @@ const Workouts = ({
       }
    }, [dateBegin, dateEnd])
 
-   const [errorDateBegin, setErrorDateBegin] = useState<string>('')
-   const [errorDateEnd, setErrorDateEnd] = useState<string>('')
-
-   const [isAddWorkoutModalOpen, setIsAddWorkoutModalOpen] =
-      useState<boolean>(false)
-
-   const [selectedExerciseName, setSelectedExerciseName] = useState<string>(
-      activeExercise.name === 'none' ? 'all' : activeExercise.name
-   )
-
-   return (
+   return !activeWorkout ? (
       <div className="w-full text-xl font-medium">
          <h2 className="mb-4 w-full border-b-2 border-black/70 pb-4 text-3xl font-bold">
             Тренування
@@ -92,79 +100,71 @@ const Workouts = ({
             )}
             <div className="flex w-full flex-row items-center justify-between">
                <label htmlFor="exercise">Вправа:</label>
-               <select
-                  name="exercise"
-                  id="exercise"
-                  className="w-1/2 rounded border border-gray-400 p-2 hover:cursor-pointer hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  value={selectedExerciseName}
-                  onChange={(e) => setSelectedExerciseName(e.target.value)}
-               >
-                  <option value="all">Всі</option>
-                  {exercises.map((exercise) => (
-                     <option
-                        key={exercise._id}
-                        value={exercise.name}
-                        className="hover:cursor-pointer"
+               <div className="relative flex w-full items-center justify-end">
+                  <input
+                     readOnly
+                     type="text"
+                     name="exercise"
+                     id="exercise"
+                     className="w-2/3 rounded border border-gray-400 p-2 pr-10 hover:cursor-pointer hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                     value={selectedExercise?.name || 'Всі вправи'}
+                     onClick={() => setIsSelectExerciseModalOpen(true)}
+                  />
+                  <span className="absolute right-3 text-gray-500 hover:text-gray-700">
+                     <svg
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
                      >
-                        {exercise.name}
-                     </option>
-                  ))}
-               </select>
+                        <path
+                           strokeLinecap="round"
+                           strokeLinejoin="round"
+                           strokeWidth="2"
+                           d="M9 5l7 7-7 7"
+                        />
+                     </svg>
+                  </span>
+               </div>
             </div>
             <button
                className="w-full bg-blue-500 px-4 py-2 hover:bg-blue-600 active:bg-blue-600 disabled:cursor-not-allowed disabled:bg-blue-600 disabled:opacity-50"
                onClick={() => {
                   setFilteredWorkouts(() => {
                      const updatedWorkouts = [...workouts]
-                     const selectedExercise = exercises.find(
-                        (exercise) => exercise.name === selectedExerciseName
-                     ) || {
-                        name: 'none',
-                        _id: 'none',
-                        hasReps: false,
-                        hasWeight: false,
-                        hasTime: false,
-                     }
+                     const exerciseInfo: IExercise | null = selectedExercise
+                        ? exercises.find(
+                             (exercise) =>
+                                exercise.name === selectedExercise.name
+                          ) || null
+                        : null
 
                      return updatedWorkouts.flatMap((workout) => {
-                        if (!workout.exercises) {
-                           return []
-                        }
                         if (
                            workout.date < dateBegin ||
                            workout.date > dateEnd
                         ) {
                            return []
                         }
-                        if (
-                           selectedExerciseName !== 'all' &&
-                           !workout.exercises.some(
-                              (item) =>
-                                 item.exercise_id === selectedExercise._id
-                           )
-                        ) {
-                           return []
-                        }
-                        if (selectedExerciseName === 'all') {
+                        if (!exerciseInfo) {
                            return [workout]
+                        }
+                        const exerciseIndex = workout.exercises.findIndex(
+                           (ex) => ex.exercise_id === exerciseInfo._id
+                        )
+                        if (exerciseIndex === -1) {
+                           return []
                         }
                         return [
                            {
                               ...workout,
-                              exercises: workout.exercises.filter(
-                                 (item) =>
-                                    item.exercise_id === selectedExercise._id
-                              ),
+                              exercises: [workout.exercises[exerciseIndex]],
                            },
                         ]
                      })
                   })
                }}
-               disabled={
-                  errorDateBegin !== '' ||
-                  errorDateEnd !== '' ||
-                  exercises.length === 0
-               }
+               disabled={errorDateBegin !== '' || errorDateEnd !== ''}
             >
                пошук
             </button>
@@ -174,20 +174,36 @@ const Workouts = ({
             onClick={() => {
                setIsAddWorkoutModalOpen(true)
             }}
-            disabled={exercises.length === 0}
          >
             додати
          </button>
-         <ListOfWorkouts workouts={filteredWorkouts} exercises={exercises} />
+         <ListOfWorkouts
+            workouts={filteredWorkouts}
+            exercises={exercises}
+            clicker={setActiveWorkout}
+         />
          {isAddWorkoutModalOpen && (
             <AddWorkoutModal
                setIsAddWorkoutModalOpen={setIsAddWorkoutModalOpen}
-               selectedExerciseName={selectedExerciseName}
-               exercises={exercises}
                setWorkouts={setWorkouts}
+               setActiveWorkout={setActiveWorkout}
+            />
+         )}
+         {isSelectExerciseModalOpen && (
+            <SelectExerciseModal
+               setIsSelectExerciseModalOpen={setIsSelectExerciseModalOpen}
+               clicker={exerciseInteraction}
+               exercises={exercises}
             />
          )}
       </div>
+   ) : (
+      <Workout
+         activeWorkout={activeWorkout}
+         setActiveWorkout={setActiveWorkout}
+         exercises={exercises}
+         setWorkouts={setWorkouts}
+      />
    )
 }
 

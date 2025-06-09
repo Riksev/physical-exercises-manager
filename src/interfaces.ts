@@ -1,109 +1,147 @@
 import type { Dispatch, SetStateAction } from 'react'
 
-interface IWorkout {
-   readonly date: string
+export type PageNames = 'exercises' | 'workouts' | 'statistics'
+
+export const Pages = {
+   EXERCISES: 'exercises' as const,
+   WORKOUTS: 'workouts' as const,
+   STATISTICS: 'statistics' as const,
+}
+
+export interface IWorkout {
+   date: string
    exercises: {
       exercise_id: string
       records: IRecord[]
    }[]
 }
 
-interface IRecord {
+export interface IRecord {
    reps?: number
    weight?: number
    time?: string
 }
 
-interface IExercise {
+export interface IExercise {
    readonly _id: string
    name: string
-   hasReps: boolean
-   hasWeight: boolean
-   hasTime: boolean
+   hasReps?: boolean
+   hasWeight?: boolean
+   hasTime?: boolean
 }
-
-interface IListOfExercisesProps {
+export interface IListOfExercisesProps {
    exercises: IExercise[]
-   setActiveExercise: Dispatch<SetStateAction<IExercise>>
+   clicker?: (exercise: IExercise) => void
+   showAll?: boolean
 }
 
-interface IAddExerciseModalProps {
+export interface IBlockExerciseProps {
+   exercise: IExercise
+   clicker?: (exercise: IExercise) => void
+}
+
+export interface IAddExerciseModalProps {
    setIsAddExerciseModalOpen: Dispatch<SetStateAction<boolean>>
    setExercises: Dispatch<SetStateAction<IExercise[]>>
 }
 
-interface IAddWorkoutModalProps {
+export interface IAddWorkoutModalProps {
    setIsAddWorkoutModalOpen: Dispatch<SetStateAction<boolean>>
-   selectedExerciseName: string
-   exercises: IExercise[]
    setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
+   setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
 }
 
-interface IRemoveExerciseModalProps {
+export interface IRemoveExerciseModalProps {
    setIsRemoveExerciseModalOpen: Dispatch<SetStateAction<boolean>>
    setExercises: Dispatch<SetStateAction<IExercise[]>>
-   exercises: IExercise[]
    activeExercise: IExercise
-   setActiveExercise: Dispatch<SetStateAction<IExercise>>
    setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
 }
 
-interface IEditExerciseModalProps {
+export interface IEditExerciseModalProps {
    setIsEditExerciseModalOpen: Dispatch<SetStateAction<boolean>>
    setExercises: Dispatch<SetStateAction<IExercise[]>>
-   exercises: IExercise[]
    activeExercise: IExercise
-   setActiveExercise: Dispatch<SetStateAction<IExercise>>
 }
 
-interface IMenuProps {
-   activePage: string
-   setActivePage: Dispatch<SetStateAction<string>>
-   setActiveExercise: Dispatch<SetStateAction<IExercise>>
+export interface IMenuProps {
+   activePage: PageNames
+   setActivePage: Dispatch<SetStateAction<PageNames>>
+   setActiveExercise: Dispatch<SetStateAction<IExercise | null>>
+   setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
 }
 
-interface IExercisesProps {
+export interface IExercisesProps {
    exercises: IExercise[]
    setExercises: Dispatch<SetStateAction<IExercise[]>>
-   activeExercise: IExercise
-   setActiveExercise: Dispatch<SetStateAction<IExercise>>
-   setActivePage: Dispatch<SetStateAction<string>>
+   activeExercise: IExercise | null
+   setActiveExercise: Dispatch<SetStateAction<IExercise | null>>
    setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
 }
 
-interface IExerciseProps {
+export interface IExerciseProps {
    activeExercise: IExercise
-   setActiveExercise: Dispatch<SetStateAction<IExercise>>
-   exercises: IExercise[]
    setExercises: Dispatch<SetStateAction<IExercise[]>>
-   setActivePage: Dispatch<SetStateAction<string>>
+   setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
+   setActiveExercise: Dispatch<SetStateAction<IExercise | null>>
+}
+
+export interface IWorkoutsProps {
+   exercises: IExercise[]
+   setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
+   workouts: IWorkout[]
+   activeWorkout: IWorkout | null
+   setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
+}
+
+export interface IListOfWorkoutsProps {
+   workouts: IWorkout[]
+   exercises: IExercise[]
+   clicker: (workout: IWorkout) => void
+}
+
+export interface IBlockWorkoutProps {
+   workout: IWorkout
+   exercises: IExercise[]
+   clicker: (workout: IWorkout) => void
+}
+
+export interface IWorkoutProps {
+   activeWorkout: IWorkout
+   setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
+   exercises: IExercise[]
    setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
 }
 
-interface IWorkoutsProps {
+export interface IAddExerciseToWorkoutModalProps {
+   setAddExerciseToWorkoutModalOpen: Dispatch<SetStateAction<boolean>>
    exercises: IExercise[]
-   activeExercise: IExercise
    setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
-   workouts: IWorkout[]
+   workout: IWorkout
 }
 
-interface IListOfWorkoutsProps {
-   workouts: IWorkout[]
+export interface IRemoveWorkoutModalProps {
+   setIsRemoveWorkoutModalOpen: Dispatch<SetStateAction<boolean>>
+   setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
+   activeWorkout: IWorkout
+}
+
+export interface IRemoveExerciseFromWorkoutModalProps {
+   setIsRemoveExerciseFromWorkoutModalOpen: Dispatch<SetStateAction<boolean>>
+   setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
+   activeWorkout: IWorkout
+   selectedExercise: IExercise
+}
+
+export interface ISelectExerciseModalProps {
+   setIsSelectExerciseModalOpen: Dispatch<SetStateAction<boolean>>
+   clicker: (exercise: IExercise) => void
    exercises: IExercise[]
 }
 
-export type {
-   IWorkout,
-   IExercise,
-   IListOfExercisesProps,
-   IAddExerciseModalProps,
-   IAddWorkoutModalProps,
-   IRemoveExerciseModalProps,
-   IEditExerciseModalProps,
-   IMenuProps,
-   IExercisesProps,
-   IExerciseProps,
-   IWorkoutsProps,
-   IRecord,
-   IListOfWorkoutsProps,
+export interface IAddRecordModalProps {
+   setIsAddRecordModalOpen: Dispatch<SetStateAction<boolean>>
+   selectedExercise: IExercise
+   setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
+   selectedWorkout: IWorkout
 }

@@ -4,23 +4,17 @@ import type { IEditExerciseModalProps } from '../../interfaces'
 const EditExerciseModal = ({
    setIsEditExerciseModalOpen,
    setExercises,
-   exercises,
    activeExercise,
-   setActiveExercise,
 }: IEditExerciseModalProps) => {
-   const exercise = exercises.find(
-      (exercise) => exercise.name === activeExercise.name
-   )
-
-   const [name, setName] = useState<string>(exercise ? exercise.name : '')
+   const [name, setName] = useState<string>(activeExercise.name)
    const [hasReps, setHasReps] = useState<boolean>(
-      exercise ? exercise.hasReps : false
+      activeExercise?.hasReps ?? false
    )
    const [hasWeight, setHasWeight] = useState<boolean>(
-      exercise ? exercise.hasWeight : false
+      activeExercise?.hasWeight ?? false
    )
    const [hasTime, setHasTime] = useState<boolean>(
-      exercise ? exercise.hasTime : false
+      activeExercise?.hasTime ?? false
    )
 
    const [errorName, setErrorName] = useState<string>('')
@@ -44,12 +38,24 @@ const EditExerciseModal = ({
 
    return (
       <div className="fixed top-0 left-0 z-100 flex h-full w-full items-center justify-center bg-black/50">
-         <div className="text-md mx-4 max-h-[90vh] w-full overflow-y-auto rounded-xl border-2 border-black/70 bg-white p-6 font-medium shadow-lg sm:w-2/3 lg:w-1/3">
-            <h2 className="mb-8 w-full border-b-2 border-black/70 pb-4 text-xl font-semibold">
-               Редагування вправи
-            </h2>
-            <form>
-               <div className="w-full">
+         <div className="text-md mx-4 flex max-h-[90vh] w-full flex-col rounded-xl border-2 border-black/70 bg-white p-6 font-medium shadow-lg sm:w-2/3 lg:w-1/3">
+            <div className="sticky top-0 z-120 mb-8 flex items-center justify-between border-b-2 border-black/70 bg-white pb-4">
+               <h2 className="text-xl font-semibold text-wrap">
+                  Редагування вправи
+               </h2>
+               <button
+                  type="button"
+                  aria-label="Close"
+                  onClick={() => {
+                     setIsEditExerciseModalOpen(false)
+                  }}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border-0 bg-white p-0 text-center text-5xl leading-none font-bold text-red-500 hover:bg-red-100"
+               >
+                  <span className="-translate-y-1.5">&times;</span>
+               </button>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+               <div className="w-full pr-4 pl-2">
                   <div className="mb-4">
                      <label className="mb-2 block text-left" htmlFor="name">
                         Назва вправи
@@ -57,7 +63,7 @@ const EditExerciseModal = ({
                      <input
                         type="text"
                         id="name"
-                        className="w-full rounded border border-gray-500 p-2 hover:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        className="mb-2 w-full rounded border border-gray-500 p-2 hover:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         placeholder="Введіть назву вправи"
                         value={name}
                         onChange={(e) => {
@@ -78,7 +84,7 @@ const EditExerciseModal = ({
                         </p>
                      )}
                   </div>
-                  <div className="mb-4 flex flex-row items-center justify-between rounded-md p-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
+                  <div className="mb-4 flex flex-row items-center justify-between rounded-md py-2 pr-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
                      <label className="block" htmlFor="reps">
                         Фікусувати кількість повторень:
                      </label>
@@ -89,7 +95,7 @@ const EditExerciseModal = ({
                         onChange={(e) => setHasReps(e.target.checked)}
                      />
                   </div>
-                  <div className="mb-4 flex flex-row items-center justify-between rounded-md p-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
+                  <div className="mb-4 flex flex-row items-center justify-between rounded-md py-2 pr-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
                      <label className="block" htmlFor="weight">
                         Фіксувати додаткову вагу:
                      </label>
@@ -100,7 +106,7 @@ const EditExerciseModal = ({
                         onChange={(e) => setHasWeight(e.target.checked)}
                      />
                   </div>
-                  <div className="mb-4 flex flex-row items-center justify-between rounded-md p-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
+                  <div className="mb-4 flex flex-row items-center justify-between rounded-md py-2 pr-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
                      <label className="block" htmlFor="time">
                         Фіксувати час виконання:
                      </label>
@@ -123,22 +129,20 @@ const EditExerciseModal = ({
                      type="button"
                      className="w-full bg-yellow-500 px-4 py-2 hover:bg-yellow-600 active:bg-yellow-600 disabled:cursor-not-allowed disabled:bg-yellow-600 disabled:opacity-50"
                      onClick={() => {
-                        const newExercises = exercises.map((exercise) => {
-                           if (exercise.name === activeExercise.name) {
-                              const newExercise = {
-                                 ...exercise,
-                                 name,
-                                 hasReps,
-                                 hasWeight,
-                                 hasTime,
-                              }
-                              setActiveExercise(newExercise)
-                              return newExercise
+                        setExercises((prev) => {
+                           const updated = [...prev]
+                           const exerciseIndex = updated.findIndex(
+                              (ex) => ex._id === activeExercise._id
+                           )
+                           if (exerciseIndex !== -1) {
+                              updated[exerciseIndex].name = name
+                              updated[exerciseIndex].hasReps = hasReps
+                              updated[exerciseIndex].hasWeight = hasWeight
+                              updated[exerciseIndex].hasTime = hasTime
                            }
-                           return exercise
+                           setIsEditExerciseModalOpen(false)
+                           return updated
                         })
-                        setExercises(newExercises)
-                        setIsEditExerciseModalOpen(false)
                      }}
                      disabled={
                         errorName !== '' || (!hasReps && !hasWeight && !hasTime)
@@ -146,17 +150,8 @@ const EditExerciseModal = ({
                   >
                      редагувати
                   </button>
-                  <button
-                     type="button"
-                     className="w-full bg-gray-300 px-4 py-2 hover:bg-gray-400 active:bg-gray-400"
-                     onClick={() => {
-                        setIsEditExerciseModalOpen(false)
-                     }}
-                  >
-                     скасувати
-                  </button>
                </div>
-            </form>
+            </div>
          </div>
       </div>
    )

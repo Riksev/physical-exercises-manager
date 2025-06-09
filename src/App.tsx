@@ -2,22 +2,21 @@ import { useEffect, useState } from 'react'
 import Menu from './components/Menu'
 import Workouts from './components/Workouts'
 import Exercises from './components/Exercises'
-import type { IExercise, IWorkout } from './interfaces'
+import {
+   Pages,
+   type IExercise,
+   type IWorkout,
+   type PageNames,
+} from './interfaces'
 import Statistics from './components/Statistics'
-import pages from './utilities'
 
 function App() {
    const [exercises, setExercises] = useState<IExercise[]>([])
    const [workouts, setWorkouts] = useState<IWorkout[]>([])
 
-   const [activePage, setActivePage] = useState<string>(pages.EXERCISES)
-   const [activeExercise, setActiveExercise] = useState<IExercise>({
-      _id: 'none',
-      name: 'none',
-      hasReps: false,
-      hasWeight: false,
-      hasTime: false,
-   })
+   const [activePage, setActivePage] = useState<PageNames>('workouts')
+   const [activeExercise, setActiveExercise] = useState<IExercise | null>(null)
+   const [activeWorkout, setActiveWorkout] = useState<IWorkout | null>(null)
 
    useEffect((): void => {
       const storedExercises = localStorage.getItem('exercises')
@@ -38,32 +37,49 @@ function App() {
       localStorage.setItem('workouts', JSON.stringify(workouts))
    }, [workouts])
 
+   useEffect((): void => {
+      if (activeExercise) {
+         setActiveExercise(
+            exercises.find((ex) => ex._id === activeExercise._id) || null
+         )
+      }
+   }, [activeExercise, exercises])
+
+   useEffect((): void => {
+      if (activeWorkout) {
+         setActiveWorkout(
+            workouts.find((w) => w.date === activeWorkout.date) || null
+         )
+      }
+   }, [activeWorkout, workouts])
+
    return (
       <div className="flex min-h-screen w-full flex-col items-center">
          <div className="flex h-screen min-h-screen w-full flex-col items-center gap-4 overflow-y-scroll bg-gradient-to-br from-fuchsia-200 to-cyan-200 p-4 pb-20 text-center md:w-3/4 lg:w-1/2">
-            {activePage === pages.EXERCISES && (
+            {activePage === Pages.EXERCISES && (
                <Exercises
                   exercises={exercises}
                   setExercises={setExercises}
                   activeExercise={activeExercise}
                   setActiveExercise={setActiveExercise}
-                  setActivePage={setActivePage}
                   setWorkouts={setWorkouts}
                />
             )}
-            {activePage === pages.WORKOUTS && (
+            {activePage === Pages.WORKOUTS && (
                <Workouts
                   exercises={exercises}
-                  activeExercise={activeExercise}
                   setWorkouts={setWorkouts}
                   workouts={workouts}
+                  activeWorkout={activeWorkout}
+                  setActiveWorkout={setActiveWorkout}
                />
             )}
-            {activePage === pages.STATISTICS && <Statistics />}
+            {activePage === Pages.STATISTICS && <Statistics />}
             <Menu
                activePage={activePage}
                setActivePage={setActivePage}
                setActiveExercise={setActiveExercise}
+               setActiveWorkout={setActiveWorkout}
             />
          </div>
       </div>
