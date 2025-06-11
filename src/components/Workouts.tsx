@@ -189,6 +189,7 @@ const Workouts = ({
             exercises={exercises}
             clicker={setActiveWorkout}
          />
+         <div className="mt-4"></div>
          {isAddWorkoutModalOpen && (
             <AddWorkoutModal
                setIsAddWorkoutModalOpen={setIsAddWorkoutModalOpen}
@@ -205,12 +206,15 @@ const Workouts = ({
          )}
       </div>
    ) : (
-      <Workout
-         activeWorkout={activeWorkout}
-         setActiveWorkout={setActiveWorkout}
-         exercises={exercises}
-         setWorkouts={setWorkouts}
-      />
+      <>
+         <Workout
+            activeWorkout={activeWorkout}
+            setActiveWorkout={setActiveWorkout}
+            exercises={exercises}
+            setWorkouts={setWorkouts}
+         />
+         <div className="mt-4"></div>
+      </>
    )
 }
 

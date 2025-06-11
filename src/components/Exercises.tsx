@@ -70,14 +70,18 @@ const Exercises = ({
                   exercises={filteredExercises}
                   clicker={setActiveExercise}
                />
+               <div className="mt-8"></div>
             </div>
          ) : (
-            <Exercise
-               activeExercise={activeExercise}
-               setActiveExercise={setActiveExercise}
-               setExercises={setExercises}
-               setWorkouts={setWorkouts}
-            />
+            <>
+               <Exercise
+                  activeExercise={activeExercise}
+                  setActiveExercise={setActiveExercise}
+                  setExercises={setExercises}
+                  setWorkouts={setWorkouts}
+               />
+               <div className="mt-4"></div>
+            </>
          )}
          {isAddExerciseModalOpen && (
             <AddExerciseModal

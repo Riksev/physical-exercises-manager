@@ -181,3 +181,9 @@ export interface IEditRecordModalProps {
    selectedExercise: IExercise
    selectedRecord: IRecord
 }
+
+export interface IOtherProps {
+   exercises: IExercise[]
+   workouts: IWorkout[]
+   setData: (exercises: IExercise[], workouts: IWorkout[]) => void
+}

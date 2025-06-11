@@ -9,7 +9,7 @@ import {
    type IWorkout,
    type PageNames,
 } from './interfaces'
-import Statistics from './components/Statistics'
+import Other from './components/Other'
 
 function App() {
    const [exercises, setExercises] = useState<IExercise[]>([])
@@ -21,6 +21,70 @@ function App() {
 
    const scrollRef = useRef<HTMLDivElement>(null)
 
+   const setWorkoutsCompatible = (arr: IWorkout[]) => {
+      setWorkouts(() => {
+         return arr.map((workout, index) => {
+            if (!workout.exercises) {
+               workout.exercises = []
+            } else {
+               workout.exercises = workout.exercises.map((ex) => {
+                  ex.records = ex.records.map((rec, indexInner) => {
+                     if (!rec._id) {
+                        return {
+                           ...rec,
+                           _id: (new Date().getTime() + indexInner).toString(),
+                        }
+                     }
+                     return rec
+                  })
+                  return ex
+               })
+            }
+            if (workout.workouts) {
+               workout.workouts.forEach((w) => {
+                  const newRecord: IRecord = {
+                     _id: (new Date().getTime() + index).toString(),
+                     ...(w.reps && { reps: w.reps }),
+                     ...(w.weight && { weight: w.weight }),
+                     ...(w.time && { time: w.time }),
+                  }
+
+                  if (
+                     exercises.findIndex((ex) => ex._id === w.exercise_id) !==
+                     -1
+                  ) {
+                     const exerciseId = workout.exercises.findIndex(
+                        (ex) => ex.exercise_id === w.exercise_id
+                     )
+
+                     if (exerciseId === -1) {
+                        workout.exercises.push({
+                           exercise_id: w.exercise_id,
+                           records: [newRecord],
+                        })
+                     } else {
+                        workout.exercises[exerciseId].records.push(newRecord)
+                     }
+                  }
+               })
+            }
+            if (workout._id) {
+               return workout
+            }
+            return {
+               _id: (new Date().getTime() + index).toString(),
+               date: workout.date,
+               exercises: workout.exercises,
+            }
+         })
+      })
+   }
+
+   const setData = (exercises: IExercise[], workouts: IWorkout[]) => {
+      setExercises(exercises)
+      setWorkoutsCompatible(workouts)
+   }
+
    useEffect((): void => {
       const storedExercises = localStorage.getItem('exercises')
       if (storedExercises) {
@@ -28,66 +92,7 @@ function App() {
       }
       const storedWorkouts = localStorage.getItem('workouts')
       if (storedWorkouts) {
-         setWorkouts(() => {
-            const updated = JSON.parse(storedWorkouts) as IWorkout[]
-            return updated.map((workout, index) => {
-               if (!workout.exercises) {
-                  workout.exercises = []
-               } else {
-                  workout.exercises = workout.exercises.map((ex) => {
-                     ex.records = ex.records.map((rec, indexInner) => {
-                        if (!rec._id) {
-                           return {
-                              ...rec,
-                              _id: (
-                                 new Date().getTime() + indexInner
-                              ).toString(),
-                           }
-                        }
-                        return rec
-                     })
-                     return ex
-                  })
-               }
-               if (workout.workouts) {
-                  workout.workouts.forEach((w) => {
-                     const newRecord: IRecord = {
-                        _id: (new Date().getTime() + index).toString(),
-                        ...(w.reps && { reps: w.reps }),
-                        ...(w.weight && { weight: w.weight }),
-                        ...(w.time && { time: w.time }),
-                     }
-
-                     if (
-                        exercises.findIndex(
-                           (ex) => ex._id === w.exercise_id
-                        ) !== -1
-                     ) {
-                        const exerciseId = workout.exercises.findIndex(
-                           (ex) => ex.exercise_id === w.exercise_id
-                        )
-
-                        if (exerciseId === -1) {
-                           workout.exercises.push({
-                              exercise_id: w.exercise_id,
-                              records: [newRecord],
-                           })
-                        } else {
-                           workout.exercises[exerciseId].records.push(newRecord)
-                        }
-                     }
-                  })
-               }
-               if (workout._id) {
-                  return workout
-               }
-               return {
-                  _id: (new Date().getTime() + index).toString(),
-                  date: workout.date,
-                  exercises: workout.exercises,
-               }
-            })
-         })
+         setWorkoutsCompatible(JSON.parse(storedWorkouts) as IWorkout[])
       }
    }, [])
 
@@ -140,7 +145,13 @@ function App() {
                   scrollRef={scrollRef}
                />
             )}
-            {activePage === Pages.STATISTICS && <Statistics />}
+            {activePage === Pages.STATISTICS && (
+               <Other
+                  exercises={exercises}
+                  workouts={workouts}
+                  setData={setData}
+               />
+            )}
             <Menu
                activePage={activePage}
                setActivePage={setActivePage}
