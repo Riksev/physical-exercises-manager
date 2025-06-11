@@ -80,7 +80,7 @@ const Exercises = ({
                   setExercises={setExercises}
                   setWorkouts={setWorkouts}
                />
-               <div className="mt-4"></div>
+               <div className="mt-8"></div>
             </>
          )}
          {isAddExerciseModalOpen && (

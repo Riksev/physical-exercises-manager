@@ -25,10 +25,7 @@ const BlockWorkout = ({ workout, exercises, clicker }: IBlockWorkoutProps) => {
                exercises.find((ex) => ex._id === wex.exercise_id) || null
             if (exerciseInfo) {
                return (
-                  <details
-                     key={exerciseInfo._id}
-                     className="mb-2 w-full cursor-pointer rounded-lg border-2 border-gray-400 bg-gray-300 p-2 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:bg-gray-400/50 hover:shadow-xl active:border-gray-500 active:bg-gray-400/50"
-                  >
+                  <details key={exerciseInfo._id} className="details">
                      <summary>{exerciseInfo.name}</summary>
                      {wex.records.length === 0 ? (
                         <p className="mt-4 block text-left">Записи відсутні.</p>

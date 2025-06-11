@@ -16,6 +16,10 @@
    input[type='checkbox'] {
       @apply scale-200 cursor-pointer rounded;
    }
+
+   .details {
+      @apply mb-2 w-full cursor-pointer rounded-lg border-2 border-gray-400 bg-gray-300 p-2 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:bg-gray-400/50 hover:shadow-xl active:border-gray-500 active:bg-gray-400/50;
+   }
 }
 
 /* [{"date":"2025-06-06","workouts":[{"_id":"1749253358463","exercise_id":"1749252961405","reps":8,"weight":100},{"_id":"1749253369196","exercise_id":"1749252981120","time":"00:30:00"}]},{"date":"2025-06-07","workouts":[{"_id":"1749253323160","exercise_id":"1749252961405","reps":10,"weight":100},{"_id":"1749253331863","exercise_id":"1749252972471","reps":4,"weight":200},{"_id":"1749253339678","exercise_id":"1749252972471","reps":3,"weight":180}]}] */

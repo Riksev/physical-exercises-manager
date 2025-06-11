@@ -8,9 +8,13 @@ const EditRecordModal = ({
    selectedExercise,
    selectedRecord,
 }: IEditRecordModalProps) => {
-   const [reps, setReps] = useState<string>('5')
-   const [weight, setWeight] = useState<string>('20')
-   const [time, setTime] = useState<string>('')
+   const [reps, setReps] = useState<string>(
+      selectedRecord.reps?.toString() || '5'
+   )
+   const [weight, setWeight] = useState<string>(
+      selectedRecord.weight?.toString() || '20'
+   )
+   const [time, setTime] = useState<string>(selectedRecord.time || '')
 
    const [errorReps, setErrorReps] = useState<string>('')
    const [errorWeight, setErrorWeight] = useState<string>('')

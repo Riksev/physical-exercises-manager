@@ -85,7 +85,7 @@ const Workout = ({
                               exerciseInfo && (
                                  <details
                                     key={index}
-                                    className="mb-2 w-full cursor-pointer rounded-lg border-2 border-gray-400 bg-gray-300 p-2 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:bg-gray-400/50 hover:shadow-xl active:border-gray-500 active:bg-gray-400/50"
+                                    className="details"
                                     onClick={() => {
                                        setSelectedExercise(exerciseInfo)
                                     }}
@@ -146,20 +146,23 @@ const Workout = ({
                                                          </p>
                                                          {exerciseInfo?.hasReps && (
                                                             <p className="flex-1 overflow-x-auto border text-center">
-                                                               {record?.reps ??
-                                                                  '-'}
+                                                               {record.reps
+                                                                  ? record.reps
+                                                                  : '-'}
                                                             </p>
                                                          )}
                                                          {exerciseInfo?.hasWeight && (
                                                             <p className="flex-1 overflow-x-auto border text-center">
-                                                               {record?.weight ??
-                                                                  '-'}
+                                                               {record.weight
+                                                                  ? record.weight
+                                                                  : '-'}
                                                             </p>
                                                          )}
                                                          {exerciseInfo?.hasTime && (
                                                             <p className="flex-1 overflow-x-auto border text-center">
-                                                               {record?.time ??
-                                                                  '-'}
+                                                               {record.time
+                                                                  ? record.time
+                                                                  : '-'}
                                                             </p>
                                                          )}
                                                       </div>
