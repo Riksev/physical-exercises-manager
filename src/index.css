@@ -6,7 +6,7 @@
    }
 
    button {
-      @apply cursor-pointer rounded-lg text-lg font-bold uppercase transition-all delay-100 disabled:opacity-50;
+      @apply rounded-lg text-lg font-bold uppercase transition-all delay-100 disabled:opacity-50;
    }
 
    .button-remove {
@@ -38,7 +38,7 @@
 
    input,
    button {
-      @apply transition-all;
+      @apply cursor-pointer transition-all;
    }
 
    input[type='checkbox'] {
