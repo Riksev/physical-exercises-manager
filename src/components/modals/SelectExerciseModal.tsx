@@ -45,7 +45,7 @@ const SelectExerciseModal = ({
                         }}
                      />
                      <button
-                        className="w-full bg-blue-500 px-4 py-2 hover:bg-blue-600 active:bg-blue-600"
+                        className="button-action button-modal"
                         onClick={() => {
                            setFilteredExercises(
                               exercises.filter((exercise) =>
@@ -59,7 +59,7 @@ const SelectExerciseModal = ({
                         пошук
                      </button>
                   </div>
-                  <h2 className="mb-4 w-full border-b-2 border-black/70 pb-4 text-xl font-semibold"></h2>
+                  <h2 className="horizontal-line"></h2>
                   <ListOfExercises
                      exercises={filteredExercises}
                      clicker={clicker}

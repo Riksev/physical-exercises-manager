@@ -4,8 +4,36 @@
    html {
       @apply overflow-y-hidden;
    }
+
    button {
-      @apply cursor-pointer rounded-lg text-lg font-bold uppercase transition-all delay-100;
+      @apply cursor-pointer rounded-lg text-lg font-bold uppercase transition-all delay-100 disabled:opacity-50;
+   }
+
+   .button-remove {
+      @apply bg-red-500 hover:bg-red-800 active:bg-red-800 disabled:cursor-not-allowed disabled:bg-red-800;
+   }
+
+   .button-edit {
+      @apply bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-600 disabled:cursor-not-allowed disabled:bg-yellow-600;
+   }
+   .button-add {
+      @apply bg-green-500 hover:bg-green-600 active:bg-green-600 disabled:cursor-not-allowed disabled:bg-green-600;
+   }
+
+   .button-action {
+      @apply bg-blue-500 hover:bg-blue-600 active:bg-blue-600 disabled:cursor-not-allowed disabled:bg-blue-600;
+   }
+
+   .button-modal {
+      @apply w-full px-4 py-2;
+   }
+
+   .button-full {
+      @apply w-full p-4;
+   }
+
+   .horizontal-line {
+      @apply mb-4 w-full border-b-2 border-black/70 pb-4 text-3xl font-bold;
    }
 
    input,

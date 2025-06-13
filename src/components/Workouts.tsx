@@ -73,9 +73,7 @@ const Workouts = ({
 
    return !activeWorkout ? (
       <div className="w-full text-xl font-medium">
-         <h2 className="mb-4 w-full border-b-2 border-black/70 pb-4 text-3xl font-bold">
-            Тренування
-         </h2>
+         <h2 className="horizontal-line">Тренування</h2>
          <div className="mb-4 flex w-full flex-col items-center justify-between gap-4 border-b-2 border-black/70 pb-4">
             <div className="flex w-full flex-row items-center justify-between">
                <label htmlFor="dateBegin">Від:</label>
@@ -177,7 +175,7 @@ const Workouts = ({
             </button>
          </div>
          <button
-            className="w-full bg-green-500 p-4 hover:bg-green-600 active:bg-green-600 disabled:cursor-not-allowed disabled:bg-green-600 disabled:opacity-50"
+            className="button-add w-full p-4"
             onClick={() => {
                setIsAddWorkoutModalOpen(true)
             }}

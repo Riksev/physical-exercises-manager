@@ -12,7 +12,7 @@ const BlockWorkout = ({ workout, exercises, clicker }: IBlockWorkoutProps) => {
                   .replace(/^./, (c) => c.toUpperCase())}
             </p>
             <button
-               className="w-1/3 bg-yellow-500 px-4 py-2 text-center text-sm hover:bg-yellow-600 active:bg-yellow-600 disabled:cursor-not-allowed disabled:bg-yellow-600 disabled:opacity-50"
+               className="button-edit w-1/3 px-4 py-2 text-center text-sm"
                onClick={() => {
                   clicker(workout)
                }}

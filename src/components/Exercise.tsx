@@ -16,12 +16,10 @@ const Exercise = ({
 
    return (
       <>
-         <h2 className="mb-2 w-full border-b-2 border-black/70 pb-4 text-3xl font-bold">
-            {activeExercise?.name}
-         </h2>
+         <h2 className="horizontal-line">{activeExercise?.name}</h2>
          <div className="flex w-full flex-col items-center gap-2">
             <button
-               className="w-full bg-yellow-500 p-4 hover:bg-yellow-600 active:bg-yellow-600 disabled:cursor-not-allowed disabled:bg-yellow-600"
+               className="button-edit button-full"
                onClick={() => {
                   setIsEditExerciseModalOpen(true)
                }}
@@ -29,7 +27,7 @@ const Exercise = ({
                редагувати
             </button>
             <button
-               className="w-full bg-red-500 p-4 hover:bg-red-800 active:bg-red-800 disabled:cursor-not-allowed disabled:bg-red-800"
+               className="button-remove button-full"
                onClick={() => {
                   setIsRemoveExerciseModalOpen(true)
                }}
@@ -37,7 +35,7 @@ const Exercise = ({
                видалити
             </button>
             <button
-               className="w-full bg-blue-500 p-4 hover:bg-blue-600 active:bg-blue-600"
+               className="button-action button-full"
                onClick={() => {
                   setActiveExercise(null)
                }}

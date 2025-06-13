@@ -27,7 +27,7 @@ const DataRemoveModal = ({
 					</div> */}
             <button
                type="button"
-               className="bg-red-500 px-4 py-2 hover:bg-red-800 active:bg-red-800 disabled:cursor-not-allowed disabled:bg-red-800"
+               className="button-remove button-modal"
                onClick={() => {
                   setData([], [])
                   setIsDataRemoveModalOpen(false)

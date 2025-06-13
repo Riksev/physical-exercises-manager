@@ -24,7 +24,7 @@ const DataManager = ({
             </summary>
             <div className="mt-4 flex flex-col gap-4 py-2">
                <button
-                  className="w-full bg-blue-500 p-4 hover:bg-blue-600 active:bg-blue-600 disabled:cursor-not-allowed disabled:bg-blue-600 disabled:opacity-50"
+                  className="button-action button-full"
                   onClick={() => {
                      setIsDataExportModalOpen(true)
                   }}
@@ -32,7 +32,7 @@ const DataManager = ({
                   експорт даних
                </button>
                <button
-                  className="w-full bg-blue-500 p-4 hover:bg-blue-600 active:bg-blue-600 disabled:cursor-not-allowed disabled:bg-blue-600 disabled:opacity-50"
+                  className="button-action button-full"
                   onClick={() => {
                      setIsDataImportModalOpen(true)
                   }}
@@ -40,7 +40,7 @@ const DataManager = ({
                   імпорт даних
                </button>
                <button
-                  className="w-full bg-red-500 p-4 hover:bg-red-800 active:bg-red-800 disabled:cursor-not-allowed disabled:bg-red-800 disabled:opacity-50"
+                  className="button-remove button-full"
                   onClick={() => {
                      setIsDataRemoveModalOpen(true)
                   }}

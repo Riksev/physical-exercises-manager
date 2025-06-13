@@ -84,7 +84,7 @@ const DataImportModal = ({
                   <div className="flex flex-col gap-4">
                      <label
                         htmlFor="json-upload"
-                        className="focus:ring-opacity-75 active::bg-green-600 cursor-pointer rounded-lg bg-green-500 px-6 py-3 font-bold uppercase shadow-md transition-all hover:bg-green-600 focus:ring-green-600 focus:outline-none not-only:focus:ring-2"
+                        className="focus:ring-opacity-75 button-add button-modal cursor-pointer rounded-lg font-bold uppercase shadow-md transition-all focus:ring-green-600 focus:outline-none not-only:focus:ring-2"
                      >
                         Обрати JSON файл для імпорту
                      </label>

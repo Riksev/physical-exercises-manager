@@ -71,11 +71,11 @@ const AddWorkoutModal = ({
                      )}
                   </div>
                </div>
-               <h2 className="mb-4 w-full border-b-2 border-black/70 pb-4 text-xl font-semibold"></h2>
+               <h2 className="horizontal-line"></h2>
                <div className="flex flex-col gap-4">
                   <button
                      type="button"
-                     className="w-full bg-green-500 px-4 py-2 hover:bg-green-600 active:bg-green-600 disabled:cursor-not-allowed disabled:bg-green-600 disabled:opacity-50"
+                     className="button-add button-modal"
                      onClick={() => {
                         setWorkouts((prev) => {
                            const newWorkout: IWorkout = {

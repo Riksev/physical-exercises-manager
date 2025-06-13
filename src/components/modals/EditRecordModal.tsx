@@ -176,10 +176,10 @@ const EditRecordModal = ({
                      )}
                   </div>
                </div>
-               <h2 className="mb-4 w-full border-b-2 border-black/70 pb-4 text-xl font-semibold"></h2>
+               <h2 className="horizontal-line"></h2>
                <button
                   type="button"
-                  className="w-full bg-yellow-500 px-4 py-2 hover:bg-yellow-600 active:bg-yellow-600 disabled:cursor-not-allowed disabled:bg-yellow-600 disabled:opacity-50"
+                  className="button-edit button-modal"
                   onClick={() => {
                      setWorkouts((prev) => {
                         const updated = [...prev]

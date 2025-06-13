@@ -52,7 +52,7 @@ const Workout = ({
       <>
          <div className="flex w-full flex-col items-center gap-4">
             <div className="mb-2 flex w-full flex-row items-center justify-between">
-               <h2 className="w-full border-b-2 border-black/70 pb-4 text-3xl font-bold">
+               <h2 className="horizontal-line">
                   {activeWorkout?.date}
                   {' - '}
                   {activeWorkout?.date &&
@@ -94,7 +94,7 @@ const Workout = ({
                                        <div className="flex w-full items-center justify-between">
                                           {exerciseInfo.name}
                                           <button
-                                             className="bg-red-500 px-6 py-2 text-sm hover:bg-red-800 active:bg-red-800 disabled:cursor-not-allowed disabled:bg-red-800"
+                                             className="button-remove px-6 py-2 text-sm"
                                              onClick={() => {
                                                 setIsRemoveExerciseFromWorkoutModalOpen(
                                                    true
@@ -169,7 +169,7 @@ const Workout = ({
                                                    </summary>
                                                    <div className="flex w-full flex-row items-center justify-between">
                                                       <button
-                                                         className="w-full rounded-none bg-yellow-500 px-4 py-1 hover:bg-yellow-600 active:bg-yellow-600 disabled:cursor-not-allowed disabled:bg-yellow-600"
+                                                         className="button-edit w-full rounded-none px-4 py-1"
                                                          onClick={() => {
                                                             setIsEditRecordModalOpen(
                                                                true
@@ -179,7 +179,7 @@ const Workout = ({
                                                          редагувати
                                                       </button>
                                                       <button
-                                                         className="w-full rounded-none bg-red-500 px-4 py-1 hover:bg-red-800 active:bg-red-800 disabled:cursor-not-allowed disabled:bg-red-800"
+                                                         className="button-remove w-full rounded-none px-4 py-1"
                                                          onClick={() => {
                                                             setIsRemoveRecordModalOpen(
                                                                true
@@ -195,7 +195,7 @@ const Workout = ({
                                        </div>
                                     )}
                                     <button
-                                       className="w-full bg-green-500 px-4 py-2 hover:bg-green-600 active:bg-green-600 disabled:cursor-not-allowed disabled:bg-green-600 disabled:opacity-50"
+                                       className="button-add w-full px-4 py-2"
                                        onClick={() => {
                                           setIsAddRecordModalOpen(true)
                                        }}
@@ -208,7 +208,7 @@ const Workout = ({
                         })
                      )}
                      <button
-                        className="w-full bg-green-500 p-4 hover:bg-green-600 active:bg-green-600 disabled:cursor-not-allowed disabled:bg-green-600 disabled:opacity-50"
+                        className="button-add w-full p-4"
                         onClick={() => {
                            setIsAddExerciseToWorkoutModalOpen(true)
                         }}
@@ -220,7 +220,7 @@ const Workout = ({
                )}
             </div>
             <button
-               className="w-full bg-yellow-500 p-4 hover:bg-yellow-600 active:bg-yellow-600 disabled:cursor-not-allowed disabled:bg-yellow-600 disabled:opacity-50"
+               className="button-edit w-full p-4"
                onClick={() => {
                   setIsEditWorkoutModalOpen(true)
                }}
@@ -228,7 +228,7 @@ const Workout = ({
                редагувати тренування
             </button>
             <button
-               className="w-full bg-red-500 p-4 hover:bg-red-800 active:bg-red-800 disabled:cursor-not-allowed disabled:bg-red-800"
+               className="button-remove w-full p-4"
                onClick={() => {
                   setIsRemoveWorkoutModalOpen(true)
                }}
@@ -236,7 +236,7 @@ const Workout = ({
                видалити тренування
             </button>
             <button
-               className="w-full bg-blue-500 p-4 hover:bg-blue-600 active:bg-blue-600"
+               className="button-action w-full p-4"
                onClick={() => {
                   setActiveWorkout(null)
                }}

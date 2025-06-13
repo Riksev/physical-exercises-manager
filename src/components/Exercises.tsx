@@ -26,9 +26,7 @@ const Exercises = ({
       <>
          {!activeExercise ? (
             <div className="w-full text-xl font-medium">
-               <h2 className="mb-4 w-full border-b-2 border-black/70 pb-4 text-3xl font-bold">
-                  Вправи
-               </h2>
+               <h2 className="horizontal-line">Вправи</h2>
                <div className="flex flex-col items-start gap-4">
                   <label htmlFor="searchName">Пошук за назвою:</label>
                   <input
@@ -43,7 +41,7 @@ const Exercises = ({
                      }}
                   />
                   <button
-                     className="w-full bg-blue-500 px-4 py-2 hover:bg-blue-600 active:bg-blue-600"
+                     className="button-action button-modal"
                      onClick={() => {
                         setFilteredExercises(
                            exercises.filter((ex) =>
@@ -53,13 +51,14 @@ const Exercises = ({
                            )
                         )
                      }}
+                     disabled={exercises.length === 0}
                   >
                      пошук
                   </button>
                </div>
                <h2 className="mb-4 w-full border-b-2 border-black/70 pb-4 text-xl font-semibold"></h2>
                <button
-                  className="mb-4 w-full bg-green-500 p-4 hover:bg-green-600 active:bg-green-600"
+                  className="button-add button-full mb-4"
                   onClick={() => {
                      setIsAddExerciseModalOpen(true)
                   }}
