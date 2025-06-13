@@ -56,7 +56,7 @@ const AddExerciseModal = ({
                      <input
                         type="text"
                         id="name"
-                        className="mb-2 w-full rounded border border-gray-500 p-2 hover:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        className="mb-2"
                         placeholder="Введіть назву вправи"
                         autoComplete="off"
                         value={name}

@@ -80,6 +80,7 @@ const Workouts = ({
                <input
                   type="date"
                   id="dateBegin"
+                  className="w-1/2"
                   value={dateBegin}
                   onChange={(e) => {
                      setDateBegin(e.target.value)
@@ -94,6 +95,7 @@ const Workouts = ({
                <input
                   type="date"
                   id="dateEnd"
+                  className="w-1/2"
                   value={dateEnd}
                   onChange={(e) => {
                      setDateEnd(e.target.value)
@@ -109,9 +111,8 @@ const Workouts = ({
                   <input
                      readOnly
                      type="text"
-                     name="exercise"
                      id="exercise"
-                     className="w-2/3 rounded border border-gray-400 p-2 pr-10 hover:cursor-pointer hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                     className="w-2/3"
                      value={selectedExercise?.name || 'Всі вправи'}
                      onClick={() => setIsSelectExerciseModalOpen(true)}
                   />

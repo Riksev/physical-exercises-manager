@@ -59,7 +59,6 @@ const EditWorkoutModal = ({
                      <input
                         type="date"
                         id="date"
-                        className="w-full rounded border border-gray-300 p-2 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         value={date}
                         onChange={(e) => {
                            setDate(e.target.value)

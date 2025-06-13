@@ -5,7 +5,7 @@ import DataManager from './DataManager'
 const Other = ({ exercises, workouts, setData }: IOtherProps) => {
    return (
       <>
-         <h2 className="horizontal-line text-3xl font-bold">Інше</h2>
+         <h2 className="horizontal-line">Інше</h2>
          <DataManager
             exercises={exercises}
             workouts={workouts}

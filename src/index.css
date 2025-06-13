@@ -41,6 +41,14 @@
       @apply cursor-pointer transition-all;
    }
 
+   input[type='text'],
+   input[type='number'],
+   input[type='email'],
+   input[type='password'],
+   input[type='date'] {
+      @apply w-full rounded border border-gray-500 p-2 hover:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none;
+   }
+
    input[type='checkbox'] {
       @apply scale-200 cursor-pointer rounded;
    }

@@ -80,7 +80,6 @@ const EditRecordModal = ({
                               step="any"
                               id="reps"
                               min="0"
-                              className="w-full rounded border border-gray-500 p-2 hover:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                               placeholder="Введіть кількість повторень"
                               value={reps}
                               onChange={(e) => {
@@ -117,8 +116,7 @@ const EditRecordModal = ({
                               step="any"
                               id="weight"
                               min="0"
-                              className="w-full rounded border border-gray-500 p-2 hover:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                              placeholder="Введіть додаткову вагу"
+                              placeholder="Введіть робочу вагу"
                               value={weight}
                               onChange={(e) => setWeight(e.target.value)}
                               onKeyDown={(e) => {
@@ -150,7 +148,6 @@ const EditRecordModal = ({
                            <input
                               type="text"
                               id="time"
-                              className="w-full rounded border border-gray-500 p-2 hover:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                               placeholder="Введіть час виконання HH:MM:SS"
                               value={time}
                               onChange={(e) => {

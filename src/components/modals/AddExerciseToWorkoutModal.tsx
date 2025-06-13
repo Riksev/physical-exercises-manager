@@ -67,7 +67,6 @@ const AddExerciseToWorkoutModal = ({
                      <input
                         type="text"
                         id="searchName"
-                        className="w-full rounded border border-gray-500 p-2 hover:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         placeholder="Введіть назву вправи"
                         autoComplete="off"
                         value={searchName}

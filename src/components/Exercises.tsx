@@ -32,7 +32,6 @@ const Exercises = ({
                   <input
                      type="text"
                      id="searchName"
-                     className="w-full rounded border border-gray-500 p-2 hover:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                      placeholder="Введіть назву вправи"
                      autoComplete="off"
                      value={searchName}
@@ -56,7 +55,7 @@ const Exercises = ({
                      пошук
                   </button>
                </div>
-               <h2 className="mb-4 w-full border-b-2 border-black/70 pb-4 text-xl font-semibold"></h2>
+               <h2 className="horizontal-line"></h2>
                <button
                   className="button-add button-full mb-4"
                   onClick={() => {
