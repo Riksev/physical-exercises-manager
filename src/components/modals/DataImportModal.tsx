@@ -84,7 +84,7 @@ const DataImportModal = ({
                   <div className="input-block">
                      <label
                         htmlFor="json-upload"
-                        className="focus:ring-opacity-75 button-add button-modal mb-4 cursor-pointer rounded-lg px-0 text-center font-bold uppercase shadow-md transition-all focus:ring-green-600 focus:outline-none not-only:focus:ring-2"
+                        className="focus:ring-opacity-75 button-add button-modal mb-4 cursor-pointer rounded-2xl px-0 text-center font-bold uppercase shadow-md transition-all focus:ring-green-600 focus:outline-none not-only:focus:ring-2"
                      >
                         Обрати JSON файл для імпорту
                      </label>

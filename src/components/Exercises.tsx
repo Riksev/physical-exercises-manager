@@ -26,7 +26,7 @@ const Exercises = ({
       <>
          {!activeExercise ? (
             <div className="page-container">
-               <h2 className="horizontal-line title">Вправи</h2>
+               <h2 className="horizontal-line title">Список вправ</h2>
                <div className="input-block mb-2">
                   <label htmlFor="searchName">Пошук за назвою:</label>
                   <input
@@ -53,7 +53,7 @@ const Exercises = ({
                   }}
                   disabled={exercises.length === 0}
                >
-                  пошук
+                  пошук вправ
                </button>
                <h2 className="horizontal-line"></h2>
                <button
@@ -62,7 +62,7 @@ const Exercises = ({
                      setIsAddExerciseModalOpen(true)
                   }}
                >
-                  додати
+                  додати вправу
                </button>
                <ListOfExercises
                   exercises={filteredExercises}

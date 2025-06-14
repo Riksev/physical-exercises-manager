@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+html {
+   font-family: 'Inter', sans-serif;
+}
+
 @layer base {
    html {
       @apply overflow-y-hidden;
@@ -10,22 +14,22 @@
    }
 
    button {
-      @apply rounded-lg text-lg font-bold uppercase transition-all delay-100 disabled:opacity-50;
+      @apply rounded-2xl text-lg font-bold uppercase transition-all delay-100 disabled:opacity-50;
    }
 
    .button-remove {
-      @apply bg-red-500 hover:bg-red-800 active:bg-red-800 disabled:cursor-not-allowed disabled:bg-red-800;
+      @apply bg-red-500 hover:bg-red-800 active:bg-red-900 disabled:cursor-not-allowed disabled:bg-red-900;
    }
 
    .button-edit {
-      @apply bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-600 disabled:cursor-not-allowed disabled:bg-yellow-600;
+      @apply bg-amber-500 hover:bg-amber-600 active:bg-amber-700 disabled:cursor-not-allowed disabled:bg-amber-700;
    }
    .button-add {
-      @apply bg-green-500 hover:bg-green-600 active:bg-green-600 disabled:cursor-not-allowed disabled:bg-green-600;
+      @apply bg-green-500 hover:bg-green-600 active:bg-green-700 disabled:cursor-not-allowed disabled:bg-green-700;
    }
 
    .button-action {
-      @apply bg-blue-500 hover:bg-blue-600 active:bg-blue-600 disabled:cursor-not-allowed disabled:bg-blue-600;
+      @apply bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-700;
    }
 
    .button-close {
@@ -45,7 +49,7 @@
    }
 
    .horizontal-line {
-      @apply my-4 w-full border-b-2 border-black/70 text-3xl font-bold;
+      @apply my-4 w-full rounded-2xl border-b-2 border-black/70 text-3xl font-bold;
    }
 
    input,
@@ -58,7 +62,7 @@
    input[type='email'],
    input[type='password'],
    input[type='date'] {
-      @apply my-2 w-full rounded border border-gray-500 p-2 hover:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none;
+      @apply my-2 w-full rounded-2xl border border-gray-500 p-2 hover:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none;
    }
 
    input[type='checkbox'] {
@@ -66,7 +70,7 @@
    }
 
    .details {
-      @apply mb-2 w-full cursor-pointer rounded-lg border-2 border-gray-400 bg-gray-300 p-2 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:bg-gray-400/50 hover:shadow-xl active:border-gray-500 active:bg-gray-400/50;
+      @apply mb-2 w-full cursor-pointer rounded-2xl border-2 border-gray-400 bg-gray-300 p-3 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:bg-gray-400/50 hover:shadow-xl active:border-gray-500 active:bg-gray-400/50;
    }
 
    summary {
@@ -138,7 +142,7 @@
    }
 
    .block-border {
-      @apply w-full rounded-lg border-2 border-gray-400 p-2 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:shadow-xl active:border-gray-600;
+      @apply w-full rounded-2xl border-2 border-gray-400 p-2 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:shadow-xl active:border-gray-600;
    }
 
    .table-block-row {

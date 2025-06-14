@@ -73,7 +73,7 @@ const Workouts = ({
 
    return !activeWorkout ? (
       <div className="page-container">
-         <h2 className="horizontal-line title">Тренування</h2>
+         <h2 className="horizontal-line title">Мої тренування</h2>
          <div className="flex w-full flex-col items-center justify-between gap-2">
             <div className="input-block-row">
                <label htmlFor="dateBegin">Від:</label>
@@ -114,7 +114,7 @@ const Workouts = ({
                      value={selectedExercise?.name || 'Всі вправи'}
                      onClick={() => setIsSelectExerciseModalOpen(true)}
                   />
-                  <span className="absolute right-3 text-gray-500 hover:text-gray-700">
+                  <span className="pointer-events-none absolute right-3 text-gray-500 hover:text-gray-700">
                      <svg
                         className="h-5 w-5"
                         fill="none"
@@ -170,7 +170,7 @@ const Workouts = ({
                }}
                disabled={errorDateBegin !== '' || errorDateEnd !== ''}
             >
-               пошук
+               пошук тренувань
             </button>
          </div>
          <h2 className="horizontal-line"></h2>
@@ -180,7 +180,7 @@ const Workouts = ({
                setIsAddWorkoutModalOpen(true)
             }}
          >
-            додати
+            додати тренування
          </button>
          <ListOfWorkouts
             workouts={filteredWorkouts}
