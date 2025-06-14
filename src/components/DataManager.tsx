@@ -19,9 +19,7 @@ const DataManager = ({
    return (
       <>
          <details className="details">
-            <summary className="cursor-pointer text-xl font-bold">
-               Керування даними
-            </summary>
+            <summary>Керування даними</summary>
             <div className="mt-4 flex flex-col gap-4 py-2">
                <button
                   className="button-action button-full"

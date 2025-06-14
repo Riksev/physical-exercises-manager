@@ -30,33 +30,28 @@ const AddExerciseModal = ({
    }, [hasReps, hasWeight, hasTime])
 
    return (
-      <div className="fixed top-0 left-0 z-100 flex h-full w-full items-center justify-center bg-black/50">
-         <div className="text-md mx-4 flex max-h-[90vh] w-full flex-col rounded-xl border-2 border-black/70 bg-white p-6 font-medium shadow-lg sm:w-2/3 lg:w-1/3">
-            <div className="sticky top-0 z-120 mb-8 flex items-center justify-between border-b-2 border-black/70 bg-white pb-4">
-               <h2 className="text-xl font-semibold text-wrap">
-                  Додавання вправи
-               </h2>
+      <div className="modal-bg">
+         <div className="modal-content">
+            <div className="modal-header">
+               <h2>Додавання вправи</h2>
                <button
                   type="button"
                   aria-label="Close"
                   onClick={() => {
                      setIsAddExerciseModalOpen(false)
                   }}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border-0 bg-white p-0 text-center text-5xl leading-none font-bold text-red-500 hover:bg-red-100"
+                  className="button-close"
                >
-                  <span className="-translate-y-1.5">&times;</span>
+                  <span>&times;</span>
                </button>
             </div>
-            <div className="flex-1 overflow-y-auto">
-               <div className="w-full pr-4 pl-2">
-                  <div className="mb-4">
-                     <label className="mb-2 block text-left" htmlFor="name">
-                        Назва вправи
-                     </label>
+            <div className="content-overflow-y">
+               <div className="modal-main">
+                  <div className="input-block">
+                     <label htmlFor="name">Назва вправи</label>
                      <input
                         type="text"
                         id="name"
-                        className="mb-2"
                         placeholder="Введіть назву вправи"
                         autoComplete="off"
                         value={name}
@@ -71,14 +66,10 @@ const AddExerciseModal = ({
                            }
                         }}
                      />
-                     {errorName && (
-                        <p className="mt-1 block text-left text-red-600">
-                           {errorName}
-                        </p>
-                     )}
+                     {errorName && <p className="error-message">{errorName}</p>}
                   </div>
-                  <div className="mb-4 flex flex-row items-center justify-between rounded-md py-2 pr-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
-                     <label className="block" htmlFor="reps">
+                  <div className="checkbox-block">
+                     <label htmlFor="reps">
                         Фікусувати кількість повторень:
                      </label>
                      <input
@@ -87,20 +78,16 @@ const AddExerciseModal = ({
                         onChange={(e) => setHasReps(e.target.checked)}
                      />
                   </div>
-                  <div className="mb-4 flex flex-row items-center justify-between rounded-md py-2 pr-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
-                     <label className="block" htmlFor="weight">
-                        Фіксувати робочу вагу:
-                     </label>
+                  <div className="checkbox-block">
+                     <label htmlFor="weight">Фіксувати робочу вагу:</label>
                      <input
                         type="checkbox"
                         id="weight"
                         onChange={(e) => setHasWeight(e.target.checked)}
                      />
                   </div>
-                  <div className="mb-4 flex flex-row items-center justify-between rounded-md py-2 pr-2 transition-all duration-200 hover:bg-gray-300/50 active:bg-gray-300/50">
-                     <label className="block" htmlFor="time">
-                        Фіксувати час виконання:
-                     </label>
+                  <div className="checkbox-block">
+                     <label htmlFor="time">Фіксувати час виконання:</label>
                      <input
                         type="checkbox"
                         id="time"
@@ -108,62 +95,54 @@ const AddExerciseModal = ({
                      />
                   </div>
                   {errorCheckboxes && (
-                     <p className="mt-1 block text-left text-red-600">
-                        {errorCheckboxes}
-                     </p>
+                     <p className="error-message">{errorCheckboxes}</p>
                   )}
                </div>
-               <h2 className="horizontal-line"></h2>
-               <div className="flex flex-col gap-4">
-                  <button
-                     type="button"
-                     className="button-add button-modal"
-                     onClick={() => {
-                        const newExercise: IExercise = {
-                           _id: Date.now().toString(),
-                           name,
-                           hasReps,
-                           hasWeight,
-                           hasTime,
-                        }
-                        setExercises((prevExercises: IExercise[]) => {
-                           const updatedExercises: IExercise[] = [
-                              ...prevExercises,
-                           ]
-                           let inserted = false
-                           for (let i = 0; i < updatedExercises.length; i++) {
-                              if (
-                                 updatedExercises[i].name
-                                    .trim()
-                                    .toLowerCase() ===
-                                 newExercise.name.trim().toLowerCase()
-                              ) {
-                                 inserted = true
-                                 break
-                              } else if (
-                                 updatedExercises[i].name.trim().toLowerCase() >
-                                 newExercise.name.trim().toLowerCase()
-                              ) {
-                                 inserted = true
-                                 updatedExercises.splice(i, 0, newExercise)
-                                 break
-                              }
-                           }
-                           if (!inserted) {
-                              updatedExercises.push(newExercise)
-                           }
-                           return updatedExercises
-                        })
-                        setIsAddExerciseModalOpen(false)
-                     }}
-                     disabled={
-                        errorName !== '' || (!hasReps && !hasWeight && !hasTime)
-                     }
-                  >
-                     додати
-                  </button>
-               </div>
             </div>
+            <h2 className="horizontal-line"></h2>
+            <button
+               type="button"
+               className="button-add button-modal"
+               onClick={() => {
+                  const newExercise: IExercise = {
+                     _id: Date.now().toString(),
+                     name,
+                     hasReps,
+                     hasWeight,
+                     hasTime,
+                  }
+                  setExercises((prevExercises: IExercise[]) => {
+                     const updatedExercises: IExercise[] = [...prevExercises]
+                     let inserted = false
+                     for (let i = 0; i < updatedExercises.length; i++) {
+                        if (
+                           updatedExercises[i].name.trim().toLowerCase() ===
+                           newExercise.name.trim().toLowerCase()
+                        ) {
+                           inserted = true
+                           break
+                        } else if (
+                           updatedExercises[i].name.trim().toLowerCase() >
+                           newExercise.name.trim().toLowerCase()
+                        ) {
+                           inserted = true
+                           updatedExercises.splice(i, 0, newExercise)
+                           break
+                        }
+                     }
+                     if (!inserted) {
+                        updatedExercises.push(newExercise)
+                     }
+                     return updatedExercises
+                  })
+                  setIsAddExerciseModalOpen(false)
+               }}
+               disabled={
+                  errorName !== '' || (!hasReps && !hasWeight && !hasTime)
+               }
+            >
+               додати
+            </button>
          </div>
       </div>
    )

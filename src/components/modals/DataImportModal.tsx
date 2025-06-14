@@ -66,25 +66,25 @@ const DataImportModal = ({
    }
 
    return (
-      <div className="fixed top-0 left-0 z-100 flex h-full w-full items-center justify-center bg-black/50">
-         <div className="mx-4 flex max-h-[90vh] w-full flex-col rounded-xl border-2 border-black/70 bg-white p-6 shadow-lg sm:w-2/3 lg:w-1/3">
-            <div className="sticky top-0 z-120 mb-8 flex items-center justify-between border-b-2 border-black/70 bg-white pb-4">
-               <h2 className="text-xl font-semibold text-wrap">Імпорт даних</h2>
+      <div className="modal-bg">
+         <div className="modal-content">
+            <div className="modal-header">
+               <h2>Імпорт даних</h2>
                <button
                   type="button"
                   aria-label="Close"
                   onClick={() => setIsDataImportModalOpen(false)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border-0 bg-white p-0 text-center text-5xl leading-none font-bold text-red-500 hover:bg-red-100"
+                  className="button-close"
                >
-                  <span className="-translate-y-1.5">&times;</span>
+                  <span>&times;</span>
                </button>
             </div>
-            <div className="flex-1 overflow-y-auto">
-               <div className="w-full pr-4 pl-2">
-                  <div className="flex flex-col gap-4">
+            <div className="content-overflow-y">
+               <div className="modal-main">
+                  <div className="input-block">
                      <label
                         htmlFor="json-upload"
-                        className="focus:ring-opacity-75 button-add button-modal cursor-pointer rounded-lg font-bold uppercase shadow-md transition-all focus:ring-green-600 focus:outline-none not-only:focus:ring-2"
+                        className="focus:ring-opacity-75 button-add button-modal mb-4 cursor-pointer rounded-lg px-0 text-center font-bold uppercase shadow-md transition-all focus:ring-green-600 focus:outline-none not-only:focus:ring-2"
                      >
                         Обрати JSON файл для імпорту
                      </label>
@@ -98,21 +98,13 @@ const DataImportModal = ({
                         }}
                      />
                      {fileName && (
-                        <p className="mt-2 text-left text-lg text-gray-700">
+                        <p className="info-message">
                            Обрано файл:{' '}
                            <span className="font-bold">{fileName}</span>
                         </p>
                      )}
-                     {error && (
-                        <p className="left mt-2 text-left text-lg text-red-600">
-                           {error}
-                        </p>
-                     )}
-                     {info && (
-                        <p className="mt-2 text-left text-lg font-bold text-green-600">
-                           {info}
-                        </p>
-                     )}
+                     {error && <p className="error-message">{error}</p>}
+                     {info && <p className="success-message">{info}</p>}
                   </div>
                </div>
             </div>

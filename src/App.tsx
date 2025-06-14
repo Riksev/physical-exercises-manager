@@ -121,11 +121,8 @@ function App() {
    }, [activeWorkout, workouts])
 
    return (
-      <div className="flex min-h-screen w-full flex-col items-center">
-         <div
-            className="flex h-screen min-h-screen w-full flex-col items-center gap-4 overflow-y-scroll bg-gradient-to-br from-fuchsia-200 to-cyan-200 p-4 pb-20 text-center md:w-3/4 lg:w-1/2"
-            ref={scrollRef}
-         >
+      <div className="app-bg">
+         <div className="app-main" ref={scrollRef}>
             {activePage === Pages.EXERCISES && (
                <Exercises
                   exercises={exercises}

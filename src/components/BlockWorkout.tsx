@@ -2,7 +2,7 @@ import type { IBlockWorkoutProps, IRecord } from '../interfaces'
 
 const BlockWorkout = ({ workout, exercises, clicker }: IBlockWorkoutProps) => {
    return (
-      <div className="mb-4 w-full rounded-lg border-2 border-gray-400 p-2 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:shadow-xl active:border-gray-600">
+      <div className="block-border">
          <div className="mb-2 flex w-full flex-row items-center justify-between">
             <p>
                {workout.date}
@@ -12,7 +12,7 @@ const BlockWorkout = ({ workout, exercises, clicker }: IBlockWorkoutProps) => {
                   .replace(/^./, (c) => c.toUpperCase())}
             </p>
             <button
-               className="button-edit w-1/3 px-4 py-2 text-center text-sm"
+               className="button-edit button-modal w-1/3 text-sm"
                onClick={() => {
                   clicker(workout)
                }}
@@ -26,27 +26,29 @@ const BlockWorkout = ({ workout, exercises, clicker }: IBlockWorkoutProps) => {
             if (exerciseInfo) {
                return (
                   <details key={exerciseInfo._id} className="details">
-                     <summary>{exerciseInfo.name}</summary>
+                     <summary className="font-medium">
+                        {exerciseInfo.name}
+                     </summary>
                      {wex.records.length === 0 ? (
                         <p className="mt-4 block text-left">Записи відсутні.</p>
                      ) : (
                         <>
-                           <div className="mt-4 flex w-full flex-row items-center justify-between">
-                              <p className="w-1/10 overflow-x-auto border text-center">
+                           <div className="table-block-row header mt-4">
+                              <p className="table-block-cell table-block-cell-number">
                                  №
                               </p>
                               {exerciseInfo.hasReps && (
-                                 <p className="flex-1 overflow-x-auto border text-center">
+                                 <p className="table-block-cell table-block-cell-text">
                                     Повтори
                                  </p>
                               )}
                               {exerciseInfo.hasWeight && (
-                                 <p className="flex-1 overflow-x-auto border text-center">
+                                 <p className="table-block-cell table-block-cell-text">
                                     Вага (кг)
                                  </p>
                               )}
                               {exerciseInfo.hasTime && (
-                                 <p className="flex-1 overflow-x-auto border text-center">
+                                 <p className="table-block-cell table-block-cell-text">
                                     Час
                                  </p>
                               )}
@@ -54,23 +56,23 @@ const BlockWorkout = ({ workout, exercises, clicker }: IBlockWorkoutProps) => {
                            {wex.records.map((record: IRecord, id: number) => (
                               <div
                                  key={exerciseInfo._id + id + 1}
-                                 className="flex w-full flex-row items-center justify-between"
+                                 className="table-block-row"
                               >
-                                 <p className="w-1/10 overflow-x-auto border text-center">
+                                 <p className="table-block-cell table-block-cell-number">
                                     {id + 1}
                                  </p>
                                  {exerciseInfo.hasReps && (
-                                    <p className="flex-1 overflow-x-auto border text-center">
+                                    <p className="table-block-cell table-block-cell-text">
                                        {record.reps ? record.reps : '-'}
                                     </p>
                                  )}
                                  {exerciseInfo.hasWeight && (
-                                    <p className="flex-1 overflow-x-auto border text-center">
+                                    <p className="table-block-cell table-block-cell-text">
                                        {record.weight ? record.weight : '-'}
                                     </p>
                                  )}
                                  {exerciseInfo.hasTime && (
-                                    <p className="flex-1 overflow-x-auto border text-center">
+                                    <p className="table-block-cell table-block-cell-text">
                                        {record.time ? record.time : '-'}
                                     </p>
                                  )}

@@ -1,12 +1,10 @@
 const About = () => {
    return (
       <details className="details">
-         <summary className="cursor-pointer text-xl font-bold">
-            Про вебзастосунок
-         </summary>
+         <summary>Про вебзастосунок</summary>
          <div className="mt-4 flex flex-col">
             <p>GymGer - менеджер з фізичних вправ.</p>
-            <p>Версія: v1.1.1.</p>
+            <p>Версія: v1.1.2.</p>
             <p>
                Розробник:{' '}
                <a

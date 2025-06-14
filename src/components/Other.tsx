@@ -4,16 +4,15 @@ import DataManager from './DataManager'
 
 const Other = ({ exercises, workouts, setData }: IOtherProps) => {
    return (
-      <>
-         <h2 className="horizontal-line">Інше</h2>
+      <div className="page-container">
+         <h2 className="horizontal-line title">Інше</h2>
          <DataManager
             exercises={exercises}
             workouts={workouts}
             setData={setData}
          />
          <About />
-         <div className="mt-8"></div>
-      </>
+      </div>
    )
 }
 

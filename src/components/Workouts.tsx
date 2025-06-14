@@ -72,10 +72,10 @@ const Workouts = ({
    }, [dateBegin, dateEnd])
 
    return !activeWorkout ? (
-      <div className="w-full text-xl font-medium">
-         <h2 className="horizontal-line">Тренування</h2>
-         <div className="mb-4 flex w-full flex-col items-center justify-between gap-4 border-b-2 border-black/70 pb-4">
-            <div className="flex w-full flex-row items-center justify-between">
+      <div className="page-container">
+         <h2 className="horizontal-line title">Тренування</h2>
+         <div className="flex w-full flex-col items-center justify-between gap-2">
+            <div className="input-block-row">
                <label htmlFor="dateBegin">Від:</label>
                <input
                   type="date"
@@ -88,9 +88,9 @@ const Workouts = ({
                />
             </div>
             {errorDateBegin && (
-               <p className="mt-1 text-red-600">{errorDateBegin}</p>
+               <p className="error-message">{errorDateBegin}</p>
             )}
-            <div className="flex w-full flex-row items-center justify-between">
+            <div className="input-block-row">
                <label htmlFor="dateEnd">До:</label>
                <input
                   type="date"
@@ -102,10 +102,8 @@ const Workouts = ({
                   }}
                />
             </div>
-            {errorDateEnd && (
-               <p className="mt-1 text-red-600">{errorDateEnd}</p>
-            )}
-            <div className="flex w-full flex-row items-center justify-between">
+            {errorDateEnd && <p className="error-message">{errorDateEnd}</p>}
+            <div className="input-block-row">
                <label htmlFor="exercise">Вправа:</label>
                <div className="relative flex w-full items-center justify-end">
                   <input
@@ -134,7 +132,7 @@ const Workouts = ({
                </div>
             </div>
             <button
-               className="w-full bg-blue-500 px-4 py-2 hover:bg-blue-600 active:bg-blue-600 disabled:cursor-not-allowed disabled:bg-blue-600 disabled:opacity-50"
+               className="button-action button-modal"
                onClick={() => {
                   setFilteredWorkouts(() => {
                      const updatedWorkouts = [...workouts]
@@ -175,8 +173,9 @@ const Workouts = ({
                пошук
             </button>
          </div>
+         <h2 className="horizontal-line"></h2>
          <button
-            className="button-add w-full p-4"
+            className="button-add button-full"
             onClick={() => {
                setIsAddWorkoutModalOpen(true)
             }}
@@ -188,7 +187,6 @@ const Workouts = ({
             exercises={exercises}
             clicker={setActiveWorkout}
          />
-         <div className="mt-4"></div>
          {isAddWorkoutModalOpen && (
             <AddWorkoutModal
                setIsAddWorkoutModalOpen={setIsAddWorkoutModalOpen}
@@ -205,15 +203,12 @@ const Workouts = ({
          )}
       </div>
    ) : (
-      <>
-         <Workout
-            activeWorkout={activeWorkout}
-            setActiveWorkout={setActiveWorkout}
-            exercises={exercises}
-            setWorkouts={setWorkouts}
-         />
-         <div className="mt-4"></div>
-      </>
+      <Workout
+         activeWorkout={activeWorkout}
+         setActiveWorkout={setActiveWorkout}
+         exercises={exercises}
+         setWorkouts={setWorkouts}
+      />
    )
 }
 

@@ -49,30 +49,26 @@ const Workout = ({
    }, [exercises])
 
    return (
-      <>
+      <div className="page-container">
+         <h2 className="horizontal-line title">
+            {activeWorkout?.date}
+            {' - '}
+            {activeWorkout?.date &&
+               new Date(activeWorkout.date)
+                  .toLocaleDateString('uk-UA', { weekday: 'long' })
+                  .replace(/^./, (c) => c.toUpperCase())}
+         </h2>
          <div className="flex w-full flex-col items-center gap-4">
-            <div className="mb-2 flex w-full flex-row items-center justify-between">
-               <h2 className="horizontal-line">
-                  {activeWorkout?.date}
-                  {' - '}
-                  {activeWorkout?.date &&
-                     new Date(activeWorkout.date)
-                        .toLocaleDateString('uk-UA', { weekday: 'long' })
-                        .replace(/^./, (c) => c.toUpperCase())}
-               </h2>
-            </div>
-            <div className="w-full rounded-lg border-2 border-gray-400 p-2 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:shadow-xl active:border-gray-600">
+            <div className="block-border">
                <p className="mb-4 w-full text-left text-2xl font-medium">
                   Вправи:
                </p>
                {errorExercises ? (
-                  <p className="mt-1 block text-left text-red-600">
-                     {errorExercises}
-                  </p>
+                  <p className="error-info">{errorExercises}</p>
                ) : (
                   <div>
                      {activeWorkout.exercises.length === 0 ? (
-                        <p className="mb-4 text-center text-lg font-medium">
+                        <p className="error-info mb-4 text-center">
                            Вправи відсутні.
                         </p>
                      ) : (
@@ -90,7 +86,7 @@ const Workout = ({
                                        setSelectedExercise(exerciseInfo)
                                     }}
                                  >
-                                    <summary className="w-full">
+                                    <summary className="font-medium">
                                        <div className="flex w-full items-center justify-between">
                                           {exerciseInfo.name}
                                           <button
@@ -110,23 +106,23 @@ const Workout = ({
                                           Записи відсутні.
                                        </p>
                                     ) : (
-                                       <div className="mb-4">
-                                          <div className="mt-4 flex w-full flex-row items-center justify-between">
-                                             <p className="w-1/10 overflow-x-auto border text-center">
+                                       <div className="my-4">
+                                          <div className="table-block-row header">
+                                             <p className="table-block-cell table-block-cell-number">
                                                 №
                                              </p>
                                              {exerciseInfo?.hasReps && (
-                                                <p className="flex-1 overflow-x-auto border text-center">
+                                                <p className="table-block-cell table-block-cell-text">
                                                    Повтори
                                                 </p>
                                              )}
                                              {exerciseInfo?.hasWeight && (
-                                                <p className="flex-1 overflow-x-auto border text-center">
+                                                <p className="table-block-cell table-block-cell-text">
                                                    Вага (кг)
                                                 </p>
                                              )}
                                              {exerciseInfo?.hasTime && (
-                                                <p className="flex-1 overflow-x-auto border text-center">
+                                                <p className="table-block-cell table-block-cell-text">
                                                    Час
                                                 </p>
                                              )}
@@ -140,26 +136,26 @@ const Workout = ({
                                                    }}
                                                 >
                                                    <summary>
-                                                      <div className="flex w-full flex-row items-center justify-between">
-                                                         <p className="w-1/10 overflow-x-auto border text-center">
+                                                      <div className="table-block-row">
+                                                         <p className="table-block-cell table-block-cell-number">
                                                             {id + 1}
                                                          </p>
                                                          {exerciseInfo?.hasReps && (
-                                                            <p className="flex-1 overflow-x-auto border text-center">
+                                                            <p className="table-block-cell table-block-cell-text">
                                                                {record.reps
                                                                   ? record.reps
                                                                   : '-'}
                                                             </p>
                                                          )}
                                                          {exerciseInfo?.hasWeight && (
-                                                            <p className="flex-1 overflow-x-auto border text-center">
+                                                            <p className="table-block-cell table-block-cell-text">
                                                                {record.weight
                                                                   ? record.weight
                                                                   : '-'}
                                                             </p>
                                                          )}
                                                          {exerciseInfo?.hasTime && (
-                                                            <p className="flex-1 overflow-x-auto border text-center">
+                                                            <p className="table-block-cell table-block-cell-text">
                                                                {record.time
                                                                   ? record.time
                                                                   : '-'}
@@ -195,7 +191,7 @@ const Workout = ({
                                        </div>
                                     )}
                                     <button
-                                       className="button-add w-full px-4 py-2"
+                                       className="button-add button-modal"
                                        onClick={() => {
                                           setIsAddRecordModalOpen(true)
                                        }}
@@ -208,7 +204,7 @@ const Workout = ({
                         })
                      )}
                      <button
-                        className="button-add w-full p-4"
+                        className="button-add button-full"
                         onClick={() => {
                            setIsAddExerciseToWorkoutModalOpen(true)
                         }}
@@ -220,7 +216,7 @@ const Workout = ({
                )}
             </div>
             <button
-               className="button-edit w-full p-4"
+               className="button-edit button-full"
                onClick={() => {
                   setIsEditWorkoutModalOpen(true)
                }}
@@ -228,7 +224,7 @@ const Workout = ({
                редагувати тренування
             </button>
             <button
-               className="button-remove w-full p-4"
+               className="button-remove button-full"
                onClick={() => {
                   setIsRemoveWorkoutModalOpen(true)
                }}
@@ -236,7 +232,7 @@ const Workout = ({
                видалити тренування
             </button>
             <button
-               className="button-action w-full p-4"
+               className="button-action button-full"
                onClick={() => {
                   setActiveWorkout(null)
                }}
@@ -305,7 +301,7 @@ const Workout = ({
                selectedRecord={selectedRecord}
             />
          )}
-      </>
+      </div>
    )
 }
 

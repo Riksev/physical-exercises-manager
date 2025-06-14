@@ -25,9 +25,9 @@ const Exercises = ({
    return (
       <>
          {!activeExercise ? (
-            <div className="w-full text-xl font-medium">
-               <h2 className="horizontal-line">Вправи</h2>
-               <div className="flex flex-col items-start gap-4">
+            <div className="page-container">
+               <h2 className="horizontal-line title">Вправи</h2>
+               <div className="input-block mb-2">
                   <label htmlFor="searchName">Пошук за назвою:</label>
                   <input
                      type="text"
@@ -39,22 +39,22 @@ const Exercises = ({
                         setSearchName(e.target.value)
                      }}
                   />
-                  <button
-                     className="button-action button-modal"
-                     onClick={() => {
-                        setFilteredExercises(
-                           exercises.filter((ex) =>
-                              ex.name
-                                 .toLowerCase()
-                                 .includes(searchName.toLowerCase())
-                           )
-                        )
-                     }}
-                     disabled={exercises.length === 0}
-                  >
-                     пошук
-                  </button>
                </div>
+               <button
+                  className="button-action button-modal"
+                  onClick={() => {
+                     setFilteredExercises(
+                        exercises.filter((ex) =>
+                           ex.name
+                              .toLowerCase()
+                              .includes(searchName.toLowerCase())
+                        )
+                     )
+                  }}
+                  disabled={exercises.length === 0}
+               >
+                  пошук
+               </button>
                <h2 className="horizontal-line"></h2>
                <button
                   className="button-add button-full mb-4"
@@ -68,18 +68,14 @@ const Exercises = ({
                   exercises={filteredExercises}
                   clicker={setActiveExercise}
                />
-               <div className="mt-8"></div>
             </div>
          ) : (
-            <>
-               <Exercise
-                  activeExercise={activeExercise}
-                  setActiveExercise={setActiveExercise}
-                  setExercises={setExercises}
-                  setWorkouts={setWorkouts}
-               />
-               <div className="mt-8"></div>
-            </>
+            <Exercise
+               activeExercise={activeExercise}
+               setActiveExercise={setActiveExercise}
+               setExercises={setExercises}
+               setWorkouts={setWorkouts}
+            />
          )}
          {isAddExerciseModalOpen && (
             <AddExerciseModal

@@ -42,181 +42,156 @@ const AddRecordModal = ({
    }, [time])
 
    return (
-      <div className="fixed top-0 left-0 z-100 flex h-full w-full items-center justify-center bg-black/50">
-         <div className="mx-4 flex max-h-[90vh] w-full flex-col rounded-xl border-2 border-black/70 bg-white p-6 shadow-lg sm:w-2/3 lg:w-1/3">
-            <div className="sticky top-0 z-120 mb-8 flex items-center justify-between border-b-2 border-black/70 bg-white pb-4">
-               <h2 className="text-xl font-semibold text-wrap">
-                  Додавання запису
-               </h2>
+      <div className="modal-bg">
+         <div className="modal-content">
+            <div className="modal-header">
+               <h2>Додавання запису</h2>
                <button
                   type="button"
                   aria-label="Закрити"
                   onClick={() => {
                      setIsAddRecordModalOpen(false)
                   }}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border-0 bg-white p-0 text-center text-5xl leading-none font-bold text-red-500 hover:bg-red-100"
+                  className="button-close"
                >
-                  <span className="-translate-y-1.5">&times;</span>
+                  <span>&times;</span>
                </button>
             </div>
-            <div className="flex-1 overflow-y-auto">
-               <div className="w-full pr-4 pl-2">
-                  <div className="flex flex-col items-start gap-4 font-medium">
-                     {selectedExercise?.hasReps && (
-                        <div className="mb-4">
-                           <label
-                              className="mb-2 block text-left"
-                              htmlFor="reps"
-                           >
-                              Повторення:
-                           </label>
-                           <input
-                              type="number"
-                              step="any"
-                              id="reps"
-                              min="0"
-                              placeholder="Введіть кількість повторень"
-                              value={reps}
-                              onChange={(e) => {
-                                 setReps(e.target.value)
-                              }}
-                              onKeyDown={(e) => {
-                                 if (
-                                    e.key === '-' ||
-                                    e.key === 'e' ||
-                                    e.key === 'Enter'
-                                 ) {
-                                    e.preventDefault()
-                                 }
-                              }}
-                              onPaste={(e) => e.preventDefault()}
-                           />
-                           {errorReps && (
-                              <p className="mt-1 block text-left text-red-600">
-                                 {errorReps}
-                              </p>
-                           )}
-                        </div>
-                     )}
-                     {selectedExercise?.hasWeight && (
-                        <div className="mb-4">
-                           <label
-                              className="mb-2 block text-left"
-                              htmlFor="weight"
-                           >
-                              Робоча вага (кг):
-                           </label>
-                           <input
-                              type="number"
-                              step="any"
-                              id="weight"
-                              min="0"
-                              placeholder="Введіть робочу вагу"
-                              value={weight}
-                              onChange={(e) => setWeight(e.target.value)}
-                              onKeyDown={(e) => {
-                                 if (
-                                    e.key === '-' ||
-                                    e.key === 'e' ||
-                                    e.key === 'Enter'
-                                 ) {
-                                    e.preventDefault()
-                                 }
-                              }}
-                              onPaste={(e) => e.preventDefault()}
-                           />
-                           {errorWeight && (
-                              <p className="mt-1 block text-left text-red-600">
-                                 {errorWeight}
-                              </p>
-                           )}
-                        </div>
-                     )}
-                     {selectedExercise?.hasTime && (
-                        <div className="mb-4">
-                           <label
-                              className="mb-2 block text-left"
-                              htmlFor="time"
-                           >
-                              Час виконання:
-                           </label>
-                           <input
-                              type="text"
-                              id="time"
-                              placeholder="Введіть час виконання HH:MM:SS"
-                              value={time}
-                              onChange={(e) => {
-                                 setTime(e.target.value)
-                              }}
-                              onKeyDown={(e) => {
-                                 if (
-                                    e.key === '-' ||
-                                    e.key === 'e' ||
-                                    e.key === 'Enter'
-                                 ) {
-                                    e.preventDefault()
-                                 }
-                              }}
-                              onPaste={(e) => e.preventDefault()}
-                           />
-                           {errorTime && (
-                              <p className="mt-1 block text-left text-red-600">
-                                 {errorTime}
-                              </p>
-                           )}
-                        </div>
-                     )}
-                  </div>
+            <div className="content-overflow-y">
+               <div className="modal-main">
+                  {selectedExercise?.hasReps && (
+                     <div className="input-block">
+                        <label htmlFor="reps">Повторення:</label>
+                        <input
+                           type="number"
+                           step="any"
+                           id="reps"
+                           min="0"
+                           placeholder="Введіть кількість повторень"
+                           value={reps}
+                           onChange={(e) => {
+                              setReps(e.target.value)
+                           }}
+                           onKeyDown={(e) => {
+                              if (
+                                 e.key === '-' ||
+                                 e.key === 'e' ||
+                                 e.key === 'Enter'
+                              ) {
+                                 e.preventDefault()
+                              }
+                           }}
+                           onPaste={(e) => e.preventDefault()}
+                        />
+                        {errorReps && (
+                           <p className="error-message">{errorReps}</p>
+                        )}
+                     </div>
+                  )}
+                  {selectedExercise?.hasWeight && (
+                     <div className="input-block">
+                        <label htmlFor="weight">Робоча вага (кг):</label>
+                        <input
+                           type="number"
+                           step="any"
+                           id="weight"
+                           min="0"
+                           placeholder="Введіть робочу вагу"
+                           value={weight}
+                           onChange={(e) => setWeight(e.target.value)}
+                           onKeyDown={(e) => {
+                              if (
+                                 e.key === '-' ||
+                                 e.key === 'e' ||
+                                 e.key === 'Enter'
+                              ) {
+                                 e.preventDefault()
+                              }
+                           }}
+                           onPaste={(e) => e.preventDefault()}
+                        />
+                        {errorWeight && (
+                           <p className="error-message">{errorWeight}</p>
+                        )}
+                     </div>
+                  )}
+                  {selectedExercise?.hasTime && (
+                     <div className="input-block">
+                        <label htmlFor="time">Час виконання:</label>
+                        <input
+                           type="text"
+                           id="time"
+                           placeholder="Введіть час виконання HH:MM:SS"
+                           value={time}
+                           onChange={(e) => {
+                              setTime(e.target.value)
+                           }}
+                           onKeyDown={(e) => {
+                              if (
+                                 e.key === '-' ||
+                                 e.key === 'e' ||
+                                 e.key === 'Enter'
+                              ) {
+                                 e.preventDefault()
+                              }
+                           }}
+                           onPaste={(e) => e.preventDefault()}
+                        />
+                        {errorTime && (
+                           <p className="error-message">{errorTime}</p>
+                        )}
+                     </div>
+                  )}
                </div>
-               <h2 className="horizontal-line"></h2>
-               <button
-                  type="button"
-                  className="button-add button-modal"
-                  onClick={() => {
-                     setWorkouts((prev) => {
-                        const newRecord: IRecord = {
-                           _id: new Date().getTime().toString(),
-                           ...(selectedExercise?.hasReps && {
-                              reps: parseFloat(reps),
-                           }),
-                           ...(selectedExercise?.hasWeight && {
-                              weight: parseFloat(weight),
-                           }),
-                           ...(selectedExercise?.hasTime && {
-                              time,
-                           }),
-                        }
-                        const updated = [...prev]
-
-                        const workoutIndex = updated.findIndex(
-                           (w) => w._id === selectedWorkout._id
-                        )
-                        if (workoutIndex !== -1) {
-                           const exerciseIndex = updated[
-                              workoutIndex
-                           ].exercises.findIndex(
-                              (ex) => ex.exercise_id === selectedExercise._id
-                           )
-                           if (exerciseIndex !== -1) {
-                              updated[workoutIndex].exercises[
-                                 exerciseIndex
-                              ].records.push(newRecord)
-                           }
-                        }
-
-                        return updated
-                     })
-                     setIsAddRecordModalOpen(false)
-                  }}
-                  disabled={
-                     (selectedExercise?.hasReps && errorReps !== '') ||
-                     (selectedExercise?.hasWeight && errorWeight !== '') ||
-                     (selectedExercise?.hasTime && errorTime !== '')
-                  }
-               >
-                  додати
-               </button>
             </div>
+            <h2 className="horizontal-line"></h2>
+            <button
+               type="button"
+               className="button-add button-modal"
+               onClick={() => {
+                  setWorkouts((prev) => {
+                     const newRecord: IRecord = {
+                        _id: new Date().getTime().toString(),
+                        ...(selectedExercise?.hasReps && {
+                           reps: parseFloat(reps),
+                        }),
+                        ...(selectedExercise?.hasWeight && {
+                           weight: parseFloat(weight),
+                        }),
+                        ...(selectedExercise?.hasTime && {
+                           time,
+                        }),
+                     }
+                     const updated = [...prev]
+
+                     const workoutIndex = updated.findIndex(
+                        (w) => w._id === selectedWorkout._id
+                     )
+                     if (workoutIndex !== -1) {
+                        const exerciseIndex = updated[
+                           workoutIndex
+                        ].exercises.findIndex(
+                           (ex) => ex.exercise_id === selectedExercise._id
+                        )
+                        if (exerciseIndex !== -1) {
+                           updated[workoutIndex].exercises[
+                              exerciseIndex
+                           ].records.push(newRecord)
+                        }
+                     }
+
+                     return updated
+                  })
+                  setIsAddRecordModalOpen(false)
+               }}
+               disabled={
+                  (selectedExercise?.hasReps && errorReps !== '') ||
+                  (selectedExercise?.hasWeight && errorWeight !== '') ||
+                  (selectedExercise?.hasTime && errorTime !== '')
+               }
+            >
+               додати
+            </button>
          </div>
       </div>
    )
