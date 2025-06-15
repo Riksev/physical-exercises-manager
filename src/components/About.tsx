@@ -4,7 +4,7 @@ const About = () => {
          <summary>Про вебзастосунок</summary>
          <div className="mt-4 flex flex-col">
             <p>GymGer - менеджер з фізичних вправ.</p>
-            <p>Версія: v1.2.</p>
+            <p>Версія: v1.2.1.</p>
             <p>
                Розробник:{' '}
                <a
