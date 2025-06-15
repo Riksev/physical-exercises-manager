@@ -7,9 +7,9 @@ const AddRecordModal = ({
    setWorkouts,
    selectedWorkout,
 }: IAddRecordModalProps) => {
-   const [reps, setReps] = useState<string>('5')
-   const [weight, setWeight] = useState<string>('20')
-   const [time, setTime] = useState<string>('')
+   const [reps, setReps] = useState<string>('')
+   const [weight, setWeight] = useState<string>('')
+   const [time, setTime] = useState<string>('00:00:00')
 
    const [errorReps, setErrorReps] = useState<string>('')
    const [errorWeight, setErrorWeight] = useState<string>('')
