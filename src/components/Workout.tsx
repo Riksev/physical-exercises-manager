@@ -87,7 +87,7 @@ const Workout = ({
                                     }}
                                  >
                                     <summary className="font-medium">
-                                       <div className="flex w-full items-center justify-between">
+                                       <div className="flex w-full items-center justify-between gap-x-2">
                                           {exerciseInfo.name}
                                           <button
                                              className="button-remove px-6 py-2 text-sm"
@@ -101,6 +101,7 @@ const Workout = ({
                                           </button>
                                        </div>
                                     </summary>
+                                    <h2 className="horizontal-line"></h2>
                                     {exercise.records.length === 0 ? (
                                        <p className="my-4 block text-left">
                                           Записи відсутні.

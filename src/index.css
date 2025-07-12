@@ -66,7 +66,7 @@ html {
    }
 
    input[type='checkbox'] {
-      @apply scale-200 cursor-pointer rounded;
+      @apply scale-200 cursor-pointer rounded accent-purple-500;
    }
 
    .details {

@@ -21,6 +21,31 @@ function App() {
 
    const scrollRef = useRef<HTMLDivElement>(null)
 
+   const getFirstDayOfMonth = (): string => {
+      const now = new Date()
+      const year = now.getFullYear()
+      const month = String(now.getMonth() + 1).padStart(2, '0')
+      const day = '01'
+      return `${year}-${month}-${day}`
+   }
+
+   const getCurrentDate = (): string => {
+      const now = new Date()
+      const year = now.getFullYear()
+      const month = String(now.getMonth() + 1).padStart(2, '0')
+      const day = String(now.getDate()).padStart(2, '0')
+      return `${year}-${month}-${day}`
+   }
+   const [dateBegin, setDateBegin] = useState<string>(getFirstDayOfMonth())
+   const [dateEnd, setDateEnd] = useState<string>(getCurrentDate())
+   const [selectedExercise, setSelectedExercise] = useState<IExercise | null>(
+      null
+   )
+   const [filteredWorkouts, setFilteredWorkouts] = useState(
+      workouts.slice().reverse()
+   )
+   const [isFiltered, setIsFiltered] = useState<boolean>(false)
+
    const setWorkoutsCompatible = (arr: IWorkout[]) => {
       setWorkouts(() => {
          return arr.map((workout, index) => {
@@ -102,6 +127,8 @@ function App() {
 
    useEffect((): void => {
       localStorage.setItem('workouts', JSON.stringify(workouts))
+      setFilteredWorkouts(workouts.slice().reverse())
+      setIsFiltered(false)
    }, [workouts])
 
    useEffect((): void => {
@@ -136,6 +163,16 @@ function App() {
                <Workouts
                   exercises={exercises}
                   setWorkouts={setWorkouts}
+                  filteredWorkouts={filteredWorkouts}
+                  setFilteredWorkouts={setFilteredWorkouts}
+                  dateBegin={dateBegin}
+                  setDateBegin={setDateBegin}
+                  dateEnd={dateEnd}
+                  setDateEnd={setDateEnd}
+                  isFiltered={isFiltered}
+                  setIsFiltered={setIsFiltered}
+                  selectedExercise={selectedExercise}
+                  setSelectedExercise={setSelectedExercise}
                   workouts={workouts}
                   activeWorkout={activeWorkout}
                   setActiveWorkout={setActiveWorkout}

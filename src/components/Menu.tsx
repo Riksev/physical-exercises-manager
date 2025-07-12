@@ -8,7 +8,7 @@ const Menu = ({
    scrollRef,
 }: IMenuProps) => {
    return (
-      <nav className="fixed bottom-0 z-99 flex w-full items-center bg-gradient-to-br from-fuchsia-900 to-blue-600 p-2 shadow-md md:w-3/4 lg:w-1/2">
+      <nav className="fixed bottom-0 z-99 flex w-full items-center rounded-t-3xl bg-gradient-to-br from-fuchsia-900 to-blue-600 p-2 shadow-md md:w-3/4 lg:w-1/2">
          <div
             className="flex w-1/3 cursor-pointer flex-col items-center justify-center hover:brightness-70 active:brightness-70"
             onClick={(): void => {

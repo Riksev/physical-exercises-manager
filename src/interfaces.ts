@@ -102,6 +102,16 @@ export interface IExerciseProps {
 export interface IWorkoutsProps {
    exercises: IExercise[]
    setWorkouts: Dispatch<SetStateAction<IWorkout[]>>
+   filteredWorkouts: IWorkout[]
+   setFilteredWorkouts: Dispatch<SetStateAction<IWorkout[]>>
+   dateBegin: string
+   setDateBegin: Dispatch<SetStateAction<string>>
+   dateEnd: string
+   setDateEnd: Dispatch<SetStateAction<string>>
+   isFiltered: boolean
+   setIsFiltered: Dispatch<SetStateAction<boolean>>
+   selectedExercise: IExercise | null
+   setSelectedExercise: Dispatch<SetStateAction<IExercise | null>>
    workouts: IWorkout[]
    activeWorkout: IWorkout | null
    setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
