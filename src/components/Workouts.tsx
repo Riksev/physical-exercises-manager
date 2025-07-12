@@ -45,7 +45,7 @@ const Workouts = ({
    useEffect(() => {
       if (!dateBegin.match(/^\d{4}-\d{2}-\d{2}$/)) {
          setErrorDateBegin('Дата не може бути порожньою.')
-      } else if (dateBegin > dateEnd) {
+      } else if (dateBegin > dateEnd && dateEnd !== '') {
          setErrorDateBegin('Дата початку не може бути пізніше дати закінчення.')
       } else {
          setErrorDateBegin('')
