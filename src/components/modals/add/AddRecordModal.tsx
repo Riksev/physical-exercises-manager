@@ -11,9 +11,9 @@ const AddRecordModal = ({
    const [weight, setWeight] = useState<string>('')
    const [time, setTime] = useState<string>('00:00:00')
 
-   const [errorReps, setErrorReps] = useState<string>('')
-   const [errorWeight, setErrorWeight] = useState<string>('')
-   const [errorTime, setErrorTime] = useState<string>('')
+   const [errorReps, setErrorReps] = useState<string>('-')
+   const [errorWeight, setErrorWeight] = useState<string>('-')
+   const [errorTime, setErrorTime] = useState<string>('-')
 
    useEffect(() => {
       const activeExercise = selectedWorkout.exercises.find(
