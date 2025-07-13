@@ -64,6 +64,33 @@ const EditRecordModal = ({
             </div>
             <div className="content-overflow-y">
                <div className="modal-main">
+                  {selectedExercise?.hasWeight && (
+                     <div className="input-block">
+                        <label htmlFor="weight">Робоча вага:</label>
+                        <input
+                           type="number"
+                           step="any"
+                           id="weight"
+                           min="0"
+                           placeholder="Введіть робочу вагу"
+                           value={weight}
+                           onChange={(e) => setWeight(e.target.value)}
+                           onKeyDown={(e) => {
+                              if (
+                                 e.key === '-' ||
+                                 e.key === 'e' ||
+                                 e.key === 'Enter'
+                              ) {
+                                 e.preventDefault()
+                              }
+                           }}
+                           onPaste={(e) => e.preventDefault()}
+                        />
+                        {errorWeight && (
+                           <p className="error-message">{errorWeight}</p>
+                        )}
+                     </div>
+                  )}
                   {selectedExercise?.hasReps && (
                      <div className="input-block">
                         <label htmlFor="reps">Повторення:</label>
@@ -90,33 +117,6 @@ const EditRecordModal = ({
                         />
                         {errorReps && (
                            <p className="error-message">{errorReps}</p>
-                        )}
-                     </div>
-                  )}
-                  {selectedExercise?.hasWeight && (
-                     <div className="input-block">
-                        <label htmlFor="weight">Робоча вага (кг):</label>
-                        <input
-                           type="number"
-                           step="any"
-                           id="weight"
-                           min="0"
-                           placeholder="Введіть робочу вагу"
-                           value={weight}
-                           onChange={(e) => setWeight(e.target.value)}
-                           onKeyDown={(e) => {
-                              if (
-                                 e.key === '-' ||
-                                 e.key === 'e' ||
-                                 e.key === 'Enter'
-                              ) {
-                                 e.preventDefault()
-                              }
-                           }}
-                           onPaste={(e) => e.preventDefault()}
-                        />
-                        {errorWeight && (
-                           <p className="error-message">{errorWeight}</p>
                         )}
                      </div>
                   )}
