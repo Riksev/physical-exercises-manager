@@ -1,4 +1,4 @@
-import type { IRemoveRecordModalProps } from '../../interfaces'
+import type { IRemoveRecordModalProps } from '../../../interfaces'
 
 const RemoveRecordModal = ({
    setIsRemoveRecordModalOpen,

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import type { IDataExportModalProps } from '../../interfaces'
+import type { IExportDataModalProps } from '../../../interfaces'
 
-const DataExportModal = ({
+const ExportDataModal = ({
    exercises,
    workouts,
    setIsDataExportModalOpen,
-}: IDataExportModalProps) => {
+}: IExportDataModalProps) => {
    const getDate = () => {
       const now = new Date()
       const year = now.getFullYear()
@@ -102,4 +102,4 @@ const DataExportModal = ({
    )
 }
 
-export default DataExportModal
+export default ExportDataModal

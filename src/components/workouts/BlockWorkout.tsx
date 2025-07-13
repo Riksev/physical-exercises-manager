@@ -1,4 +1,4 @@
-import type { IBlockWorkoutProps, IRecord } from '../interfaces'
+import type { IBlockWorkoutProps, IRecord } from '../../interfaces'
 
 const BlockWorkout = ({ workout, exercises, clicker }: IBlockWorkoutProps) => {
    return (

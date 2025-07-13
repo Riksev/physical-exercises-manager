@@ -1,9 +1,9 @@
-import type { IDataRemoveModalProps } from '../../interfaces'
+import type { IRemoveDataModalProps } from '../../../interfaces'
 
-const DataRemoveModal = ({
+const RemoveDataModal = ({
    setIsDataRemoveModalOpen,
    setData,
-}: IDataRemoveModalProps) => {
+}: IRemoveDataModalProps) => {
    return (
       <div className="modal-bg">
          <div className="modal-content">
@@ -33,4 +33,4 @@ const DataRemoveModal = ({
    )
 }
 
-export default DataRemoveModal
+export default RemoveDataModal

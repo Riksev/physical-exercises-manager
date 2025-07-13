@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { IAddExerciseModalProps, IExercise } from '../../interfaces'
+import type { IAddExerciseModalProps, IExercise } from '../../../interfaces'
 
 const AddExerciseModal = ({
    setIsAddExerciseModalOpen,

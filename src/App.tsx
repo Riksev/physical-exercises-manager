@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Menu from './components/Menu'
-import Workouts from './components/Workouts'
-import Exercises from './components/Exercises'
+import Workouts from './components/workouts/Workouts'
+import Exercises from './components/exercises/Exercises'
 import {
    Pages,
    type IExercise,
@@ -9,7 +9,7 @@ import {
    type IWorkout,
    type PageNames,
 } from './interfaces'
-import Other from './components/Other'
+import Other from './components/other/Other'
 
 function App() {
    const [exercises, setExercises] = useState<IExercise[]>([])

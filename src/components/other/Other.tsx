@@ -1,6 +1,8 @@
-import type { IOtherProps } from '../interfaces'
+import type { IOtherProps } from '../../interfaces'
 import About from './About'
+import CalculatorOneRep from './CalculatorOneRep'
 import DataManager from './DataManager'
+import FAQ from './FAQ'
 
 const Other = ({ exercises, workouts, setData }: IOtherProps) => {
    return (
@@ -11,7 +13,9 @@ const Other = ({ exercises, workouts, setData }: IOtherProps) => {
             workouts={workouts}
             setData={setData}
          />
+         <CalculatorOneRep />
          <About />
+         <FAQ />
       </div>
    )
 }

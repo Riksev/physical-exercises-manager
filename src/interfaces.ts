@@ -202,18 +202,18 @@ export interface IDataControllerProps {
    workouts: IWorkout[]
    setData: (exercises: IExercise[], workouts: IWorkout[]) => void
 }
-export interface IDataExportModalProps {
+export interface IExportDataModalProps {
    exercises: IExercise[]
    workouts: IWorkout[]
    setIsDataExportModalOpen: Dispatch<SetStateAction<boolean>>
 }
-export interface IDataImportModalProps {
+export interface IImportDataModalProps {
    exercises: IExercise[]
    workouts: IWorkout[]
    setData: (exercises: IExercise[], workouts: IWorkout[]) => void
    setIsDataImportModalOpen: Dispatch<SetStateAction<boolean>>
 }
-export interface IDataRemoveModalProps {
+export interface IRemoveDataModalProps {
    setData: (exercises: IExercise[], workouts: IWorkout[]) => void
    setIsDataRemoveModalOpen: Dispatch<SetStateAction<boolean>>
 }

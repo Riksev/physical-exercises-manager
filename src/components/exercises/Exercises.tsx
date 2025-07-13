@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import AddExerciseModal from './modals/AddExerciseModal'
+import AddExerciseModal from '../modals/add/AddExerciseModal'
 import ListOfExercises from './ListOfExercises'
-import type { IExercise, IExercisesProps } from '../interfaces'
+import type { IExercise, IExercisesProps } from '../../interfaces'
 import Exercise from './Exercise'
 
 const Exercises = ({

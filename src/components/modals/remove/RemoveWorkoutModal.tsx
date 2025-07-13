@@ -1,4 +1,4 @@
-import type { IRemoveWorkoutModalProps } from '../../interfaces'
+import type { IRemoveWorkoutModalProps } from '../../../interfaces'
 
 const RemoveWorkoutModal = ({
    setIsRemoveWorkoutModalOpen,

@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import type { IDataControllerProps } from '../interfaces'
-import DataImportModal from './modals/DataImportModal'
-import DataRemoveModal from './modals/DataRemoveModal'
-import DataExportModal from './modals/DataExportModal'
+import type { IDataControllerProps } from '../../interfaces'
+import DataImportModal from '../modals/other/ImportDataModal'
+import DataRemoveModal from '../modals/remove/RemoveDataModal'
+import DataExportModal from '../modals/other/ExportDataModal'
 
 const DataManager = ({
    exercises,

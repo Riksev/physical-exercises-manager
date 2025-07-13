@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import RemoveExerciseModal from './modals/RemoveExerciseModal'
-import EditExerciseModal from './modals/EditExerciseModal'
-import type { IExerciseProps } from '../interfaces'
+import RemoveExerciseModal from '../modals/remove/RemoveExerciseModal'
+import EditExerciseModal from '../modals/edit/EditExerciseModal'
+import type { IExerciseProps } from '../../interfaces'
 
 const Exercise = ({
    activeExercise,

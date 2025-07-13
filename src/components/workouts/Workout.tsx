@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import type { IExercise, IRecord, IWorkoutProps } from '../interfaces'
-import AddExerciseToWorkoutModal from './modals/AddExerciseToWorkoutModal'
-import RemoveWorkoutModal from './modals/RemoveWorkoutModal'
-import RemoveExerciseFromWorkoutModal from './modals/RemoveExerciseFromWorkoutModal'
-import AddRecordModal from './modals/AddRecordModal'
-import EditWorkoutModal from './modals/EditWorkoutModal'
-import RemoveRecordModal from './modals/RemoveRecordModal'
-import EditRecordModal from './modals/EditRecordModal'
+import type { IExercise, IRecord, IWorkoutProps } from '../../interfaces'
+import AddExerciseToWorkoutModal from '../modals/add/AddExerciseToWorkoutModal'
+import RemoveWorkoutModal from '../modals/remove/RemoveWorkoutModal'
+import RemoveExerciseFromWorkoutModal from '../modals/remove/RemoveExerciseFromWorkoutModal'
+import AddRecordModal from '../modals/add/AddRecordModal'
+import EditWorkoutModal from '../modals/edit/EditWorkoutModal'
+import RemoveRecordModal from '../modals/remove/RemoveRecordModal'
+import EditRecordModal from '../modals/edit/EditRecordModal'
 
 const Workout = ({
    activeWorkout,

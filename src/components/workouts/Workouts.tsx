@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import AddWorkoutModal from './modals/AddWorkoutModal'
-import type { IExercise, IWorkoutsProps } from '../interfaces'
+import AddWorkoutModal from '../modals/add/AddWorkoutModal'
+import type { IExercise, IWorkoutsProps } from '../../interfaces'
 import ListOfWorkouts from './ListOfWorkouts'
 import Workout from './Workout'
-import SelectExerciseModal from './modals/SelectExerciseModal'
+import SelectExerciseModal from '../modals/other/SelectExerciseModal'
 
 const Workouts = ({
    exercises,

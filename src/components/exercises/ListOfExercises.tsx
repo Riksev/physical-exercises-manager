@@ -1,4 +1,4 @@
-import type { IListOfExercisesProps } from '../interfaces'
+import type { IListOfExercisesProps } from '../../interfaces'
 import BlockExercise from './BlockExercise'
 
 const ListOfExercises = ({

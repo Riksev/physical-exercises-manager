@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import type {
-   IDataImportModalProps,
+   IImportDataModalProps,
    IExercise,
    IWorkout,
-} from '../../interfaces'
+} from '../../../interfaces'
 
-const DataImportModal = ({
+const ImportDataModal = ({
    setData,
    setIsDataImportModalOpen,
-}: IDataImportModalProps) => {
+}: IImportDataModalProps) => {
    const [fileName, setFileName] = useState('')
    const [error, setError] = useState('')
    const [info, setInfo] = useState('')
@@ -113,4 +113,4 @@ const DataImportModal = ({
    )
 }
 
-export default DataImportModal
+export default ImportDataModal

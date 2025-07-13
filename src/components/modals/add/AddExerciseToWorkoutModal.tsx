@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import type {
    IAddExerciseToWorkoutModalProps,
    IExercise,
-} from '../../interfaces'
-import ListOfExercises from '../ListOfExercises'
+} from '../../../interfaces'
+import ListOfExercises from '../../exercises/ListOfExercises'
 
 const AddExerciseToWorkoutModal = ({
    setAddExerciseToWorkoutModalOpen,

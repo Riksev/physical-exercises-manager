@@ -1,4 +1,4 @@
-import type { IRemoveExerciseModalProps } from '../../interfaces'
+import type { IRemoveExerciseModalProps } from '../../../interfaces'
 
 const RemoveExerciseModal = ({
    setIsRemoveExerciseModalOpen,

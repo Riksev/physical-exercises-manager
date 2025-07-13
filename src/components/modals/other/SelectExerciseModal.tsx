@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import type { IExercise, ISelectExerciseModalProps } from '../../interfaces'
-import ListOfExercises from '../ListOfExercises'
+import type { IExercise, ISelectExerciseModalProps } from '../../../interfaces'
+import ListOfExercises from '../../exercises/ListOfExercises'
 
 const SelectExerciseModal = ({
    setIsSelectExerciseModalOpen,

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { IAddWorkoutModalProps, IWorkout } from '../../interfaces'
+import type { IAddWorkoutModalProps, IWorkout } from '../../../interfaces'
 
 const AddWorkoutModal = ({
    setIsAddWorkoutModalOpen,

@@ -1,4 +1,4 @@
-import type { IListOfWorkoutsProps } from '../interfaces'
+import type { IListOfWorkoutsProps } from '../../interfaces'
 import BlockWorkout from './BlockWorkout'
 
 const ListOfWorkouts = ({
