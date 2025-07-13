@@ -7,13 +7,13 @@ const AddRecordModal = ({
    setWorkouts,
    selectedWorkout,
 }: IAddRecordModalProps) => {
-   const [reps, setReps] = useState<string>('')
-   const [weight, setWeight] = useState<string>('')
-   const [time, setTime] = useState<string>('00:00:00')
+   const [reps, setReps] = useState<string>('-')
+   const [weight, setWeight] = useState<string>('-')
+   const [time, setTime] = useState<string>('-')
 
-   const [errorReps, setErrorReps] = useState<string>('-')
-   const [errorWeight, setErrorWeight] = useState<string>('-')
-   const [errorTime, setErrorTime] = useState<string>('-')
+   const [errorReps, setErrorReps] = useState<string>('')
+   const [errorWeight, setErrorWeight] = useState<string>('')
+   const [errorTime, setErrorTime] = useState<string>('')
 
    useEffect(() => {
       const activeExercise = selectedWorkout.exercises.find(
@@ -33,13 +33,8 @@ const AddRecordModal = ({
          const prevTime = lastRecord?.time ?? '00:00:00'
          setTime(prevTime.toString())
       }
-   }, [
-      selectedExercise._id,
-      selectedExercise?.hasReps,
-      selectedExercise?.hasTime,
-      selectedExercise?.hasWeight,
-      selectedWorkout.exercises,
-   ])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [])
 
    useEffect(() => {
       if (reps === '') {
