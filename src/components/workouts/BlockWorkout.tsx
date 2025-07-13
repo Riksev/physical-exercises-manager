@@ -37,14 +37,14 @@ const BlockWorkout = ({ workout, exercises, clicker }: IBlockWorkoutProps) => {
                               <p className="table-block-cell table-block-cell-number">
                                  №
                               </p>
+                              {exerciseInfo.hasWeight && (
+                                 <p className="table-block-cell table-block-cell-text">
+                                    Вага
+                                 </p>
+                              )}
                               {exerciseInfo.hasReps && (
                                  <p className="table-block-cell table-block-cell-text">
                                     Повтори
-                                 </p>
-                              )}
-                              {exerciseInfo.hasWeight && (
-                                 <p className="table-block-cell table-block-cell-text">
-                                    Вага (кг)
                                  </p>
                               )}
                               {exerciseInfo.hasTime && (
@@ -61,14 +61,14 @@ const BlockWorkout = ({ workout, exercises, clicker }: IBlockWorkoutProps) => {
                                  <p className="table-block-cell table-block-cell-number">
                                     {id + 1}
                                  </p>
-                                 {exerciseInfo.hasReps && (
-                                    <p className="table-block-cell table-block-cell-text">
-                                       {record.reps ? record.reps : '-'}
-                                    </p>
-                                 )}
                                  {exerciseInfo.hasWeight && (
                                     <p className="table-block-cell table-block-cell-text">
                                        {record.weight ? record.weight : '-'}
+                                    </p>
+                                 )}
+                                 {exerciseInfo.hasReps && (
+                                    <p className="table-block-cell table-block-cell-text">
+                                       {record.reps ? record.reps : '-'}
                                     </p>
                                  )}
                                  {exerciseInfo.hasTime && (
