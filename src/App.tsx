@@ -119,6 +119,7 @@ function App() {
       if (storedWorkouts) {
          setWorkoutsCompatible(JSON.parse(storedWorkouts) as IWorkout[])
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [])
 
    useEffect((): void => {

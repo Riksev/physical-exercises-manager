@@ -16,6 +16,32 @@ const AddRecordModal = ({
    const [errorTime, setErrorTime] = useState<string>('')
 
    useEffect(() => {
+      const activeExercise = selectedWorkout.exercises.find(
+         (ex) => ex.exercise_id === selectedExercise._id
+      )
+      const lastRecord =
+         activeExercise?.records[activeExercise.records.length - 1]
+      if (selectedExercise?.hasReps) {
+         const prevReps = lastRecord?.reps ?? ''
+         setReps(prevReps.toString())
+      }
+      if (selectedExercise?.hasWeight) {
+         const prevWeight = lastRecord?.weight ?? ''
+         setWeight(prevWeight.toString())
+      }
+      if (selectedExercise?.hasTime) {
+         const prevTime = lastRecord?.time ?? '00:00:00'
+         setTime(prevTime.toString())
+      }
+   }, [
+      selectedExercise._id,
+      selectedExercise?.hasReps,
+      selectedExercise?.hasTime,
+      selectedExercise?.hasWeight,
+      selectedWorkout.exercises,
+   ])
+
+   useEffect(() => {
       if (reps === '') {
          setErrorReps('Поле не може бути порожнім.')
       } else {
