@@ -32,6 +32,7 @@ export interface IRecord {
    reps?: number
    weight?: number
    time?: string
+   addedAt?: string
 }
 
 export interface IExercise {
@@ -216,4 +217,9 @@ export interface IImportDataModalProps {
 export interface IRemoveDataModalProps {
    setData: (exercises: IExercise[], workouts: IWorkout[]) => void
    setIsDataRemoveModalOpen: Dispatch<SetStateAction<boolean>>
+}
+
+export interface IWorkoutStatisticsProps {
+   activeWorkout: IWorkout
+   isAddRecordModalOpen: boolean
 }

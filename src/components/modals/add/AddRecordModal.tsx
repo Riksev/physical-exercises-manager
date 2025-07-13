@@ -187,6 +187,7 @@ const AddRecordModal = ({
                         ...(selectedExercise?.hasTime && {
                            time,
                         }),
+                        addedAt: new Date().toISOString(),
                      }
                      const updated = [...prev]
 

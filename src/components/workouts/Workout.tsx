@@ -7,6 +7,7 @@ import AddRecordModal from '../modals/add/AddRecordModal'
 import EditWorkoutModal from '../modals/edit/EditWorkoutModal'
 import RemoveRecordModal from '../modals/remove/RemoveRecordModal'
 import EditRecordModal from '../modals/edit/EditRecordModal'
+import WorkoutStatistics from './WorkoutStatistics'
 
 const Workout = ({
    activeWorkout,
@@ -216,6 +217,10 @@ const Workout = ({
                   </div>
                )}
             </div>
+            <WorkoutStatistics
+               activeWorkout={activeWorkout}
+               isAddRecordModalOpen={isAddRecordModalOpen}
+            />
             <button
                className="button-edit button-full"
                onClick={() => {
