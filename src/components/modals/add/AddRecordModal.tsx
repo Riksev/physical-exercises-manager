@@ -11,6 +11,8 @@ const AddRecordModal = ({
    const [weight, setWeight] = useState<string>('-')
    const [time, setTime] = useState<string>('-')
 
+   const [isLoading, setIsLoading] = useState<boolean>(true)
+
    const [errorReps, setErrorReps] = useState<string>('')
    const [errorWeight, setErrorWeight] = useState<string>('')
    const [errorTime, setErrorTime] = useState<string>('')
@@ -33,6 +35,7 @@ const AddRecordModal = ({
          const prevTime = lastRecord?.time ?? '00:00:00'
          setTime(prevTime.toString())
       }
+      setIsLoading(false)
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [])
 
@@ -80,88 +83,94 @@ const AddRecordModal = ({
             </div>
             <div className="content-overflow-y">
                <div className="modal-main">
-                  {selectedExercise?.hasWeight && (
-                     <div className="input-block">
-                        <label htmlFor="weight">Робоча вага:</label>
-                        <input
-                           type="number"
-                           step="any"
-                           id="weight"
-                           min="0"
-                           placeholder="Введіть робочу вагу"
-                           value={weight}
-                           onChange={(e) => setWeight(e.target.value)}
-                           onKeyDown={(e) => {
-                              if (
-                                 e.key === '-' ||
-                                 e.key === 'e' ||
-                                 e.key === 'Enter'
-                              ) {
-                                 e.preventDefault()
-                              }
-                           }}
-                           onPaste={(e) => e.preventDefault()}
-                        />
-                        {errorWeight && (
-                           <p className="error-message">{errorWeight}</p>
+                  {isLoading ? (
+                     <p>Завантаження...</p>
+                  ) : (
+                     <>
+                        {selectedExercise?.hasWeight && (
+                           <div className="input-block">
+                              <label htmlFor="weight">Робоча вага:</label>
+                              <input
+                                 type="number"
+                                 step="any"
+                                 id="weight"
+                                 min="0"
+                                 placeholder="Введіть робочу вагу"
+                                 value={weight}
+                                 onChange={(e) => setWeight(e.target.value)}
+                                 onKeyDown={(e) => {
+                                    if (
+                                       e.key === '-' ||
+                                       e.key === 'e' ||
+                                       e.key === 'Enter'
+                                    ) {
+                                       e.preventDefault()
+                                    }
+                                 }}
+                                 onPaste={(e) => e.preventDefault()}
+                              />
+                              {errorWeight && (
+                                 <p className="error-message">{errorWeight}</p>
+                              )}
+                           </div>
                         )}
-                     </div>
-                  )}
-                  {selectedExercise?.hasReps && (
-                     <div className="input-block">
-                        <label htmlFor="reps">Повторення:</label>
-                        <input
-                           type="number"
-                           step="any"
-                           id="reps"
-                           min="0"
-                           placeholder="Введіть кількість повторень"
-                           value={reps}
-                           onChange={(e) => {
-                              setReps(e.target.value)
-                           }}
-                           onKeyDown={(e) => {
-                              if (
-                                 e.key === '-' ||
-                                 e.key === 'e' ||
-                                 e.key === 'Enter'
-                              ) {
-                                 e.preventDefault()
-                              }
-                           }}
-                           onPaste={(e) => e.preventDefault()}
-                        />
-                        {errorReps && (
-                           <p className="error-message">{errorReps}</p>
+                        {selectedExercise?.hasReps && (
+                           <div className="input-block">
+                              <label htmlFor="reps">Повторення:</label>
+                              <input
+                                 type="number"
+                                 step="any"
+                                 id="reps"
+                                 min="0"
+                                 placeholder="Введіть кількість повторень"
+                                 value={reps}
+                                 onChange={(e) => {
+                                    setReps(e.target.value)
+                                 }}
+                                 onKeyDown={(e) => {
+                                    if (
+                                       e.key === '-' ||
+                                       e.key === 'e' ||
+                                       e.key === 'Enter'
+                                    ) {
+                                       e.preventDefault()
+                                    }
+                                 }}
+                                 onPaste={(e) => e.preventDefault()}
+                              />
+                              {errorReps && (
+                                 <p className="error-message">{errorReps}</p>
+                              )}
+                           </div>
                         )}
-                     </div>
-                  )}
-                  {selectedExercise?.hasTime && (
-                     <div className="input-block">
-                        <label htmlFor="time">Час виконання:</label>
-                        <input
-                           type="text"
-                           id="time"
-                           placeholder="Введіть час виконання HH:MM:SS"
-                           value={time}
-                           onChange={(e) => {
-                              setTime(e.target.value)
-                           }}
-                           onKeyDown={(e) => {
-                              if (
-                                 e.key === '-' ||
-                                 e.key === 'e' ||
-                                 e.key === 'Enter'
-                              ) {
-                                 e.preventDefault()
-                              }
-                           }}
-                           onPaste={(e) => e.preventDefault()}
-                        />
-                        {errorTime && (
-                           <p className="error-message">{errorTime}</p>
+                        {selectedExercise?.hasTime && (
+                           <div className="input-block">
+                              <label htmlFor="time">Час виконання:</label>
+                              <input
+                                 type="text"
+                                 id="time"
+                                 placeholder="Введіть час виконання HH:MM:SS"
+                                 value={time}
+                                 onChange={(e) => {
+                                    setTime(e.target.value)
+                                 }}
+                                 onKeyDown={(e) => {
+                                    if (
+                                       e.key === '-' ||
+                                       e.key === 'e' ||
+                                       e.key === 'Enter'
+                                    ) {
+                                       e.preventDefault()
+                                    }
+                                 }}
+                                 onPaste={(e) => e.preventDefault()}
+                              />
+                              {errorTime && (
+                                 <p className="error-message">{errorTime}</p>
+                              )}
+                           </div>
                         )}
-                     </div>
+                     </>
                   )}
                </div>
             </div>
