@@ -222,4 +222,9 @@ export interface IRemoveDataModalProps {
 export interface IWorkoutStatisticsProps {
    activeWorkout: IWorkout
    isAddRecordModalOpen: boolean
+   isEditRecordModalOpen: boolean
+   isRemoveRecordModalOpen: boolean
+   isAddExerciseToWorkoutModalOpen: boolean
+   isRemoveExerciseFromWorkoutModalOpen: boolean
+   exercises: IExercise[]
 }

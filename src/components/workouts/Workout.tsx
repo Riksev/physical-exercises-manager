@@ -220,6 +220,13 @@ const Workout = ({
             <WorkoutStatistics
                activeWorkout={activeWorkout}
                isAddRecordModalOpen={isAddRecordModalOpen}
+               isEditRecordModalOpen={isEditRecordModalOpen}
+               isRemoveRecordModalOpen={isRemoveRecordModalOpen}
+               isAddExerciseToWorkoutModalOpen={isAddExerciseToWorkoutModalOpen}
+               isRemoveExerciseFromWorkoutModalOpen={
+                  isRemoveExerciseFromWorkoutModalOpen
+               }
+               exercises={exercises}
             />
             <button
                className="button-edit button-full"

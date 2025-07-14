@@ -52,6 +52,10 @@ html {
       @apply my-4 w-full rounded-2xl border-b-2 border-black/70 text-3xl font-bold;
    }
 
+   p {
+      @apply w-full;
+   }
+
    input,
    button {
       @apply cursor-pointer transition-all;
@@ -67,6 +71,38 @@ html {
 
    input[type='checkbox'] {
       @apply scale-200 cursor-pointer rounded accent-purple-500;
+   }
+
+   table {
+      @apply w-full rounded-2xl border-2;
+   }
+
+   caption {
+      @apply mb-2 text-lg font-bold;
+   }
+
+   th {
+      @apply border-2 bg-gray-200 p-2 text-center font-bold capitalize;
+   }
+
+   td {
+      @apply border-2 p-2 text-center;
+   }
+
+   .flex-row {
+      @apply flex flex-row items-center justify-between;
+   }
+
+   .flex-col {
+      @apply flex flex-col items-center justify-center;
+   }
+
+   .flex-center {
+      @apply flex items-center justify-center;
+   }
+
+   .mb-2 {
+      @apply mb-2;
    }
 
    .details {
@@ -150,7 +186,7 @@ html {
    }
 
    .header {
-      @apply font-bold;
+      @apply bg-gray-200 font-bold;
    }
 
    .table-block-cell {

@@ -2,9 +2,9 @@ const About = () => {
    return (
       <details className="details">
          <summary>Про вебзастосунок</summary>
-         <div className="mt-4 flex flex-col">
+         <div className="mt-4 flex flex-col text-left">
             <p>GymGer - менеджер з фізичних вправ.</p>
-            <p>Версія: v1.5.4.</p>
+            <p>Версія: v1.5.5.</p>
             <p>
                Розробник:{' '}
                <a
