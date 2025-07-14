@@ -76,7 +76,7 @@ const WorkoutStatistics = ({
             string,
             ExerciseTimeRange
          >()
-         let workoutVolume: number = volume
+         let workoutVolume: number = 0
 
          for (const exercise of activeWorkout.exercises) {
             let minExerciseTime: string = '-'
@@ -135,6 +135,7 @@ const WorkoutStatistics = ({
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [
+      activeWorkout,
       isAddRecordModalOpen,
       isEditRecordModalOpen,
       isRemoveRecordModalOpen,
