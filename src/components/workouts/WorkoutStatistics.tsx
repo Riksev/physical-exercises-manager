@@ -14,15 +14,19 @@ const WorkoutStatistics = ({
    const [endTime, setEndTime] = useState<string>('-')
    const [duration, setDuration] = useState<string>('-')
    const [volume, setVolume] = useState<number>(0)
+   const [setsTotal, setSetsTotal] = useState<number>(0)
+   const [repsTotal, setRepsTotal] = useState<number>(0)
 
-   type ExerciseTimeRange = {
+   type ExerciseInfo = {
       name: string
-      duration: string
+      sets: number
+      reps?: number
+      volume?: number
    }
 
-   const [exerciseTimeRanges, setExerciseTimeRanges] = useState<
-      Map<string, ExerciseTimeRange>
-   >(new Map())
+   const [exerciseInfo, setExerciseInfo] = useState<Map<string, ExerciseInfo>>(
+      new Map()
+   )
 
    const getTimeString = (date: Date): string => {
       const year = date.getFullYear()
@@ -72,66 +76,64 @@ const WorkoutStatistics = ({
          let minTime: string = '-'
          let maxTime: string = '-'
 
-         const exerciseDuration: Map<string, ExerciseTimeRange> = new Map<
+         const exerciseInfoLocal: Map<string, ExerciseInfo> = new Map<
             string,
-            ExerciseTimeRange
+            ExerciseInfo
          >()
          let workoutVolume: number = 0
+         let setsGlobal: number = 0
+         let repsGlobal: number = 0
 
          for (const exercise of activeWorkout.exercises) {
-            let minExerciseTime: string = '-'
-            let maxExerciseTime: string = '-'
+            let setsLocal: number = 0
+            let repsLocal: number = 0
+            let localVolume: number = 0
 
             for (const record of exercise.records) {
                // Exercise time calculation
                const currentRecordTime = record?.addedAt
                if (currentRecordTime) {
-                  if (
-                     minExerciseTime === '-' ||
-                     currentRecordTime < minExerciseTime
-                  ) {
-                     minExerciseTime = currentRecordTime
+                  if (minTime === '-' || currentRecordTime < minTime) {
+                     minTime = currentRecordTime
                   }
-                  if (
-                     maxExerciseTime === '-' ||
-                     currentRecordTime > maxExerciseTime
-                  ) {
-                     maxExerciseTime = currentRecordTime
+                  if (maxTime === '-' || currentRecordTime > maxTime) {
+                     maxTime = currentRecordTime
                   }
                }
 
                // Workout volume calculation
                const currentReps = record?.reps
                const currentWeight = record?.weight
-               if (currentReps && currentWeight) {
-                  workoutVolume += currentReps * currentWeight
+               if (currentWeight) {
+                  const currentVolume = (currentReps ?? 1) * currentWeight
+                  localVolume += currentVolume
+                  workoutVolume += currentVolume
                }
-            }
 
-            // Workout time calculation
-            if (minExerciseTime !== '-') {
-               if (minTime === '-' || minExerciseTime < minTime) {
-                  minTime = minExerciseTime
-               }
+               setsLocal += 1
+               repsLocal += currentReps || 0
             }
-            if (maxExerciseTime !== '-') {
-               if (maxTime === '-' || maxExerciseTime > maxTime) {
-                  maxTime = maxExerciseTime
-               }
-            }
-            exerciseDuration.set(exercise.exercise_id, {
-               name:
-                  exercises.find((ex) => ex._id === exercise.exercise_id)
-                     ?.name || 'Невідома вправа',
-               duration: getDurationString(minExerciseTime, maxExerciseTime),
+            const exerciseData = exercises.find(
+               (ex) => ex._id === exercise.exercise_id
+            )
+            exerciseInfoLocal.set(exercise.exercise_id, {
+               name: exerciseData?.name || 'Невідома вправа',
+               sets: setsLocal,
+               ...(exerciseData?.hasReps ? { reps: repsLocal } : {}),
+               ...(exerciseData?.hasWeight ? { volume: localVolume } : {}),
             })
+
+            setsGlobal += setsLocal
+            repsGlobal += repsLocal
          }
 
          setStartTime(minTime)
          setEndTime(maxTime)
          setDuration(getDurationString(minTime, maxTime))
-         setExerciseTimeRanges(exerciseDuration)
+         setExerciseInfo(exerciseInfoLocal)
          setVolume(workoutVolume)
+         setSetsTotal(setsGlobal)
+         setRepsTotal(repsGlobal)
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [
@@ -160,38 +162,68 @@ const WorkoutStatistics = ({
                {endTime === '-' ? endTime : getTimeString(new Date(endTime))}
             </p>
             <p>Тривалість: {duration}</p>
-            <details className="details mt-4">
-               <summary className="text-center font-bold uppercase">
-                  вправи
-               </summary>
-               <h2 className="horizontal-line"></h2>
-               <table>
-                  <caption>Час виконання вправ</caption>
-                  <thead>
-                     <tr>
-                        <th scope="col">№</th>
-                        <th scope="col">вправа</th>
-                        <th scope="col">тривалість</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     {Array.from(exerciseTimeRanges.entries()).map(
-                        ([exerciseId, timeRange], index) => (
-                           <tr key={exerciseId}>
-                              <td>{index + 1}</td>
-                              <td>{timeRange.name}</td>
-                              <td>{timeRange.duration}</td>
-                           </tr>
-                        )
-                     )}
-                  </tbody>
-               </table>
-            </details>
+         </details>
+         <details className="details">
+            <summary className="text-center font-bold uppercase">
+               кількість
+            </summary>
+            <h2 className="horizontal-line"></h2>
+            <p>Кількість вправ: {activeWorkout.exercises.length}</p>
+            <table className="mt-4">
+               <thead>
+                  <tr>
+                     <th scope="col">вправа</th>
+                     <th scope="col">підходи</th>
+                     <th scope="col">повтори</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {Array.from(exerciseInfo.entries()).map(
+                     ([exerciseId, info]) => (
+                        <tr key={exerciseId}>
+                           <td>{info.name}</td>
+                           <td>{info?.sets ?? '-'}</td>
+                           <td>{info?.reps ?? '-'}</td>
+                        </tr>
+                     )
+                  )}
+                  <tr>
+                     <td>Всього</td>
+                     <td>{setsTotal}</td>
+                     <td>{repsTotal}</td>
+                  </tr>
+               </tbody>
+            </table>
          </details>
          <details className="details">
             <summary className="text-center font-bold uppercase">об'єм</summary>
             <h2 className="horizontal-line"></h2>
-            <p>Виконаний об'єм: {volume}</p>
+            <table>
+               <thead>
+                  <tr>
+                     <th scope="col">вправа</th>
+                     <th scope="col">об'єм</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {Array.from(exerciseInfo.entries()).map(
+                     ([exerciseId, info]) => {
+                        if (info?.volume) {
+                           return (
+                              <tr key={exerciseId}>
+                                 <td>{info.name}</td>
+                                 <td>{info?.volume ?? '-'}</td>
+                              </tr>
+                           )
+                        }
+                     }
+                  )}
+                  <tr>
+                     <td>Всього</td>
+                     <td>{volume}</td>
+                  </tr>
+               </tbody>
+            </table>
          </details>
       </details>
    )
