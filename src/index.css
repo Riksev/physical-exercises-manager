@@ -82,11 +82,11 @@ html {
    }
 
    th {
-      @apply overflow-scroll border-2 bg-gray-200 p-2 text-center font-bold capitalize;
+      @apply overflow-x-auto border-2 bg-gray-200 p-2 text-center font-bold capitalize;
    }
 
    td {
-      @apply overflow-scroll border-2 p-2 text-center;
+      @apply overflow-x-auto border-2 p-2 text-center;
    }
 
    .flex-row {
@@ -166,7 +166,7 @@ html {
    }
 
    .app-main {
-      @apply flex h-screen min-h-screen w-full flex-col items-center gap-4 overflow-y-scroll bg-gradient-to-br from-fuchsia-200 to-cyan-200 p-4 pb-20 text-center md:w-3/4 lg:w-1/2;
+      @apply flex h-screen min-h-screen w-full flex-col items-center gap-4 overflow-y-scroll bg-gradient-to-br from-fuchsia-200 to-cyan-200 p-4 pb-20 text-center xl:w-1/2;
    }
 
    .page-container {
