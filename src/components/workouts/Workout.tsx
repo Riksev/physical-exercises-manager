@@ -167,7 +167,7 @@ const Workout = ({
                                                    </summary>
                                                    <div className="flex w-full flex-row items-center justify-between">
                                                       <button
-                                                         className="button-edit w-full rounded-none px-4 py-1"
+                                                         className="button-edit w-1/2 truncate rounded-none px-4 py-1 max-[400px]:text-sm"
                                                          onClick={() => {
                                                             setIsEditRecordModalOpen(
                                                                true
@@ -177,7 +177,7 @@ const Workout = ({
                                                          редагувати
                                                       </button>
                                                       <button
-                                                         className="button-remove w-full rounded-none px-4 py-1"
+                                                         className="button-remove w-1/2 truncate rounded-none px-4 py-1 max-[400px]:text-sm"
                                                          onClick={() => {
                                                             setIsRemoveRecordModalOpen(
                                                                true

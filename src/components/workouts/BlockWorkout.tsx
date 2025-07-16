@@ -4,7 +4,7 @@ const BlockWorkout = ({ workout, exercises, clicker }: IBlockWorkoutProps) => {
    return (
       <div className="block-border">
          <div className="mb-2 flex w-full flex-row items-center justify-between">
-            <p>
+            <p className="pr-3">
                {workout.date}
                {' - '}
                {new Date(workout.date)
@@ -12,7 +12,7 @@ const BlockWorkout = ({ workout, exercises, clicker }: IBlockWorkoutProps) => {
                   .replace(/^./, (c) => c.toUpperCase())}
             </p>
             <button
-               className="button-edit button-modal w-1/3 text-sm"
+               className="button-edit button-modal w-1/3 truncate text-sm max-[400px]:text-xs"
                onClick={() => {
                   clicker(workout)
                }}

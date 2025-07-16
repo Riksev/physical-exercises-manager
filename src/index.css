@@ -70,11 +70,11 @@ html {
    }
 
    input[type='checkbox'] {
-      @apply scale-200 cursor-pointer rounded accent-purple-500;
+      @apply ml-2 scale-200 cursor-pointer rounded accent-purple-500;
    }
 
    table {
-      @apply w-full rounded-2xl border-2;
+      @apply w-full table-fixed rounded-2xl border-2 p-2;
    }
 
    caption {
@@ -82,11 +82,11 @@ html {
    }
 
    th {
-      @apply border-2 bg-gray-200 p-2 text-center font-bold capitalize;
+      @apply overflow-scroll border-2 bg-gray-200 p-2 text-center font-bold capitalize;
    }
 
    td {
-      @apply border-2 p-2 text-center;
+      @apply overflow-scroll border-2 p-2 text-center;
    }
 
    .flex-row {
