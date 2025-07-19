@@ -3,8 +3,8 @@ const About = () => {
       <details className="details">
          <summary>Про вебзастосунок</summary>
          <div className="mt-4 flex flex-col text-left">
-            <p>GymGer - менеджер з фізичних вправ.</p>
-            <p>Версія: v1.6.1.</p>
+            <p>Gymanote - менеджер з фізичних вправ.</p>
+            <p>Версія: v1.6.2.</p>
             <p>
                Розробник:{' '}
                <a

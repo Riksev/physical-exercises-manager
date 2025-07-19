@@ -5,7 +5,6 @@ import Exercises from './components/exercises/Exercises'
 import {
    Pages,
    type IExercise,
-   type IRecord,
    type IWorkout,
    type PageNames,
 } from './interfaces'
@@ -46,68 +45,8 @@ function App() {
    )
    const [isFiltered, setIsFiltered] = useState<boolean>(false)
 
-   const setWorkoutsCompatible = (arr: IWorkout[]) => {
-      setWorkouts(() => {
-         return arr.map((workout, index) => {
-            if (!workout.exercises) {
-               workout.exercises = []
-            } else {
-               workout.exercises = workout.exercises.map((ex) => {
-                  ex.records = ex.records.map((rec, indexInner) => {
-                     if (!rec._id) {
-                        return {
-                           ...rec,
-                           _id: (new Date().getTime() + indexInner).toString(),
-                        }
-                     }
-                     return rec
-                  })
-                  return ex
-               })
-            }
-            if (workout.workouts) {
-               workout.workouts.forEach((w) => {
-                  const newRecord: IRecord = {
-                     _id: (new Date().getTime() + index).toString(),
-                     ...(w.reps && { reps: w.reps }),
-                     ...(w.weight && { weight: w.weight }),
-                     ...(w.time && { time: w.time }),
-                  }
-
-                  if (
-                     exercises.findIndex((ex) => ex._id === w.exercise_id) !==
-                     -1
-                  ) {
-                     const exerciseId = workout.exercises.findIndex(
-                        (ex) => ex.exercise_id === w.exercise_id
-                     )
-
-                     if (exerciseId === -1) {
-                        workout.exercises.push({
-                           exercise_id: w.exercise_id,
-                           records: [newRecord],
-                        })
-                     } else {
-                        workout.exercises[exerciseId].records.push(newRecord)
-                     }
-                  }
-               })
-            }
-            if (workout._id) {
-               return workout
-            }
-            return {
-               _id: (new Date().getTime() + index).toString(),
-               date: workout.date,
-               exercises: workout.exercises,
-            }
-         })
-      })
-   }
-
-   const setData = (exercises: IExercise[], workouts: IWorkout[]) => {
+   const setData = (exercises: IExercise[]) => {
       setExercises(exercises)
-      setWorkoutsCompatible(workouts)
    }
 
    useEffect((): void => {
@@ -115,11 +54,6 @@ function App() {
       if (storedExercises) {
          setExercises(JSON.parse(storedExercises) as IExercise[])
       }
-      const storedWorkouts = localStorage.getItem('workouts')
-      if (storedWorkouts) {
-         setWorkoutsCompatible(JSON.parse(storedWorkouts) as IWorkout[])
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [])
 
    useEffect((): void => {

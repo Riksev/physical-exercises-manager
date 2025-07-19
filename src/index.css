@@ -6,7 +6,7 @@ html {
 
 @layer base {
    html {
-      @apply overflow-y-hidden;
+      @apply h-full overflow-y-hidden;
    }
 
    label {
@@ -162,11 +162,11 @@ html {
    }
 
    .app-bg {
-      @apply flex min-h-screen w-full flex-col items-center;
+      @apply flex h-full w-full flex-col items-center;
    }
 
    .app-main {
-      @apply flex h-screen min-h-screen w-full flex-col items-center gap-4 overflow-y-scroll bg-gradient-to-br from-fuchsia-200 to-cyan-200 p-4 pb-20 text-center xl:w-1/2;
+      @apply flex max-h-[100dvh] max-h-screen min-h-full w-full flex-col items-center gap-4 overflow-y-scroll bg-gradient-to-br from-fuchsia-200 to-cyan-200 p-4 pb-20 text-center xl:w-1/2;
    }
 
    .page-container {
@@ -201,7 +201,3 @@ html {
       @apply flex-1;
    }
 }
-
-/* [{"date":"2025-06-06","workouts":[{"_id":"1749253358463","exercise_id":"1749252961405","reps":8,"weight":100},{"_id":"1749253369196","exercise_id":"1749252981120","time":"00:30:00"}]},{"date":"2025-06-07","workouts":[{"_id":"1749253323160","exercise_id":"1749252961405","reps":10,"weight":100},{"_id":"1749253331863","exercise_id":"1749252972471","reps":4,"weight":200},{"_id":"1749253339678","exercise_id":"1749252972471","reps":3,"weight":180}]}] */
-
-/* [{"_id":"1749497417555","date":"2025-05-08","exercises":[{"exercise_id":"1749337474358","records":[{"reps":1,"weight":100}]},{"exercise_id":"1749417028304","records":[{"reps":5,"weight":20,"time":"00:30:01"}]},{"exercise_id":"1749420546570","records":[]}]},{"_id":"1749497417556","date":"2025-06-09","exercises":[{"exercise_id":"1749337480140","records":[{"reps":1,"weight":100}]},{"exercise_id":"1749337474358","records":[]},{"exercise_id":"1749420546570","records":[]}]},{"_id":"1749497417557","date":"2025-06-11","exercises":[]}] */
