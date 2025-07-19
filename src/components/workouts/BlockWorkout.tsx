@@ -6,13 +6,14 @@ const BlockWorkout = ({ workout, exercises, clicker }: IBlockWorkoutProps) => {
          <div className="mb-2 flex w-full flex-row items-center justify-between">
             <p className="pr-3">
                {workout.date}
-               {' - '}
+               <span className="responsive-break-off">{' - '}</span>
+               <span className="responsive-break-on"> </span>
                {new Date(workout.date)
                   .toLocaleDateString('uk-UA', { weekday: 'long' })
                   .replace(/^./, (c) => c.toUpperCase())}
             </p>
             <button
-               className="button-edit button-modal w-1/3 truncate text-sm max-[400px]:text-xs"
+               className="button-edit button-modal w-2/3 truncate text-sm max-[400px]:text-xs sm:w-1/3"
                onClick={() => {
                   clicker(workout)
                }}

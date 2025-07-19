@@ -9,6 +9,14 @@ html {
       @apply overflow-y-hidden;
    }
 
+   html,
+   body,
+   #root,
+   .app-bg,
+   .app-main {
+      @apply h-full;
+   }
+
    label {
       @apply block pl-1 text-left;
    }
@@ -50,6 +58,10 @@ html {
 
    .horizontal-line {
       @apply my-4 w-full rounded-2xl border-b-2 border-black/70 text-3xl font-bold;
+   }
+
+   .title {
+      @apply mt-0 mb-2 rounded-t-none pt-8 pb-2;
    }
 
    p {
@@ -161,16 +173,16 @@ html {
       @apply flex w-full flex-row items-center justify-between;
    }
 
+   #root {
+      @apply flex items-center justify-center;
+   }
+
    .app-bg {
-      @apply flex h-screen w-full flex-col items-center;
+      @apply flex w-full flex-col items-center bg-gradient-to-br from-fuchsia-200 to-cyan-200 xl:w-1/2;
    }
 
    .app-main {
-      @apply mb-20 flex h-screen w-full flex-col items-center gap-2 overflow-y-scroll bg-gradient-to-br from-fuchsia-200 to-cyan-200 p-4 pb-8 text-center text-lg font-medium xl:w-1/2;
-   }
-
-   .title {
-      @apply mb-2 pb-2;
+      @apply flex w-full flex-col items-center gap-2 overflow-y-scroll p-4 pt-0 text-center text-lg font-medium;
    }
 
    .block-border {
@@ -195,5 +207,13 @@ html {
 
    .table-block-cell-text {
       @apply flex-1;
+   }
+
+   .responsive-break-off {
+      @apply hidden sm:inline;
+   }
+
+   .responsive-break-on {
+      @apply block sm:hidden;
    }
 }

@@ -45,8 +45,6 @@ const Workouts = ({
    useEffect(() => {
       if (!dateBegin.match(/^\d{4}-\d{2}-\d{2}$/)) {
          setErrorDateBegin('Дата не може бути порожньою.')
-      } else if (dateBegin > dateEnd && dateEnd !== '') {
-         setErrorDateBegin('Дата початку не може бути пізніше дати закінчення.')
       } else {
          setErrorDateBegin('')
       }
@@ -72,7 +70,7 @@ const Workouts = ({
                   <input
                      type="date"
                      id="dateBegin"
-                     className="w-1/2"
+                     className="w-2/3 sm:w-1/2"
                      value={dateBegin}
                      onChange={(e) => {
                         setDateBegin(e.target.value)
@@ -87,7 +85,7 @@ const Workouts = ({
                   <input
                      type="date"
                      id="dateEnd"
-                     className="w-1/2"
+                     className="w-2/3 sm:w-1/2"
                      value={dateEnd}
                      onChange={(e) => {
                         setDateEnd(e.target.value)
@@ -102,7 +100,7 @@ const Workouts = ({
                         readOnly
                         type="text"
                         id="exercise"
-                        className="w-2/3 pr-8 text-ellipsis"
+                        className="w-9/10 pr-8 text-ellipsis sm:w-4/7"
                         value={selectedExercise?.name || 'Всі вправи'}
                         onClick={() => setIsSelectExerciseModalOpen(true)}
                      />
@@ -134,29 +132,39 @@ const Workouts = ({
                                    exercise.name === selectedExercise.name
                              ) || null
                            : null
-                        return updatedWorkouts.flatMap((workout) => {
-                           if (
-                              workout.date < dateBegin ||
-                              workout.date > dateEnd
-                           ) {
-                              return []
+                        const fromDate =
+                           dateBegin < dateEnd ? dateBegin : dateEnd
+                        const toDate = dateBegin < dateEnd ? dateEnd : dateBegin
+                        const newWorkouts = updatedWorkouts.flatMap(
+                           (workout) => {
+                              if (
+                                 workout.date < fromDate ||
+                                 workout.date > toDate
+                              ) {
+                                 return []
+                              }
+                              if (!exerciseInfo) {
+                                 return [workout]
+                              }
+                              const exerciseIndex = workout.exercises.findIndex(
+                                 (ex) => ex.exercise_id === exerciseInfo._id
+                              )
+                              if (exerciseIndex === -1) {
+                                 return []
+                              }
+                              return [
+                                 {
+                                    ...workout,
+                                    exercises: [
+                                       workout.exercises[exerciseIndex],
+                                    ],
+                                 },
+                              ]
                            }
-                           if (!exerciseInfo) {
-                              return [workout]
-                           }
-                           const exerciseIndex = workout.exercises.findIndex(
-                              (ex) => ex.exercise_id === exerciseInfo._id
-                           )
-                           if (exerciseIndex === -1) {
-                              return []
-                           }
-                           return [
-                              {
-                                 ...workout,
-                                 exercises: [workout.exercises[exerciseIndex]],
-                              },
-                           ]
-                        })
+                        )
+                        return dateBegin > dateEnd
+                           ? newWorkouts.reverse()
+                           : newWorkouts
                      })
                      setIsFiltered(true)
                   }}

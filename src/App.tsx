@@ -20,23 +20,14 @@ function App() {
 
    const scrollRef = useRef<HTMLDivElement>(null)
 
-   const getFirstDayOfMonth = (): string => {
-      const now = new Date()
-      const year = now.getFullYear()
-      const month = String(now.getMonth() + 1).padStart(2, '0')
-      const day = '01'
-      return `${year}-${month}-${day}`
-   }
-
-   const getCurrentDate = (): string => {
-      const now = new Date()
+   const getDate = (now: Date = new Date()): string => {
       const year = now.getFullYear()
       const month = String(now.getMonth() + 1).padStart(2, '0')
       const day = String(now.getDate()).padStart(2, '0')
       return `${year}-${month}-${day}`
    }
-   const [dateBegin, setDateBegin] = useState<string>(getFirstDayOfMonth())
-   const [dateEnd, setDateEnd] = useState<string>(getCurrentDate())
+   const [dateBegin, setDateBegin] = useState<string>('')
+   const [dateEnd, setDateEnd] = useState<string>('')
    const [selectedExercise, setSelectedExercise] = useState<IExercise | null>(
       null
    )
@@ -45,8 +36,16 @@ function App() {
    )
    const [isFiltered, setIsFiltered] = useState<boolean>(false)
 
-   const setData = (exercises: IExercise[]) => {
-      setExercises(exercises)
+   const setData = (newExercises: IExercise[], newWorkouts: IWorkout[]) => {
+      setExercises(newExercises)
+      setWorkouts(newWorkouts)
+      setDateBegin(getDate())
+      setDateEnd(
+         newWorkouts.length > 0
+            ? getDate(new Date(newWorkouts[0].date))
+            : getDate()
+      )
+      setSelectedExercise(null)
    }
 
    useEffect((): void => {
@@ -56,35 +55,60 @@ function App() {
       }
       const storedWorkouts = localStorage.getItem('workouts')
       if (storedWorkouts) {
-         setWorkouts(JSON.parse(storedWorkouts) as IWorkout[])
+         const parsedWorkouts = JSON.parse(storedWorkouts) as IWorkout[]
+         setWorkouts(parsedWorkouts)
+         setDateBegin(
+            parsedWorkouts.length > 0
+               ? getDate(
+                    new Date(parsedWorkouts[parsedWorkouts.length - 1].date)
+                 )
+               : getDate()
+         )
+         setDateEnd(
+            parsedWorkouts.length > 0
+               ? getDate(new Date(parsedWorkouts[0].date))
+               : getDate()
+         )
+      } else {
+         setDateBegin(getDate())
+         setDateEnd(getDate())
       }
    }, [])
 
    useEffect((): void => {
       localStorage.setItem('exercises', JSON.stringify(exercises))
+      if (selectedExercise) {
+         setSelectedExercise(
+            exercises.find((ex) => ex._id === selectedExercise._id) || null
+         )
+      }
+      if (activeExercise) {
+         setActiveExercise(
+            exercises.find((ex) => ex._id === activeExercise._id) || null
+         )
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [exercises])
 
    useEffect((): void => {
       localStorage.setItem('workouts', JSON.stringify(workouts))
       setFilteredWorkouts(workouts.slice().reverse())
       setIsFiltered(false)
-   }, [workouts])
-
-   useEffect((): void => {
-      if (activeExercise) {
-         setActiveExercise(
-            exercises.find((ex) => ex._id === activeExercise._id) || null
-         )
-      }
-   }, [activeExercise, exercises])
-
-   useEffect((): void => {
+      setDateBegin(
+         workouts.length > 0
+            ? getDate(new Date(workouts[workouts.length - 1].date))
+            : getDate()
+      )
+      setDateEnd(
+         workouts.length > 0 ? getDate(new Date(workouts[0].date)) : getDate()
+      )
       if (activeWorkout) {
          setActiveWorkout(
             workouts.find((w) => w._id === activeWorkout._id) || null
          )
       }
-   }, [activeWorkout, workouts])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [workouts])
 
    return (
       <div className="app-bg">
@@ -125,14 +149,14 @@ function App() {
                   setData={setData}
                />
             )}
-            <Menu
-               activePage={activePage}
-               setActivePage={setActivePage}
-               setActiveExercise={setActiveExercise}
-               setActiveWorkout={setActiveWorkout}
-               scrollRef={scrollRef}
-            />
          </div>
+         <Menu
+            activePage={activePage}
+            setActivePage={setActivePage}
+            setActiveExercise={setActiveExercise}
+            setActiveWorkout={setActiveWorkout}
+            scrollRef={scrollRef}
+         />
       </div>
    )
 }
