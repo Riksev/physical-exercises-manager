@@ -166,7 +166,7 @@ html {
    }
 
    .app-main {
-      @apply flex max-h-[100dvh] max-h-screen min-h-full w-full flex-col items-center gap-4 overflow-y-scroll bg-gradient-to-br from-fuchsia-200 to-cyan-200 p-4 pb-20 text-center xl:w-1/2;
+      @apply flex max-h-[100dvh] max-h-screen w-full flex-1 flex-col items-center gap-4 overflow-y-scroll bg-gradient-to-br from-fuchsia-200 to-cyan-200 p-4 pb-20 text-center xl:w-1/2;
    }
 
    .page-container {
