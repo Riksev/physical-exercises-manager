@@ -6,7 +6,7 @@ html {
 
 @layer base {
    html {
-      @apply h-full overflow-y-hidden;
+      @apply overflow-y-hidden;
    }
 
    label {
@@ -162,7 +162,7 @@ html {
    }
 
    .app-bg {
-      @apply flex h-full w-full flex-col items-center;
+      @apply flex h-[100dvh] h-screen w-full flex-col items-center;
    }
 
    .app-main {

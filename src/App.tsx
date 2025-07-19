@@ -54,6 +54,10 @@ function App() {
       if (storedExercises) {
          setExercises(JSON.parse(storedExercises) as IExercise[])
       }
+      const storedWorkouts = localStorage.getItem('workouts')
+      if (storedWorkouts) {
+         setWorkouts(JSON.parse(storedWorkouts) as IWorkout[])
+      }
    }, [])
 
    useEffect((): void => {
