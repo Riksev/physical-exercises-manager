@@ -15,7 +15,7 @@ const Exercise = ({
       useState<boolean>(false)
 
    return (
-      <div className="page-container">
+      <>
          <h2 className="horizontal-line title">{activeExercise?.name}</h2>
          <div className="flex w-full flex-col items-center gap-4">
             <button
@@ -58,7 +58,7 @@ const Exercise = ({
                activeExercise={activeExercise}
             />
          )}
-      </div>
+      </>
    )
 }
 

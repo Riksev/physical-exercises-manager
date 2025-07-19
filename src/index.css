@@ -162,19 +162,15 @@ html {
    }
 
    .app-bg {
-      @apply flex h-[100dvh] h-screen w-full flex-col items-center;
+      @apply flex h-screen w-full flex-col items-center;
    }
 
    .app-main {
-      @apply flex max-h-[100dvh] max-h-screen w-full flex-1 flex-col items-center gap-4 overflow-y-scroll bg-gradient-to-br from-fuchsia-200 to-cyan-200 p-4 pb-20 text-center xl:w-1/2;
-   }
-
-   .page-container {
-      @apply mb-20 flex w-full flex-col text-lg font-medium;
+      @apply mb-20 flex h-screen w-full flex-col items-center gap-2 overflow-y-scroll bg-gradient-to-br from-fuchsia-200 to-cyan-200 p-4 pb-8 text-center text-lg font-medium xl:w-1/2;
    }
 
    .title {
-      @apply mb-6 pb-2;
+      @apply mb-2 pb-2;
    }
 
    .block-border {

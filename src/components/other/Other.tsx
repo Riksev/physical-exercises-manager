@@ -6,7 +6,7 @@ import FAQ from './FAQ'
 
 const Other = ({ exercises, workouts, setData }: IOtherProps) => {
    return (
-      <div className="page-container">
+      <>
          <h2 className="horizontal-line title">Інше</h2>
          <DataManager
             exercises={exercises}
@@ -16,7 +16,7 @@ const Other = ({ exercises, workouts, setData }: IOtherProps) => {
          <CalculatorOneRep />
          <About />
          <FAQ />
-      </div>
+      </>
    )
 }
 

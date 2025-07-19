@@ -25,9 +25,9 @@ const Exercises = ({
    return (
       <>
          {!activeExercise ? (
-            <div className="page-container">
+            <>
                <h2 className="horizontal-line title">Список вправ</h2>
-               <div className="input-block mb-2">
+               <div className="input-block">
                   <label htmlFor="searchName">Пошук за назвою:</label>
                   <input
                      type="text"
@@ -55,9 +55,9 @@ const Exercises = ({
                >
                   пошук вправ
                </button>
-               <h2 className="horizontal-line"></h2>
+               <h2 className="horizontal-line my-1"></h2>
                <button
-                  className="button-add button-full mb-4"
+                  className="button-add button-full mb-2"
                   onClick={() => {
                      setIsAddExerciseModalOpen(true)
                   }}
@@ -68,7 +68,7 @@ const Exercises = ({
                   exercises={filteredExercises}
                   clicker={setActiveExercise}
                />
-            </div>
+            </>
          ) : (
             <Exercise
                activeExercise={activeExercise}

@@ -59,7 +59,7 @@ const Workouts = ({
    }, [dateBegin, dateEnd])
 
    return !activeWorkout ? (
-      <div className="page-container">
+      <>
          <h2 className="horizontal-line title">Мої тренування</h2>
          <details className="details">
             <summary>
@@ -175,7 +175,7 @@ const Workouts = ({
                </button>
             </div>
          </details>
-         <h2 className="horizontal-line"></h2>
+         <h2 className="horizontal-line my-1"></h2>
          <button
             className="button-add button-full"
             onClick={() => {
@@ -203,7 +203,7 @@ const Workouts = ({
                exercises={exercises}
             />
          )}
-      </div>
+      </>
    ) : (
       <Workout
          activeWorkout={activeWorkout}

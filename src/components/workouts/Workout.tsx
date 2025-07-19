@@ -50,7 +50,7 @@ const Workout = ({
    }, [exercises])
 
    return (
-      <div className="page-container">
+      <>
          <h2 className="horizontal-line title">
             {activeWorkout?.date}
             {' - '}
@@ -314,7 +314,7 @@ const Workout = ({
                selectedRecord={selectedRecord}
             />
          )}
-      </div>
+      </>
    )
 }
 
