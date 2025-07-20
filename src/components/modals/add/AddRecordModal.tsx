@@ -13,8 +13,6 @@ const AddRecordModal = ({
 
    const [isLoading, setIsLoading] = useState<boolean>(true)
 
-   const [errorReps, setErrorReps] = useState<string>('')
-   const [errorWeight, setErrorWeight] = useState<string>('')
    const [errorTime, setErrorTime] = useState<string>('')
 
    useEffect(() => {
@@ -40,26 +38,8 @@ const AddRecordModal = ({
    }, [])
 
    useEffect(() => {
-      if (reps === '') {
-         setErrorReps('Поле не може бути порожнім.')
-      } else {
-         setErrorReps('')
-      }
-   }, [reps])
-
-   useEffect(() => {
-      if (weight === '') {
-         setErrorWeight('Поле не може бути порожнім.')
-      } else {
-         setErrorWeight('')
-      }
-   }, [weight])
-
-   useEffect(() => {
       if (!time.match(/^\d{2}:\d{2}:\d{2}$/)) {
          setErrorTime('Невірний формат часу. Використовуйте HH:MM:SS.')
-      } else if (time === '00:00:00') {
-         setErrorTime('Час не може бути 00:00:00.')
       } else {
          setErrorTime('')
       }
@@ -108,11 +88,6 @@ const AddRecordModal = ({
                                     }}
                                     onPaste={(e) => e.preventDefault()}
                                  />
-                                 {errorWeight && (
-                                    <p className="error-message">
-                                       {errorWeight}
-                                    </p>
-                                 )}
                               </div>
                            )}
                            {selectedExercise?.hasReps && (
@@ -139,9 +114,6 @@ const AddRecordModal = ({
                                     }}
                                     onPaste={(e) => e.preventDefault()}
                                  />
-                                 {errorReps && (
-                                    <p className="error-message">{errorReps}</p>
-                                 )}
                               </div>
                            )}
                            {selectedExercise?.hasTime && (
@@ -182,10 +154,10 @@ const AddRecordModal = ({
                               const newRecord: IRecord = {
                                  _id: new Date().getTime().toString(),
                                  ...(selectedExercise?.hasReps && {
-                                    reps: parseFloat(reps),
+                                    reps: parseFloat(reps ? reps : '0'),
                                  }),
                                  ...(selectedExercise?.hasWeight && {
-                                    weight: parseFloat(weight),
+                                    weight: parseFloat(weight ? weight : '0'),
                                  }),
                                  ...(selectedExercise?.hasTime && {
                                     time,
@@ -215,12 +187,7 @@ const AddRecordModal = ({
                            })
                            setIsAddRecordModalOpen(false)
                         }}
-                        disabled={
-                           (selectedExercise?.hasReps && errorReps !== '') ||
-                           (selectedExercise?.hasWeight &&
-                              errorWeight !== '') ||
-                           (selectedExercise?.hasTime && errorTime !== '')
-                        }
+                        disabled={selectedExercise?.hasTime && errorTime !== ''}
                      >
                         додати
                      </button>

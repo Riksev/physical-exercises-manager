@@ -78,6 +78,10 @@ const Workout = ({
                               exercises.find(
                                  (ex) => ex._id === exercise.exercise_id
                               ) || null
+                           const exerciseParams =
+                              exerciseInfo?.hasReps ||
+                              exerciseInfo?.hasWeight ||
+                              exerciseInfo?.hasTime
                            return (
                               exerciseInfo && (
                                  <details
@@ -103,9 +107,12 @@ const Workout = ({
                                        </div>
                                     </summary>
                                     <h2 className="horizontal-line"></h2>
-                                    {exercise.records.length === 0 ? (
+                                    {exercise.records.length === 0 ||
+                                    !exerciseParams ? (
                                        <p className="my-4 block text-left">
-                                          Записи відсутні.
+                                          {!exerciseParams
+                                             ? 'Вправа не містить параметрів.'
+                                             : 'Записи відсутні.'}
                                        </p>
                                     ) : (
                                        <div className="my-4">
@@ -193,7 +200,7 @@ const Workout = ({
                                        </div>
                                     )}
                                     <button
-                                       className="button-add button-modal"
+                                       className={`button-add button-modal ${!exerciseParams ? 'hidden' : ''}`}
                                        onClick={() => {
                                           setIsAddRecordModalOpen(true)
                                        }}

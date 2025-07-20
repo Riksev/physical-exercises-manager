@@ -1,14 +1,31 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type JSX } from 'react'
 
 const CalculatorOneRep = () => {
    const [reps, setReps] = useState<string>('')
    const [weight, setWeight] = useState<string>('')
-   const [maxWeight, setMaxWeight] = useState<string>('')
 
    const [errorReps, setErrorReps] = useState('')
    const [errorWeight, setErrorWeight] = useState('')
 
-   const calculateMaxWeight = () => {
+   const [results, setResults] = useState<JSX.Element | null>(null)
+
+   useEffect(() => {
+      if (reps === '') {
+         setErrorReps('Поле не може бути порожнім.')
+      } else {
+         setErrorReps('')
+      }
+   }, [reps])
+
+   useEffect(() => {
+      if (weight === '') {
+         setErrorWeight('Поле не може бути порожнім.')
+      } else {
+         setErrorWeight('')
+      }
+   }, [weight])
+
+   const handleCalculate = () => {
       const EpleysFormula = parseFloat(weight) * (1.0 + parseFloat(reps) / 30.0)
       const LandersFormula =
          (100.0 * parseFloat(weight)) / (101.3 - 2.67123 * parseFloat(reps))
@@ -65,29 +82,30 @@ const CalculatorOneRep = () => {
          values.push(parseFloat(weight))
       }
 
+      if (parseFloat(reps) == 0.0) {
+         values.push(0.0)
+      }
+
       const minPossibleWeight = Math.min(...values)
       const maxPossibleWeight = Math.max(...values)
 
-      setMaxWeight(
-         `${minPossibleWeight.toFixed(1)} - ${maxPossibleWeight.toFixed(1)}`
+      setResults(
+         <p className="mt-2 pl-1 text-xl">
+            Ваш максимум у діапазоні:<br></br>
+            {`${minPossibleWeight.toFixed(1)} - ${maxPossibleWeight.toFixed(1)}`}
+         </p>
       )
    }
 
-   useEffect(() => {
-      if (reps === '') {
-         setErrorReps('Поле не може бути порожнім.')
-      } else {
-         setErrorReps('')
-      }
-   }, [reps])
+   const handleClear = () => {
+      setReps('')
+      setWeight('')
+      setResults(null)
+   }
 
    useEffect(() => {
-      if (weight === '') {
-         setErrorWeight('Поле не може бути порожнім.')
-      } else {
-         setErrorWeight('')
-      }
-   }, [weight])
+      setResults(null)
+   }, [weight, reps])
 
    return (
       <details className="details">
@@ -133,17 +151,11 @@ const CalculatorOneRep = () => {
             />
             {errorReps && <p className="error-message">{errorReps}</p>}
          </div>
-         <p className="mt-2 pl-1 text-xl">
-            Ваш максимум у діапазоні:<br></br>
-            {maxWeight ? maxWeight : '? - ?'}
-            <br></br>
-            Заявлена похибка: 0-4%<br></br>
-         </p>
          <button
             className="button-action button-full mt-4"
-            disabled={reps == '' || weight == ''}
+            disabled={errorReps !== '' || errorWeight !== ''}
             onClick={() => {
-               calculateMaxWeight()
+               handleCalculate()
             }}
          >
             порахувати
@@ -151,13 +163,12 @@ const CalculatorOneRep = () => {
          <button
             className="button-action button-full mt-4"
             onClick={() => {
-               setReps('')
-               setWeight('')
-               setMaxWeight('')
+               handleClear()
             }}
          >
             очистити
          </button>
+         {results}
       </details>
    )
 }

@@ -11,19 +11,13 @@ export const Pages = {
 export interface IWorkout {
    readonly _id: string
    date: string
+   addedAt?: string
    exercises: IWorkoutExercise[]
-   // Workouts was renamed to exercises in the original code, but keeping it for compatibility
-   workouts?: {
-      _id: string
-      exercise_id: string
-      reps?: number
-      weight?: number
-      time?: string
-   }[]
 }
 
 export interface IWorkoutExercise {
    exercise_id: string
+   addedAt?: string
    records: IRecord[]
 }
 

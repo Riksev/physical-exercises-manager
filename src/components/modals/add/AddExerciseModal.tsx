@@ -11,7 +11,6 @@ const AddExerciseModal = ({
    const [hasTime, setHasTime] = useState<boolean>(false)
 
    const [errorName, setErrorName] = useState<string>('')
-   const [errorCheckboxes, setErrorCheckboxes] = useState<string>('')
 
    useEffect(() => {
       if (name === '') {
@@ -20,14 +19,6 @@ const AddExerciseModal = ({
          setErrorName('')
       }
    }, [name])
-
-   useEffect(() => {
-      if (!hasReps && !hasWeight && !hasTime) {
-         setErrorCheckboxes('Хоча б один з параметрів має бути обраний.')
-      } else {
-         setErrorCheckboxes('')
-      }
-   }, [hasReps, hasWeight, hasTime])
 
    return (
       <div className="modal-bg">
@@ -94,9 +85,6 @@ const AddExerciseModal = ({
                         onChange={(e) => setHasTime(e.target.checked)}
                      />
                   </div>
-                  {errorCheckboxes && (
-                     <p className="error-message">{errorCheckboxes}</p>
-                  )}
                </div>
             </div>
             <h2 className="horizontal-line"></h2>
@@ -137,9 +125,7 @@ const AddExerciseModal = ({
                   })
                   setIsAddExerciseModalOpen(false)
                }}
-               disabled={
-                  errorName !== '' || (!hasReps && !hasWeight && !hasTime)
-               }
+               disabled={errorName !== ''}
             >
                додати
             </button>

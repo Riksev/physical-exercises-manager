@@ -84,10 +84,24 @@ const WorkoutStatistics = ({
          let setsGlobal: number = 0
          let repsGlobal: number = 0
 
+         if (activeWorkout?.addedAt) {
+            minTime = activeWorkout.addedAt
+            maxTime = activeWorkout.addedAt
+         }
+
          for (const exercise of activeWorkout.exercises) {
             let setsLocal: number = 0
             let repsLocal: number = 0
             let localVolume: number = 0
+
+            if (exercise.addedAt) {
+               if (minTime === '-' || exercise.addedAt < minTime) {
+                  minTime = exercise.addedAt
+               }
+               if (maxTime === '-' || exercise.addedAt > maxTime) {
+                  maxTime = exercise.addedAt
+               }
+            }
 
             for (const record of exercise.records) {
                // Exercise time calculation

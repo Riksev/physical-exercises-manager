@@ -100,7 +100,7 @@ const Workouts = ({
                         readOnly
                         type="text"
                         id="exercise"
-                        className="w-9/10 pr-8 text-ellipsis sm:w-4/7"
+                        className="w-9/10 pr-8 sm:w-4/7"
                         value={selectedExercise?.name || 'Всі вправи'}
                         onClick={() => setIsSelectExerciseModalOpen(true)}
                      />

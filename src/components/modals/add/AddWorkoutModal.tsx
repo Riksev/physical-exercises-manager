@@ -72,6 +72,7 @@ const AddWorkoutModal = ({
                      const newWorkout: IWorkout = {
                         _id: new Date().getTime().toString(),
                         date,
+                        addedAt: new Date().toISOString(),
                         exercises: [],
                      }
                      const updated = [...prev]

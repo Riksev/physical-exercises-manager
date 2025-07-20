@@ -34,6 +34,7 @@ const AddExerciseToWorkoutModal = ({
          if (workoutIndex !== -1) {
             updated[workoutIndex].exercises.push({
                exercise_id: exercise._id,
+               addedAt: new Date().toISOString(),
                records: [],
             })
          }

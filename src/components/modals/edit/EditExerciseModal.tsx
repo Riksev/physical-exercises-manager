@@ -18,15 +18,6 @@ const EditExerciseModal = ({
    )
 
    const [errorName, setErrorName] = useState<string>('')
-   const [errorCheckboxes, setErrorCheckboxes] = useState<string>('')
-
-   useEffect(() => {
-      if (!hasReps && !hasWeight && !hasTime) {
-         setErrorCheckboxes('Хоча б один з параметрів має бути обраний.')
-      } else {
-         setErrorCheckboxes('')
-      }
-   }, [hasReps, hasWeight, hasTime])
 
    useEffect(() => {
       if (name === '') {
@@ -105,9 +96,6 @@ const EditExerciseModal = ({
                         onChange={(e) => setHasTime(e.target.checked)}
                      />
                   </div>
-                  {errorCheckboxes && (
-                     <p className="error-message">{errorCheckboxes}</p>
-                  )}
                </div>
             </div>
             <h2 className="horizontal-line"></h2>
@@ -130,9 +118,7 @@ const EditExerciseModal = ({
                      return updated
                   })
                }}
-               disabled={
-                  errorName !== '' || (!hasReps && !hasWeight && !hasTime)
-               }
+               disabled={errorName !== ''}
             >
                редагувати
             </button>
