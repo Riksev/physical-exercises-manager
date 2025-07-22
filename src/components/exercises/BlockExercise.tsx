@@ -1,4 +1,9 @@
-import type { IBlockExerciseProps } from '../../interfaces'
+import type { IExercise } from '../../interfaces'
+
+export interface IBlockExerciseProps {
+   exercise: IExercise
+   clicker?: (exercise: IExercise) => void
+}
 
 const BlockExercise = ({ exercise, clicker }: IBlockExerciseProps) => {
    return (

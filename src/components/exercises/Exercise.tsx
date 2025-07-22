@@ -1,17 +1,17 @@
-import { useState } from 'react'
-import RemoveExerciseModal from '../modals/remove/RemoveExerciseModal'
+import { useState, type Dispatch, type SetStateAction } from 'react'
 import EditExerciseModal from '../modals/edit/EditExerciseModal'
-import type { IExerciseProps } from '../../interfaces'
+import RemoveExerciseModal from '../modals/remove/RemoveExerciseModal'
+import type { IExercise } from '../../interfaces'
 
-const Exercise = ({
-   activeExercise,
-   setActiveExercise,
-   setExercises,
-   setWorkouts,
-}: IExerciseProps) => {
-   const [isRemoveExerciseModalOpen, setIsRemoveExerciseModalOpen] =
-      useState<boolean>(false)
+interface IExerciseProps {
+   activeExercise: IExercise
+   setActiveExercise: Dispatch<SetStateAction<IExercise | null>>
+}
+
+const Exercise = ({ activeExercise, setActiveExercise }: IExerciseProps) => {
    const [isEditExerciseModalOpen, setIsEditExerciseModalOpen] =
+      useState<boolean>(false)
+   const [isRemoveExerciseModalOpen, setIsRemoveExerciseModalOpen] =
       useState<boolean>(false)
 
    return (
@@ -43,18 +43,16 @@ const Exercise = ({
                назад
             </button>
          </div>
-         {isRemoveExerciseModalOpen && (
-            <RemoveExerciseModal
-               setIsRemoveExerciseModalOpen={setIsRemoveExerciseModalOpen}
-               setExercises={setExercises}
-               activeExercise={activeExercise}
-               setWorkouts={setWorkouts}
-            />
-         )}
+
          {isEditExerciseModalOpen && (
             <EditExerciseModal
-               setIsEditExerciseModalOpen={setIsEditExerciseModalOpen}
-               setExercises={setExercises}
+               setIsModalOpen={setIsEditExerciseModalOpen}
+               activeExercise={activeExercise}
+            />
+         )}
+         {isRemoveExerciseModalOpen && (
+            <RemoveExerciseModal
+               setIsModalOpen={setIsRemoveExerciseModalOpen}
                activeExercise={activeExercise}
             />
          )}

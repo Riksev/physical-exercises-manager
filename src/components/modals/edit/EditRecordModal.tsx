@@ -1,13 +1,24 @@
-import { useEffect, useState } from 'react'
-import type { IEditRecordModalProps } from '../../../interfaces'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import type { IExercise, IRecord, IWorkout } from '../../../interfaces'
+import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import { setWorkouts } from '../../../features/dataSlice'
+
+interface IEditRecordModalProps {
+   setIsModalOpen: Dispatch<SetStateAction<boolean>>
+   selectedWorkout: IWorkout
+   selectedExercise: IExercise
+   selectedRecord: IRecord
+}
 
 const EditRecordModal = ({
-   setIsEditRecordModalOpen,
-   setWorkouts,
+   setIsModalOpen,
    selectedWorkout,
    selectedExercise,
    selectedRecord,
 }: IEditRecordModalProps) => {
+   const workouts = useAppSelector((state) => state.data.workouts)
+   const dispatch = useAppDispatch()
+
    const [reps, setReps] = useState<string>(
       selectedRecord.reps?.toString() || '5'
    )
@@ -46,16 +57,69 @@ const EditRecordModal = ({
       }
    }, [time])
 
+   const handleClick = () => {
+      const newWorkouts = workouts.map((workout) => ({
+         ...workout,
+         exercises: workout.exercises.map((exercise) => ({
+            ...exercise,
+            records: exercise.records.map((record) => ({ ...record })),
+         })),
+      }))
+
+      const editedRecord = {
+         ...selectedRecord,
+         ...(selectedExercise?.hasReps && {
+            reps: parseFloat(reps),
+         }),
+         ...(selectedExercise?.hasWeight && {
+            weight: parseFloat(weight),
+         }),
+         ...(selectedExercise?.hasTime && {
+            time: time,
+         }),
+      }
+
+      const workoutIndex = newWorkouts.findIndex(
+         (w) => w._id === selectedWorkout._id
+      )
+      if (workoutIndex !== -1) {
+         const exerciseIndex = newWorkouts[workoutIndex].exercises.findIndex(
+            (ex) => ex.exercise_id === selectedExercise._id
+         )
+         if (exerciseIndex !== -1) {
+            const recordIndex = newWorkouts[workoutIndex].exercises[
+               exerciseIndex
+            ].records.findIndex((rec) => rec._id === selectedRecord._id)
+            if (recordIndex !== -1) {
+               newWorkouts[workoutIndex].exercises[exerciseIndex].records[
+                  recordIndex
+               ] = editedRecord
+            }
+         }
+      }
+      dispatch(setWorkouts(newWorkouts))
+
+      setIsModalOpen(false)
+   }
+
    return (
       <div className="modal-bg">
          <div className="modal-content">
             <div className="modal-header">
-               <h2>Редагування запису</h2>
+               <h2>
+                  Редагування запису <br className="block sm:hidden"></br>"
+                  {[
+                     selectedRecord.reps ?? '-',
+                     selectedRecord.weight ?? '-',
+                     selectedRecord.time ?? '-',
+                  ].join('x')}
+                  "
+               </h2>
                <button
                   type="button"
                   aria-label="Закрити"
                   onClick={() => {
-                     setIsEditRecordModalOpen(false)
+                     setIsModalOpen(false)
                   }}
                   className="button-close"
                >
@@ -153,50 +217,7 @@ const EditRecordModal = ({
             <button
                type="button"
                className="button-edit button-modal"
-               onClick={() => {
-                  setWorkouts((prev) => {
-                     const updated = [...prev]
-
-                     const editedRecord = {
-                        ...selectedRecord,
-                        ...(selectedExercise?.hasReps && {
-                           reps: parseFloat(reps),
-                        }),
-                        ...(selectedExercise?.hasWeight && {
-                           weight: parseFloat(weight),
-                        }),
-                        ...(selectedExercise?.hasTime && {
-                           time: time,
-                        }),
-                     }
-
-                     const workoutIndex = updated.findIndex(
-                        (w) => w._id === selectedWorkout._id
-                     )
-                     if (workoutIndex !== -1) {
-                        const exerciseIndex = updated[
-                           workoutIndex
-                        ].exercises.findIndex(
-                           (ex) => ex.exercise_id === selectedExercise._id
-                        )
-                        if (exerciseIndex !== -1) {
-                           const recordIndex = updated[workoutIndex].exercises[
-                              exerciseIndex
-                           ].records.findIndex(
-                              (rec) => rec._id === selectedRecord._id
-                           )
-                           if (recordIndex !== -1) {
-                              updated[workoutIndex].exercises[
-                                 exerciseIndex
-                              ].records[recordIndex] = editedRecord
-                           }
-                        }
-                     }
-
-                     return updated
-                  })
-                  setIsEditRecordModalOpen(false)
-               }}
+               onClick={handleClick}
                disabled={
                   (selectedExercise?.hasReps && errorReps !== '') ||
                   (selectedExercise?.hasWeight && errorWeight !== '') ||

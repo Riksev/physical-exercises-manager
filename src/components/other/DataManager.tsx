@@ -1,14 +1,9 @@
 import { useState } from 'react'
-import type { IDataControllerProps } from '../../interfaces'
 import DataImportModal from '../modals/other/ImportDataModal'
 import DataRemoveModal from '../modals/remove/RemoveDataModal'
 import DataExportModal from '../modals/other/ExportDataModal'
 
-const DataManager = ({
-   exercises,
-   workouts,
-   setData,
-}: IDataControllerProps) => {
+const DataManager = () => {
    const [isDataExportModalOpen, setIsDataExportModalOpen] =
       useState<boolean>(false)
    const [isDataImportModalOpen, setIsDataImportModalOpen] =
@@ -48,25 +43,13 @@ const DataManager = ({
             </div>
          </details>
          {isDataExportModalOpen && (
-            <DataExportModal
-               exercises={exercises}
-               workouts={workouts}
-               setIsDataExportModalOpen={setIsDataExportModalOpen}
-            />
+            <DataExportModal setIsModalOpen={setIsDataExportModalOpen} />
          )}
          {isDataImportModalOpen && (
-            <DataImportModal
-               exercises={exercises}
-               workouts={workouts}
-               setData={setData}
-               setIsDataImportModalOpen={setIsDataImportModalOpen}
-            />
+            <DataImportModal setIsModalOpen={setIsDataImportModalOpen} />
          )}
          {isDataRemoveModalOpen && (
-            <DataRemoveModal
-               setIsDataRemoveModalOpen={setIsDataRemoveModalOpen}
-               setData={setData}
-            />
+            <DataRemoveModal setIsModalOpen={setIsDataRemoveModalOpen} />
          )}
       </>
    )

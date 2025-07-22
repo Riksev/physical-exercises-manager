@@ -112,11 +112,11 @@ const CalculatorOneRep = () => {
          <summary>Калькулятор одноповторного максимума</summary>
          <h2 className="horizontal-line"></h2>
          <div className="input-block">
-            <label htmlFor="weight">Вага:</label>
+            <label htmlFor="oneRepWeight">Вага:</label>
             <input
                type="number"
                step="any"
-               id="weight"
+               id="oneRepWeight"
                min="0"
                placeholder="Введіть вагу"
                value={weight}
@@ -131,11 +131,11 @@ const CalculatorOneRep = () => {
             {errorWeight && <p className="error-message">{errorWeight}</p>}
          </div>
          <div className="input-block mt-4">
-            <label htmlFor="reps">Повторення:</label>
+            <label htmlFor="oneRepReps">Повторення:</label>
             <input
                type="number"
                step="any"
-               id="reps"
+               id="oneRepReps"
                min="0"
                placeholder="Введіть кількість повторень"
                value={reps}

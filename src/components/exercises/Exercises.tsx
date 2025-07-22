@@ -1,15 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import AddExerciseModal from '../modals/add/AddExerciseModal'
 import ListOfExercises from './ListOfExercises'
-import type { IExercise, IExercisesProps } from '../../interfaces'
+import type { IExercise } from '../../interfaces'
 import Exercise from './Exercise'
+
+interface IExercisesProps {
+   exercises: IExercise[]
+   activeExercise: IExercise | null
+   setActiveExercise: Dispatch<SetStateAction<IExercise | null>>
+}
 
 const Exercises = ({
    exercises,
-   setExercises,
    activeExercise,
    setActiveExercise,
-   setWorkouts,
 }: IExercisesProps) => {
    const [isAddExerciseModalOpen, setIsAddExerciseModalOpen] =
       useState<boolean>(false)
@@ -73,15 +77,10 @@ const Exercises = ({
             <Exercise
                activeExercise={activeExercise}
                setActiveExercise={setActiveExercise}
-               setExercises={setExercises}
-               setWorkouts={setWorkouts}
             />
          )}
          {isAddExerciseModalOpen && (
-            <AddExerciseModal
-               setIsAddExerciseModalOpen={setIsAddExerciseModalOpen}
-               setExercises={setExercises}
-            />
+            <AddExerciseModal setIsModalOpen={setIsAddExerciseModalOpen} />
          )}
       </>
    )

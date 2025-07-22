@@ -1,13 +1,28 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import AddWorkoutModal from '../modals/add/AddWorkoutModal'
-import type { IExercise, IWorkoutsProps } from '../../interfaces'
+import type { IExercise, IWorkout } from '../../interfaces'
 import ListOfWorkouts from './ListOfWorkouts'
 import Workout from './Workout'
 import SelectExerciseModal from '../modals/other/SelectExerciseModal'
+import { useAppSelector } from '../../app/hooks'
+
+interface IWorkoutsProps {
+   filteredWorkouts: IWorkout[]
+   setFilteredWorkouts: Dispatch<SetStateAction<IWorkout[]>>
+   dateBegin: string
+   setDateBegin: Dispatch<SetStateAction<string>>
+   dateEnd: string
+   setDateEnd: Dispatch<SetStateAction<string>>
+   isFiltered: boolean
+   setIsFiltered: Dispatch<SetStateAction<boolean>>
+   selectedExercise: IExercise | null
+   setSelectedExercise: Dispatch<SetStateAction<IExercise | null>>
+   activeWorkout: IWorkout | null
+   setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
+   scrollRef: React.RefObject<HTMLDivElement | null>
+}
 
 const Workouts = ({
-   exercises,
-   setWorkouts,
    filteredWorkouts,
    dateBegin,
    setDateBegin,
@@ -18,11 +33,13 @@ const Workouts = ({
    setIsFiltered,
    selectedExercise,
    setSelectedExercise,
-   workouts,
    activeWorkout,
    setActiveWorkout,
    scrollRef,
 }: IWorkoutsProps) => {
+   const exercises = useAppSelector((state) => state.data.exercises)
+   const workouts = useAppSelector((state) => state.data.workouts)
+
    const [errorDateBegin, setErrorDateBegin] = useState<string>('')
    const [errorDateEnd, setErrorDateEnd] = useState<string>('')
 
@@ -194,21 +211,18 @@ const Workouts = ({
          </button>
          <ListOfWorkouts
             workouts={filteredWorkouts}
-            exercises={exercises}
             clicker={setActiveWorkout}
          />
          {isAddWorkoutModalOpen && (
             <AddWorkoutModal
-               setIsAddWorkoutModalOpen={setIsAddWorkoutModalOpen}
-               setWorkouts={setWorkouts}
+               setIsModalOpen={setIsAddWorkoutModalOpen}
                setActiveWorkout={setActiveWorkout}
             />
          )}
          {isSelectExerciseModalOpen && (
             <SelectExerciseModal
-               setIsSelectExerciseModalOpen={setIsSelectExerciseModalOpen}
+               setIsModalOpen={setIsSelectExerciseModalOpen}
                clicker={exerciseInteraction}
-               exercises={exercises}
             />
          )}
       </>
@@ -216,8 +230,6 @@ const Workouts = ({
       <Workout
          activeWorkout={activeWorkout}
          setActiveWorkout={setActiveWorkout}
-         exercises={exercises}
-         setWorkouts={setWorkouts}
       />
    )
 }

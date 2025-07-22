@@ -1,6 +1,14 @@
-import type { IBlockWorkoutProps, IRecord } from '../../interfaces'
+import { useAppSelector } from '../../app/hooks'
+import type { IRecord, IWorkout } from '../../interfaces'
 
-const BlockWorkout = ({ workout, exercises, clicker }: IBlockWorkoutProps) => {
+interface IBlockWorkoutProps {
+   workout: IWorkout
+   clicker: (workout: IWorkout) => void
+}
+
+const BlockWorkout = ({ workout, clicker }: IBlockWorkoutProps) => {
+   const exercises = useAppSelector((state) => state.data.exercises)
+
    return (
       <div className="block-border">
          <div className="mb-2 flex w-full flex-row items-center justify-between">

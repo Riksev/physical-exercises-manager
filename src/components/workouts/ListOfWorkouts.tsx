@@ -1,11 +1,15 @@
-import type { IListOfWorkoutsProps } from '../../interfaces'
+import { useAppSelector } from '../../app/hooks'
+import type { IWorkout } from '../../interfaces'
 import BlockWorkout from './BlockWorkout'
 
-const ListOfWorkouts = ({
-   workouts,
-   exercises,
-   clicker,
-}: IListOfWorkoutsProps) => {
+interface IListOfWorkoutsProps {
+   workouts: IWorkout[]
+   clicker: (workout: IWorkout) => void
+}
+
+const ListOfWorkouts = ({ workouts, clicker }: IListOfWorkoutsProps) => {
+   const exercises = useAppSelector((state) => state.data.exercises)
+
    return (
       <div className="mt-2 flex w-full flex-col gap-4">
          {workouts.length === 0 ? (
@@ -19,12 +23,7 @@ const ListOfWorkouts = ({
             )
          ) : (
             workouts.map((training, index) => (
-               <BlockWorkout
-                  key={index}
-                  workout={training}
-                  exercises={exercises}
-                  clicker={clicker}
-               />
+               <BlockWorkout key={index} workout={training} clicker={clicker} />
             ))
          )}
       </div>

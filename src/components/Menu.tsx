@@ -1,4 +1,18 @@
-import { Pages, type IMenuProps } from '../interfaces'
+import type { Dispatch, SetStateAction } from 'react'
+import {
+   Pages,
+   type IExercise,
+   type IWorkout,
+   type PageNames,
+} from '../interfaces'
+
+interface IMenuProps {
+   activePage: PageNames
+   setActivePage: Dispatch<SetStateAction<PageNames>>
+   setActiveExercise: Dispatch<SetStateAction<IExercise | null>>
+   setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
+   scrollRef: React.RefObject<HTMLDivElement | null>
+}
 
 const Menu = ({
    activePage,

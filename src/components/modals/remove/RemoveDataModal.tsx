@@ -1,9 +1,21 @@
-import type { IRemoveDataModalProps } from '../../../interfaces'
+import type { Dispatch, SetStateAction } from 'react'
+import { useAppDispatch } from '../../../app/hooks'
+import { setExercises, setWorkouts } from '../../../features/dataSlice'
 
-const RemoveDataModal = ({
-   setIsDataRemoveModalOpen,
-   setData,
-}: IRemoveDataModalProps) => {
+interface IRemoveDataModalProps {
+   setIsModalOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const RemoveDataModal = ({ setIsModalOpen }: IRemoveDataModalProps) => {
+   const dispatch = useAppDispatch()
+
+   const handleClick = () => {
+      dispatch(setExercises([]))
+      dispatch(setWorkouts([]))
+
+      setIsModalOpen(false)
+   }
+
    return (
       <div className="modal-bg">
          <div className="modal-content">
@@ -12,7 +24,7 @@ const RemoveDataModal = ({
                <button
                   type="button"
                   aria-label="Close"
-                  onClick={() => setIsDataRemoveModalOpen(false)}
+                  onClick={() => setIsModalOpen(false)}
                   className="button-close"
                >
                   <span>&times;</span>
@@ -21,10 +33,7 @@ const RemoveDataModal = ({
             <button
                type="button"
                className="button-remove button-modal"
-               onClick={() => {
-                  setData([], [])
-                  setIsDataRemoveModalOpen(false)
-               }}
+               onClick={handleClick}
             >
                видалити
             </button>

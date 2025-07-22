@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import type { IExercise, IRecord, IWorkoutProps } from '../../interfaces'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import type { IExercise, IRecord, IWorkout } from '../../interfaces'
 import AddExerciseToWorkoutModal from '../modals/add/AddExerciseToWorkoutModal'
 import RemoveWorkoutModal from '../modals/remove/RemoveWorkoutModal'
 import RemoveExerciseFromWorkoutModal from '../modals/remove/RemoveExerciseFromWorkoutModal'
@@ -8,13 +8,16 @@ import EditWorkoutModal from '../modals/edit/EditWorkoutModal'
 import RemoveRecordModal from '../modals/remove/RemoveRecordModal'
 import EditRecordModal from '../modals/edit/EditRecordModal'
 import WorkoutStatistics from './WorkoutStatistics'
+import { useAppSelector } from '../../app/hooks'
 
-const Workout = ({
-   activeWorkout,
-   setActiveWorkout,
-   exercises,
-   setWorkouts,
-}: IWorkoutProps) => {
+interface IWorkoutProps {
+   activeWorkout: IWorkout
+   setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
+}
+
+const Workout = ({ activeWorkout, setActiveWorkout }: IWorkoutProps) => {
+   const exercises = useAppSelector((state) => state.data.exercises)
+
    const [isRemoveWorkoutModalOpen, setIsRemoveWorkoutModalOpen] =
       useState<boolean>(false)
    const [isEditWorkoutModalOpen, setIsEditWorkoutModalOpen] =
@@ -226,14 +229,13 @@ const Workout = ({
             </div>
             <WorkoutStatistics
                activeWorkout={activeWorkout}
-               isAddRecordModalOpen={isAddRecordModalOpen}
-               isEditRecordModalOpen={isEditRecordModalOpen}
-               isRemoveRecordModalOpen={isRemoveRecordModalOpen}
-               isAddExerciseToWorkoutModalOpen={isAddExerciseToWorkoutModalOpen}
-               isRemoveExerciseFromWorkoutModalOpen={
+               isAnyModalOpen={
+                  isAddRecordModalOpen ||
+                  isEditRecordModalOpen ||
+                  isRemoveRecordModalOpen ||
+                  isAddExerciseToWorkoutModalOpen ||
                   isRemoveExerciseFromWorkoutModalOpen
                }
-               exercises={exercises}
             />
             <button
                className="button-edit button-full"
@@ -263,50 +265,39 @@ const Workout = ({
 
          {isRemoveWorkoutModalOpen && (
             <RemoveWorkoutModal
-               setIsRemoveWorkoutModalOpen={setIsRemoveWorkoutModalOpen}
-               setWorkouts={setWorkouts}
+               setIsModalOpen={setIsRemoveWorkoutModalOpen}
                activeWorkout={activeWorkout}
             />
          )}
          {isEditWorkoutModalOpen && (
             <EditWorkoutModal
-               setIsEditWorkoutModalOpen={setIsEditWorkoutModalOpen}
-               setWorkouts={setWorkouts}
+               setIsModalOpen={setIsEditWorkoutModalOpen}
                activeWorkout={activeWorkout}
             />
          )}
          {isAddExerciseToWorkoutModalOpen && (
             <AddExerciseToWorkoutModal
-               setAddExerciseToWorkoutModalOpen={
-                  setIsAddExerciseToWorkoutModalOpen
-               }
-               exercises={exercises}
-               setWorkouts={setWorkouts}
+               setIsModalOpen={setIsAddExerciseToWorkoutModalOpen}
                workout={activeWorkout}
             />
          )}
          {isRemoveExerciseFromWorkoutModalOpen && selectedExercise && (
             <RemoveExerciseFromWorkoutModal
-               setIsRemoveExerciseFromWorkoutModalOpen={
-                  setIsRemoveExerciseFromWorkoutModalOpen
-               }
-               setWorkouts={setWorkouts}
+               setIsModalOpen={setIsRemoveExerciseFromWorkoutModalOpen}
                activeWorkout={activeWorkout}
                selectedExercise={selectedExercise}
             />
          )}
          {isAddRecordModalOpen && selectedExercise && (
             <AddRecordModal
-               setIsAddRecordModalOpen={setIsAddRecordModalOpen}
+               setIsModalOpen={setIsAddRecordModalOpen}
                selectedExercise={selectedExercise}
-               setWorkouts={setWorkouts}
                selectedWorkout={activeWorkout}
             />
          )}
          {isEditRecordModalOpen && selectedExercise && selectedRecord && (
             <EditRecordModal
-               setIsEditRecordModalOpen={setIsEditRecordModalOpen}
-               setWorkouts={setWorkouts}
+               setIsModalOpen={setIsEditRecordModalOpen}
                selectedWorkout={activeWorkout}
                selectedExercise={selectedExercise}
                selectedRecord={selectedRecord}
@@ -314,8 +305,7 @@ const Workout = ({
          )}
          {isRemoveRecordModalOpen && selectedExercise && selectedRecord && (
             <RemoveRecordModal
-               setIsRemoveRecordModalOpen={setIsRemoveRecordModalOpen}
-               setWorkouts={setWorkouts}
+               setIsModalOpen={setIsRemoveRecordModalOpen}
                selectedWorkout={activeWorkout}
                selectedExercise={selectedExercise}
                selectedRecord={selectedRecord}

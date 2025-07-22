@@ -1,11 +1,14 @@
-import { useEffect, useState } from 'react'
-import type { IExportDataModalProps } from '../../../interfaces'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import { useAppSelector } from '../../../app/hooks'
 
-const ExportDataModal = ({
-   exercises,
-   workouts,
-   setIsDataExportModalOpen,
-}: IExportDataModalProps) => {
+interface IExportDataModalProps {
+   setIsModalOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const ExportDataModal = ({ setIsModalOpen }: IExportDataModalProps) => {
+   const exercises = useAppSelector((state) => state.data.exercises)
+   const workouts = useAppSelector((state) => state.data.workouts)
+
    const getDate = () => {
       const now = new Date()
       const year = now.getFullYear()
@@ -44,6 +47,11 @@ const ExportDataModal = ({
       }
    }, [name])
 
+   const handleClick = () => {
+      exportData()
+      setIsModalOpen(false)
+   }
+
    return (
       <div className="modal-bg">
          <div className="modal-content">
@@ -53,7 +61,7 @@ const ExportDataModal = ({
                   type="button"
                   aria-label="Закрити"
                   onClick={() => {
-                     setIsDataExportModalOpen(false)
+                     setIsModalOpen(false)
                   }}
                   className="button-close"
                >
@@ -89,10 +97,7 @@ const ExportDataModal = ({
             <button
                type="button"
                className="button-add button-modal"
-               onClick={() => {
-                  exportData()
-                  setIsDataExportModalOpen(false)
-               }}
+               onClick={handleClick}
                disabled={errorName !== ''}
             >
                експортувати

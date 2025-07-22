@@ -1,11 +1,20 @@
-import { useEffect, useState } from 'react'
-import type { IEditWorkoutModalProps, IWorkout } from '../../../interfaces'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import type { IWorkout } from '../../../interfaces'
+import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import { setWorkouts } from '../../../features/dataSlice'
+
+interface IEditWorkoutModalProps {
+   setIsModalOpen: Dispatch<SetStateAction<boolean>>
+   activeWorkout: IWorkout
+}
 
 const EditWorkoutModal = ({
-   setIsEditWorkoutModalOpen,
-   setWorkouts,
+   setIsModalOpen,
    activeWorkout,
 }: IEditWorkoutModalProps) => {
+   const workouts = useAppSelector((state) => state.data.workouts)
+   const dispatch = useAppDispatch()
+
    const [date, setDate] = useState<string>(() => {
       const now = new Date(activeWorkout.date)
       const year = now.getFullYear()
@@ -20,28 +29,56 @@ const EditWorkoutModal = ({
       if (!date.match(/^\d{4}-\d{2}-\d{2}$/)) {
          setErrorDate('Дата не може бути порожньою.')
       } else {
-         setWorkouts((prev) => {
-            const workoutOnDate = prev.find((w) => w.date === date)
-            if (!workoutOnDate) {
-               setErrorDate('')
-            } else {
-               setErrorDate('Тренування на цю дату вже існує.')
-            }
-            return prev
-         })
+         const workoutOnDate = workouts.find((w) => w.date === date)
+         if (!workoutOnDate) {
+            setErrorDate('')
+         } else {
+            setErrorDate('Тренування на цю дату вже існує.')
+         }
       }
-   }, [date, setWorkouts, activeWorkout])
+   }, [date, workouts])
+
+   const handleClick = () => {
+      const editedWorkout: IWorkout = {
+         ...activeWorkout,
+         date,
+      }
+      const newWorkouts = [...workouts]
+      const workoutIndex = newWorkouts.findIndex(
+         (w) => w._id === activeWorkout._id
+      )
+      if (workoutIndex !== -1) {
+         newWorkouts.splice(workoutIndex, 1)
+         let isInserted = false
+         for (let i = 0; i < newWorkouts.length; i++) {
+            if (newWorkouts[i].date > editedWorkout.date) {
+               newWorkouts.splice(i, 0, editedWorkout)
+               isInserted = true
+               break
+            }
+         }
+         if (!isInserted) {
+            newWorkouts.push(editedWorkout)
+         }
+      }
+      dispatch(setWorkouts(newWorkouts))
+
+      setIsModalOpen(false)
+   }
 
    return (
       <div className="modal-bg">
          <div className="modal-content">
             <div className="modal-header">
-               <h2>Редагування тренування</h2>
+               <h2>
+                  Редагування тренування <br className="block sm:hidden"></br>"
+                  {activeWorkout.date}"
+               </h2>
                <button
                   type="button"
                   aria-label="Закрити"
                   onClick={() => {
-                     setIsEditWorkoutModalOpen(false)
+                     setIsModalOpen(false)
                   }}
                   className="button-close"
                >
@@ -68,34 +105,7 @@ const EditWorkoutModal = ({
             <button
                type="button"
                className="button-edit button-modal"
-               onClick={() => {
-                  setWorkouts((prev) => {
-                     const editedWorkout: IWorkout = {
-                        ...activeWorkout,
-                        date,
-                     }
-                     const updated = [...prev]
-                     const workoutIndex = updated.findIndex(
-                        (w) => w._id === activeWorkout._id
-                     )
-                     if (workoutIndex !== -1) {
-                        updated.splice(workoutIndex, 1)
-                        let isInserted = false
-                        for (let i = 0; i < updated.length; i++) {
-                           if (updated[i].date > editedWorkout.date) {
-                              updated.splice(i, 0, editedWorkout)
-                              isInserted = true
-                              break
-                           }
-                        }
-                        if (!isInserted) {
-                           updated.push(editedWorkout)
-                        }
-                     }
-                     setIsEditWorkoutModalOpen(false)
-                     return updated
-                  })
-               }}
+               onClick={handleClick}
                disabled={errorDate !== ''}
             >
                редагувати

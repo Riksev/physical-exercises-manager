@@ -1,16 +1,22 @@
-import { useEffect, useState } from 'react'
-import type {
-   IAddExerciseToWorkoutModalProps,
-   IExercise,
-} from '../../../interfaces'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import type { IExercise, IWorkout } from '../../../interfaces'
 import ListOfExercises from '../../exercises/ListOfExercises'
+import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import { setWorkouts } from '../../../features/dataSlice'
+
+interface IAddExerciseToWorkoutModalProps {
+   setIsModalOpen: Dispatch<SetStateAction<boolean>>
+   workout: IWorkout
+}
 
 const AddExerciseToWorkoutModal = ({
-   setAddExerciseToWorkoutModalOpen,
-   exercises,
-   setWorkouts,
+   setIsModalOpen,
    workout,
 }: IAddExerciseToWorkoutModalProps) => {
+   const exercises = useAppSelector((state) => state.data.exercises)
+   const workouts = useAppSelector((state) => state.data.workouts)
+   const dispatch = useAppDispatch()
+
    const [searchName, setSearchName] = useState<string>('')
    const [filteredExercises, setFilteredExercises] =
       useState<IExercise[]>(exercises)
@@ -28,19 +34,24 @@ const AddExerciseToWorkoutModal = ({
    }, [exercises, workout])
 
    const exerciseInteraction = (exercise: IExercise) => {
-      setWorkouts((prev) => {
-         const updated = [...prev]
-         const workoutIndex = updated.findIndex((w) => w._id === workout._id)
-         if (workoutIndex !== -1) {
-            updated[workoutIndex].exercises.push({
-               exercise_id: exercise._id,
-               addedAt: new Date().toISOString(),
-               records: [],
-            })
-         }
-         return updated
-      })
-      setAddExerciseToWorkoutModalOpen(false)
+      const newWorkouts = workouts.map((w) =>
+         w._id === workout._id
+            ? {
+                 ...w,
+                 exercises: [
+                    ...w.exercises.map((ex) => ({ ...ex })),
+                    {
+                       exercise_id: exercise._id,
+                       addedAt: new Date().toISOString(),
+                       records: [],
+                    },
+                 ],
+              }
+            : w
+      )
+      dispatch(setWorkouts(newWorkouts))
+
+      setIsModalOpen(false)
    }
 
    return (
@@ -52,7 +63,7 @@ const AddExerciseToWorkoutModal = ({
                   type="button"
                   aria-label="Закрити"
                   onClick={() => {
-                     setAddExerciseToWorkoutModalOpen(false)
+                     setIsModalOpen(false)
                   }}
                   className="button-close"
                >

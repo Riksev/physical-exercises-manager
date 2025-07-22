@@ -1,10 +1,16 @@
-import { useEffect, useState } from 'react'
-import type { IAddExerciseModalProps, IExercise } from '../../../interfaces'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import type { IExercise } from '../../../interfaces'
+import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import { setExercises } from '../../../features/dataSlice'
 
-const AddExerciseModal = ({
-   setIsAddExerciseModalOpen,
-   setExercises,
-}: IAddExerciseModalProps) => {
+interface IAddExerciseModalProps {
+   setIsModalOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const AddExerciseModal = ({ setIsModalOpen }: IAddExerciseModalProps) => {
+   const exercises = useAppSelector((state) => state.data.exercises)
+   const dispatch = useAppDispatch()
+
    const [name, setName] = useState<string>('')
    const [hasReps, setHasReps] = useState<boolean>(false)
    const [hasWeight, setHasWeight] = useState<boolean>(false)
@@ -20,6 +26,40 @@ const AddExerciseModal = ({
       }
    }, [name])
 
+   const handleClick = () => {
+      const newExercise: IExercise = {
+         _id: Date.now().toString(),
+         name,
+         hasReps,
+         hasWeight,
+         hasTime,
+      }
+      const newExercises: IExercise[] = [...exercises]
+      let inserted: boolean = false
+      for (let i: number = 0; i < newExercises.length; i++) {
+         if (
+            newExercises[i].name.trim().toLowerCase() ===
+            newExercise.name.trim().toLowerCase()
+         ) {
+            inserted = true
+            break
+         } else if (
+            newExercises[i].name.trim().toLowerCase() >
+            newExercise.name.trim().toLowerCase()
+         ) {
+            inserted = true
+            newExercises.splice(i, 0, newExercise)
+            break
+         }
+      }
+      if (!inserted) {
+         newExercises.push(newExercise)
+      }
+      dispatch(setExercises(newExercises))
+
+      setIsModalOpen(false)
+   }
+
    return (
       <div className="modal-bg">
          <div className="modal-content">
@@ -29,7 +69,7 @@ const AddExerciseModal = ({
                   type="button"
                   aria-label="Close"
                   onClick={() => {
-                     setIsAddExerciseModalOpen(false)
+                     setIsModalOpen(false)
                   }}
                   className="button-close"
                >
@@ -91,40 +131,7 @@ const AddExerciseModal = ({
             <button
                type="button"
                className="button-add button-modal"
-               onClick={() => {
-                  const newExercise: IExercise = {
-                     _id: Date.now().toString(),
-                     name,
-                     hasReps,
-                     hasWeight,
-                     hasTime,
-                  }
-                  setExercises((prevExercises: IExercise[]) => {
-                     const updatedExercises: IExercise[] = [...prevExercises]
-                     let inserted = false
-                     for (let i = 0; i < updatedExercises.length; i++) {
-                        if (
-                           updatedExercises[i].name.trim().toLowerCase() ===
-                           newExercise.name.trim().toLowerCase()
-                        ) {
-                           inserted = true
-                           break
-                        } else if (
-                           updatedExercises[i].name.trim().toLowerCase() >
-                           newExercise.name.trim().toLowerCase()
-                        ) {
-                           inserted = true
-                           updatedExercises.splice(i, 0, newExercise)
-                           break
-                        }
-                     }
-                     if (!inserted) {
-                        updatedExercises.push(newExercise)
-                     }
-                     return updatedExercises
-                  })
-                  setIsAddExerciseModalOpen(false)
-               }}
+               onClick={handleClick}
                disabled={errorName !== ''}
             >
                додати

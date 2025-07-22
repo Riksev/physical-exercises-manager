@@ -55,11 +55,11 @@ const CalculatorWeightPercents = () => {
          <summary>Калькулятор відсотків ваги</summary>
          <h2 className="horizontal-line"></h2>
          <div className="input-block">
-            <label htmlFor="weight">Вага:</label>
+            <label htmlFor="percentsWeight">Вага:</label>
             <input
                type="number"
                step="any"
-               id="weight"
+               id="percentsWeight"
                min="0"
                placeholder="Введіть вагу"
                value={weight}

@@ -1,11 +1,20 @@
-import { useEffect, useState } from 'react'
-import type { IAddWorkoutModalProps, IWorkout } from '../../../interfaces'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import type { IWorkout } from '../../../interfaces'
+import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import { setWorkouts } from '../../../features/dataSlice'
+
+interface IAddWorkoutModalProps {
+   setIsModalOpen: Dispatch<SetStateAction<boolean>>
+   setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
+}
 
 const AddWorkoutModal = ({
-   setIsAddWorkoutModalOpen,
-   setWorkouts,
+   setIsModalOpen,
    setActiveWorkout,
 }: IAddWorkoutModalProps) => {
+   const workouts = useAppSelector((state) => state.data.workouts)
+   const dispatch = useAppDispatch()
+
    const [date, setDate] = useState<string>(() => {
       const now = new Date()
       const year = now.getFullYear()
@@ -20,16 +29,39 @@ const AddWorkoutModal = ({
       if (!date.match(/^\d{4}-\d{2}-\d{2}$/)) {
          setErrorDate('Дата не може бути порожньою.')
       } else {
-         setWorkouts((prev) => {
-            if (prev.findIndex((w) => w.date === date) === -1) {
-               setErrorDate('')
-            } else {
-               setErrorDate('Тренування на цю дату вже існує.')
-            }
-            return prev
-         })
+         if (workouts.findIndex((w) => w.date === date) === -1) {
+            setErrorDate('')
+         } else {
+            setErrorDate('Тренування на цю дату вже існує.')
+         }
       }
-   }, [date, setWorkouts])
+   }, [date, workouts])
+
+   const handleClick = () => {
+      const newWorkout: IWorkout = {
+         _id: new Date().getTime().toString(),
+         date,
+         addedAt: new Date().toISOString(),
+         exercises: [],
+      }
+      const newWorkouts = [...workouts]
+      let isInserted = false
+      for (let i = 0; i < newWorkouts.length; i++) {
+         if (newWorkouts[i].date > newWorkout.date) {
+            newWorkouts.splice(i, 0, newWorkout)
+            setActiveWorkout(newWorkout)
+            isInserted = true
+            break
+         }
+      }
+      if (!isInserted) {
+         newWorkouts.push(newWorkout)
+         setActiveWorkout(newWorkout)
+      }
+      dispatch(setWorkouts(newWorkouts))
+
+      setIsModalOpen(false)
+   }
 
    return (
       <div className="modal-bg">
@@ -40,7 +72,7 @@ const AddWorkoutModal = ({
                   type="button"
                   aria-label="Закрити"
                   onClick={() => {
-                     setIsAddWorkoutModalOpen(false)
+                     setIsModalOpen(false)
                   }}
                   className="button-close"
                >
@@ -67,32 +99,7 @@ const AddWorkoutModal = ({
             <button
                type="button"
                className="button-add button-modal"
-               onClick={() => {
-                  setWorkouts((prev) => {
-                     const newWorkout: IWorkout = {
-                        _id: new Date().getTime().toString(),
-                        date,
-                        addedAt: new Date().toISOString(),
-                        exercises: [],
-                     }
-                     const updated = [...prev]
-                     let isInserted = false
-                     for (let i = 0; i < updated.length; i++) {
-                        if (updated[i].date > newWorkout.date) {
-                           updated.splice(i, 0, newWorkout)
-                           setActiveWorkout(newWorkout)
-                           isInserted = true
-                           break
-                        }
-                     }
-                     if (!isInserted) {
-                        updated.push(newWorkout)
-                        setActiveWorkout(newWorkout)
-                     }
-                     setIsAddWorkoutModalOpen(false)
-                     return updated
-                  })
-               }}
+               onClick={handleClick}
                disabled={errorDate !== ''}
             >
                додати

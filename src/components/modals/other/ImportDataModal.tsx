@@ -1,14 +1,15 @@
-import { useState } from 'react'
-import type {
-   IImportDataModalProps,
-   IExercise,
-   IWorkout,
-} from '../../../interfaces'
+import { useState, type Dispatch, type SetStateAction } from 'react'
+import type { IExercise, IWorkout } from '../../../interfaces'
+import { useAppDispatch } from '../../../app/hooks'
+import { setExercises, setWorkouts } from '../../../features/dataSlice'
 
-const ImportDataModal = ({
-   setData,
-   setIsDataImportModalOpen,
-}: IImportDataModalProps) => {
+interface IImportDataModalProps {
+   setIsModalOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const ImportDataModal = ({ setIsModalOpen }: IImportDataModalProps) => {
+   const dispatch = useAppDispatch()
+
    const [fileName, setFileName] = useState('')
    const [error, setError] = useState('')
    const [info, setInfo] = useState('')
@@ -17,7 +18,8 @@ const ImportDataModal = ({
       exercises: IExercise[]
       workouts: IWorkout[]
    }) => {
-      setData(parsed.exercises || [], parsed.workouts || [])
+      dispatch(setExercises(parsed.exercises || []))
+      dispatch(setWorkouts(parsed.workouts || []))
    }
 
    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +75,7 @@ const ImportDataModal = ({
                <button
                   type="button"
                   aria-label="Close"
-                  onClick={() => setIsDataImportModalOpen(false)}
+                  onClick={() => setIsModalOpen(false)}
                   className="button-close"
                >
                   <span>&times;</span>

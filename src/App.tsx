@@ -9,10 +9,12 @@ import {
    type PageNames,
 } from './interfaces'
 import Other from './components/other/Other'
+import { useAppSelector } from './app/hooks'
 
 function App() {
-   const [exercises, setExercises] = useState<IExercise[]>([])
-   const [workouts, setWorkouts] = useState<IWorkout[]>([])
+   // General data
+   const exercises = useAppSelector((state) => state.data.exercises)
+   const workouts = useAppSelector((state) => state.data.workouts)
 
    const [activePage, setActivePage] = useState<PageNames>('workouts')
    const [activeExercise, setActiveExercise] = useState<IExercise | null>(null)
@@ -36,47 +38,25 @@ function App() {
    )
    const [isFiltered, setIsFiltered] = useState<boolean>(false)
 
-   const setData = (newExercises: IExercise[], newWorkouts: IWorkout[]) => {
-      setExercises(newExercises)
-      setWorkouts(newWorkouts)
-      setDateBegin(getDate())
-      setDateEnd(
-         newWorkouts.length > 0
-            ? getDate(new Date(newWorkouts[0].date))
-            : getDate()
-      )
-      setSelectedExercise(null)
-   }
-
    useEffect((): void => {
-      const storedExercises = localStorage.getItem('exercises')
-      if (storedExercises) {
-         setExercises(JSON.parse(storedExercises) as IExercise[])
-      }
-      const storedWorkouts = localStorage.getItem('workouts')
-      if (storedWorkouts) {
-         const parsedWorkouts = JSON.parse(storedWorkouts) as IWorkout[]
-         setWorkouts(parsedWorkouts)
-         setDateBegin(
-            parsedWorkouts.length > 0
-               ? getDate(
-                    new Date(parsedWorkouts[parsedWorkouts.length - 1].date)
-                 )
-               : getDate()
-         )
-         setDateEnd(
-            parsedWorkouts.length > 0
-               ? getDate(new Date(parsedWorkouts[0].date))
-               : getDate()
-         )
+      if (workouts.length > 0) {
+         setDateBegin(getDate(new Date(workouts[workouts.length - 1].date)))
+         setDateEnd(getDate(new Date(workouts[0].date)))
       } else {
          setDateBegin(getDate())
          setDateEnd(getDate())
       }
-   }, [])
+      setFilteredWorkouts(workouts.slice().reverse())
+      setIsFiltered(false)
+      if (activeWorkout) {
+         setActiveWorkout(
+            workouts.find((w) => w._id === activeWorkout._id) || null
+         )
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [workouts])
 
    useEffect((): void => {
-      localStorage.setItem('exercises', JSON.stringify(exercises))
       if (selectedExercise) {
          setSelectedExercise(
             exercises.find((ex) => ex._id === selectedExercise._id) || null
@@ -90,42 +70,18 @@ function App() {
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [exercises])
 
-   useEffect((): void => {
-      localStorage.setItem('workouts', JSON.stringify(workouts))
-      setFilteredWorkouts(workouts.slice().reverse())
-      setIsFiltered(false)
-      setDateBegin(
-         workouts.length > 0
-            ? getDate(new Date(workouts[workouts.length - 1].date))
-            : getDate()
-      )
-      setDateEnd(
-         workouts.length > 0 ? getDate(new Date(workouts[0].date)) : getDate()
-      )
-      if (activeWorkout) {
-         setActiveWorkout(
-            workouts.find((w) => w._id === activeWorkout._id) || null
-         )
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [workouts])
-
    return (
       <div className="app-bg">
          <div className="app-main" ref={scrollRef}>
             {activePage === Pages.EXERCISES && (
                <Exercises
                   exercises={exercises}
-                  setExercises={setExercises}
                   activeExercise={activeExercise}
                   setActiveExercise={setActiveExercise}
-                  setWorkouts={setWorkouts}
                />
             )}
             {activePage === Pages.WORKOUTS && (
                <Workouts
-                  exercises={exercises}
-                  setWorkouts={setWorkouts}
                   filteredWorkouts={filteredWorkouts}
                   setFilteredWorkouts={setFilteredWorkouts}
                   dateBegin={dateBegin}
@@ -136,19 +92,12 @@ function App() {
                   setIsFiltered={setIsFiltered}
                   selectedExercise={selectedExercise}
                   setSelectedExercise={setSelectedExercise}
-                  workouts={workouts}
                   activeWorkout={activeWorkout}
                   setActiveWorkout={setActiveWorkout}
                   scrollRef={scrollRef}
                />
             )}
-            {activePage === Pages.STATISTICS && (
-               <Other
-                  exercises={exercises}
-                  workouts={workouts}
-                  setData={setData}
-               />
-            )}
+            {activePage === Pages.STATISTICS && <Other />}
          </div>
          <Menu
             activePage={activePage}

@@ -1,5 +1,11 @@
-import type { IListOfExercisesProps } from '../../interfaces'
+import type { IExercise } from '../../interfaces'
 import BlockExercise from './BlockExercise'
+
+interface IListOfExercisesProps {
+   exercises: IExercise[]
+   clicker?: (exercise: IExercise) => void
+   showAll?: boolean
+}
 
 const ListOfExercises = ({
    exercises,

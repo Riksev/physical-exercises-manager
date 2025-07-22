@@ -1,12 +1,22 @@
-import { useEffect, useState } from 'react'
-import type { IAddRecordModalProps, IRecord } from '../../../interfaces'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import type { IExercise, IRecord, IWorkout } from '../../../interfaces'
+import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import { setWorkouts } from '../../../features/dataSlice'
+
+export interface IAddRecordModalProps {
+   setIsModalOpen: Dispatch<SetStateAction<boolean>>
+   selectedExercise: IExercise
+   selectedWorkout: IWorkout
+}
 
 const AddRecordModal = ({
-   setIsAddRecordModalOpen,
+   setIsModalOpen,
    selectedExercise,
-   setWorkouts,
    selectedWorkout,
 }: IAddRecordModalProps) => {
+   const workouts = useAppSelector((state) => state.data.workouts)
+   const dispatch = useAppDispatch()
+
    const [reps, setReps] = useState<string>('-')
    const [weight, setWeight] = useState<string>('-')
    const [time, setTime] = useState<string>('-')
@@ -45,6 +55,39 @@ const AddRecordModal = ({
       }
    }, [time])
 
+   const handleClick = () => {
+      const newRecord: IRecord = {
+         _id: new Date().getTime().toString(),
+         ...(selectedExercise?.hasReps && {
+            reps: parseFloat(reps ? reps : '0'),
+         }),
+         ...(selectedExercise?.hasWeight && {
+            weight: parseFloat(weight ? weight : '0'),
+         }),
+         ...(selectedExercise?.hasTime && {
+            time,
+         }),
+         addedAt: new Date().toISOString(),
+      }
+      const newWorkouts = workouts.map((workout) => {
+         if (workout._id !== selectedWorkout._id) return workout
+         return {
+            ...workout,
+            exercises: workout.exercises.map((exercise) => {
+               if (exercise.exercise_id !== selectedExercise._id)
+                  return exercise
+               return {
+                  ...exercise,
+                  records: [...exercise.records, newRecord],
+               }
+            }),
+         }
+      })
+      dispatch(setWorkouts(newWorkouts))
+
+      setIsModalOpen(false)
+   }
+
    return (
       <>
          {!isLoading && (
@@ -57,7 +100,7 @@ const AddRecordModal = ({
                            type="button"
                            aria-label="Закрити"
                            onClick={() => {
-                              setIsAddRecordModalOpen(false)
+                              setIsModalOpen(false)
                            }}
                            className="button-close"
                         >
@@ -149,44 +192,7 @@ const AddRecordModal = ({
                      <button
                         type="button"
                         className="button-add button-modal"
-                        onClick={() => {
-                           setWorkouts((prev) => {
-                              const newRecord: IRecord = {
-                                 _id: new Date().getTime().toString(),
-                                 ...(selectedExercise?.hasReps && {
-                                    reps: parseFloat(reps ? reps : '0'),
-                                 }),
-                                 ...(selectedExercise?.hasWeight && {
-                                    weight: parseFloat(weight ? weight : '0'),
-                                 }),
-                                 ...(selectedExercise?.hasTime && {
-                                    time,
-                                 }),
-                                 addedAt: new Date().toISOString(),
-                              }
-                              const updated = [...prev]
-
-                              const workoutIndex = updated.findIndex(
-                                 (w) => w._id === selectedWorkout._id
-                              )
-                              if (workoutIndex !== -1) {
-                                 const exerciseIndex = updated[
-                                    workoutIndex
-                                 ].exercises.findIndex(
-                                    (ex) =>
-                                       ex.exercise_id === selectedExercise._id
-                                 )
-                                 if (exerciseIndex !== -1) {
-                                    updated[workoutIndex].exercises[
-                                       exerciseIndex
-                                    ].records.push(newRecord)
-                                 }
-                              }
-
-                              return updated
-                           })
-                           setIsAddRecordModalOpen(false)
-                        }}
+                        onClick={handleClick}
                         disabled={selectedExercise?.hasTime && errorTime !== ''}
                      >
                         додати

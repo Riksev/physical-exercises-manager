@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react'
-import type { IWorkoutStatisticsProps } from '../../interfaces'
+import type { IWorkout } from '../../interfaces'
+import { useAppSelector } from '../../app/hooks'
+
+interface IWorkoutStatisticsProps {
+   activeWorkout: IWorkout
+   isAnyModalOpen: boolean
+}
 
 const WorkoutStatistics = ({
    activeWorkout,
-   isAddRecordModalOpen,
-   isEditRecordModalOpen,
-   isRemoveRecordModalOpen,
-   isAddExerciseToWorkoutModalOpen,
-   isRemoveExerciseFromWorkoutModalOpen,
-   exercises,
+   isAnyModalOpen,
 }: IWorkoutStatisticsProps) => {
+   const exercises = useAppSelector((state) => state.data.exercises)
+
    const [startTime, setStartTime] = useState<string>('-')
    const [endTime, setEndTime] = useState<string>('-')
    const [duration, setDuration] = useState<string>('-')
@@ -19,7 +22,7 @@ const WorkoutStatistics = ({
 
    type ExerciseInfo = {
       name: string
-      sets: number
+      sets?: number
       reps?: number
       volume?: number
    }
@@ -66,13 +69,7 @@ const WorkoutStatistics = ({
    }
 
    useEffect(() => {
-      if (
-         !isAddRecordModalOpen ||
-         !isEditRecordModalOpen ||
-         !isRemoveRecordModalOpen ||
-         !isAddExerciseToWorkoutModalOpen ||
-         !isRemoveExerciseFromWorkoutModalOpen
-      ) {
+      if (!isAnyModalOpen) {
          let minTime: string = '-'
          let maxTime: string = '-'
 
@@ -103,6 +100,10 @@ const WorkoutStatistics = ({
                }
             }
 
+            const exerciseData = exercises.find(
+               (ex) => ex._id === exercise.exercise_id
+            )
+
             for (const record of exercise.records) {
                // Exercise time calculation
                const currentRecordTime = record?.addedAt
@@ -118,21 +119,30 @@ const WorkoutStatistics = ({
                // Workout volume calculation
                const currentReps = record?.reps
                const currentWeight = record?.weight
-               if (currentWeight) {
+               if (exerciseData?.hasWeight && currentWeight) {
                   const currentVolume = (currentReps ?? 1) * currentWeight
                   localVolume += currentVolume
                   workoutVolume += currentVolume
                }
 
-               setsLocal += 1
+               if (
+                  exerciseData?.hasReps ||
+                  exerciseData?.hasWeight ||
+                  exerciseData?.hasTime
+               ) {
+                  setsLocal += 1
+               }
+
                repsLocal += currentReps || 0
             }
-            const exerciseData = exercises.find(
-               (ex) => ex._id === exercise.exercise_id
-            )
+
             exerciseInfoLocal.set(exercise.exercise_id, {
                name: exerciseData?.name || 'Невідома вправа',
-               sets: setsLocal,
+               ...(exerciseData?.hasReps ||
+               exerciseData?.hasWeight ||
+               exerciseData?.hasTime
+                  ? { sets: setsLocal }
+                  : {}),
                ...(exerciseData?.hasReps ? { reps: repsLocal } : {}),
                ...(exerciseData?.hasWeight ? { volume: localVolume } : {}),
             })
@@ -149,15 +159,7 @@ const WorkoutStatistics = ({
          setSetsTotal(setsGlobal)
          setRepsTotal(repsGlobal)
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [
-      activeWorkout,
-      isAddRecordModalOpen,
-      isEditRecordModalOpen,
-      isRemoveRecordModalOpen,
-      isAddExerciseToWorkoutModalOpen,
-      isRemoveExerciseFromWorkoutModalOpen,
-   ])
+   }, [activeWorkout, exercises, isAnyModalOpen])
 
    return (
       <details className="details">

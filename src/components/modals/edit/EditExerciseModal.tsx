@@ -1,11 +1,20 @@
-import { useEffect, useState } from 'react'
-import type { IEditExerciseModalProps } from '../../../interfaces'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import type { IExercise } from '../../../interfaces'
+import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import { setExercises } from '../../../features/dataSlice'
+
+interface IEditExerciseModalProps {
+   setIsModalOpen: Dispatch<SetStateAction<boolean>>
+   activeExercise: IExercise
+}
 
 const EditExerciseModal = ({
-   setIsEditExerciseModalOpen,
-   setExercises,
+   setIsModalOpen,
    activeExercise,
 }: IEditExerciseModalProps) => {
+   const exercises = useAppSelector((state) => state.data.exercises)
+   const dispatch = useAppDispatch()
+
    const [name, setName] = useState<string>(activeExercise.name)
    const [hasReps, setHasReps] = useState<boolean>(
       activeExercise?.hasReps ?? false
@@ -27,16 +36,37 @@ const EditExerciseModal = ({
       }
    }, [name])
 
+   const handleClick = () => {
+      const newExercises: IExercise[] = [...exercises]
+      const exerciseIndex: number = newExercises.findIndex(
+         (ex) => ex._id === activeExercise._id
+      )
+      if (exerciseIndex !== -1) {
+         newExercises[exerciseIndex] = {
+            ...newExercises[exerciseIndex],
+            name,
+            hasReps,
+            hasWeight,
+            hasTime,
+         }
+      }
+      dispatch(setExercises(newExercises))
+      setIsModalOpen(false)
+   }
+
    return (
       <div className="modal-bg">
          <div className="modal-content">
             <div className="modal-header">
-               <h2>Редагування вправи</h2>
+               <h2>
+                  Редагування вправи <br className="block sm:hidden"></br>"
+                  {activeExercise.name}"
+               </h2>
                <button
                   type="button"
                   aria-label="Close"
                   onClick={() => {
-                     setIsEditExerciseModalOpen(false)
+                     setIsModalOpen(false)
                   }}
                   className="button-close"
                >
@@ -102,22 +132,7 @@ const EditExerciseModal = ({
             <button
                type="button"
                className="button-edit button-modal"
-               onClick={() => {
-                  setExercises((prev) => {
-                     const updated = [...prev]
-                     const exerciseIndex = updated.findIndex(
-                        (ex) => ex._id === activeExercise._id
-                     )
-                     if (exerciseIndex !== -1) {
-                        updated[exerciseIndex].name = name
-                        updated[exerciseIndex].hasReps = hasReps
-                        updated[exerciseIndex].hasWeight = hasWeight
-                        updated[exerciseIndex].hasTime = hasTime
-                     }
-                     setIsEditExerciseModalOpen(false)
-                     return updated
-                  })
-               }}
+               onClick={handleClick}
                disabled={errorName !== ''}
             >
                редагувати

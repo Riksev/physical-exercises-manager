@@ -1,12 +1,19 @@
-import { useState } from 'react'
-import type { IExercise, ISelectExerciseModalProps } from '../../../interfaces'
+import { useState, type Dispatch, type SetStateAction } from 'react'
+import type { IExercise } from '../../../interfaces'
 import ListOfExercises from '../../exercises/ListOfExercises'
+import { useAppSelector } from '../../../app/hooks'
+
+interface ISelectExerciseModalProps {
+   setIsModalOpen: Dispatch<SetStateAction<boolean>>
+   clicker: (exercise: IExercise) => void
+}
 
 const SelectExerciseModal = ({
-   setIsSelectExerciseModalOpen,
-   exercises,
+   setIsModalOpen,
    clicker,
 }: ISelectExerciseModalProps) => {
+   const exercises = useAppSelector((state) => state.data.exercises)
+
    const [searchName, setSearchName] = useState<string>('')
    const [filteredExercises, setFilteredExercises] =
       useState<IExercise[]>(exercises)
@@ -20,7 +27,7 @@ const SelectExerciseModal = ({
                   type="button"
                   aria-label="Закрити"
                   onClick={() => {
-                     setIsSelectExerciseModalOpen(false)
+                     setIsModalOpen(false)
                   }}
                   className="button-close"
                >
