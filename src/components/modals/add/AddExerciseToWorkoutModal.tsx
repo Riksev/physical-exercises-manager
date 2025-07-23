@@ -3,6 +3,7 @@ import type { IExercise, IWorkout } from '../../../interfaces'
 import ListOfExercises from '../../exercises/ListOfExercises'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { setWorkouts } from '../../../features/dataSlice'
+import { createPortal } from 'react-dom'
 
 interface IAddExerciseToWorkoutModalProps {
    setIsModalOpen: Dispatch<SetStateAction<boolean>>
@@ -54,7 +55,7 @@ const AddExerciseToWorkoutModal = ({
       setIsModalOpen(false)
    }
 
-   return (
+   return createPortal(
       <div className="modal-bg">
          <div className="modal-content">
             <div className="modal-header">
@@ -113,7 +114,8 @@ const AddExerciseToWorkoutModal = ({
                />
             </div>
          </div>
-      </div>
+      </div>,
+      document.body
    )
 }
 

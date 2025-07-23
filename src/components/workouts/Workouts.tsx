@@ -74,7 +74,7 @@ const Workouts = ({
    }, [dateBegin, dateEnd])
 
    return !activeWorkout ? (
-      <>
+      <div className="app-page">
          <h2 className="horizontal-line title">Мої тренування</h2>
          <details className="details">
             <summary>
@@ -225,7 +225,7 @@ const Workouts = ({
                clicker={exerciseInteraction}
             />
          )}
-      </>
+      </div>
    ) : (
       <Workout
          activeWorkout={activeWorkout}

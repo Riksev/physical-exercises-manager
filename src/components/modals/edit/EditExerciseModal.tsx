@@ -2,6 +2,7 @@ import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import type { IExercise } from '../../../interfaces'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { setExercises } from '../../../features/dataSlice'
+import { createPortal } from 'react-dom'
 
 interface IEditExerciseModalProps {
    setIsModalOpen: Dispatch<SetStateAction<boolean>>
@@ -54,7 +55,7 @@ const EditExerciseModal = ({
       setIsModalOpen(false)
    }
 
-   return (
+   return createPortal(
       <div className="modal-bg">
          <div className="modal-content">
             <div className="modal-header">
@@ -138,7 +139,8 @@ const EditExerciseModal = ({
                редагувати
             </button>
          </div>
-      </div>
+      </div>,
+      document.body
    )
 }
 

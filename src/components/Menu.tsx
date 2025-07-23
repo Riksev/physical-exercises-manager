@@ -1,17 +1,13 @@
-import type { Dispatch, SetStateAction } from 'react'
-import {
-   Pages,
-   type IExercise,
-   type IWorkout,
-   type PageNames,
-} from '../interfaces'
+import { type Dispatch, type SetStateAction } from 'react'
+import { Pages, type IExercise, type IWorkout } from '../interfaces'
+import { Swiper as SwiperType } from 'swiper'
 
 interface IMenuProps {
-   activePage: PageNames
-   setActivePage: Dispatch<SetStateAction<PageNames>>
+   activePage: number
+   setActivePage: Dispatch<SetStateAction<number>>
    setActiveExercise: Dispatch<SetStateAction<IExercise | null>>
    setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
-   scrollRef: React.RefObject<HTMLDivElement | null>
+   swiperRef: React.RefObject<SwiperType | null>
 }
 
 const Menu = ({
@@ -19,25 +15,19 @@ const Menu = ({
    setActivePage,
    setActiveExercise,
    setActiveWorkout,
-   scrollRef,
+   swiperRef,
 }: IMenuProps) => {
    return (
-      <nav className="flex w-full items-center rounded-t-3xl bg-gradient-to-br from-fuchsia-900 to-blue-600 p-2 text-center shadow-md">
+      <nav className="flex w-full items-center bg-gradient-to-br from-fuchsia-900 to-blue-600 p-2 text-center shadow-md">
          <div
             className="flex w-1/3 cursor-pointer flex-col items-center justify-center hover:brightness-70 active:brightness-70"
             onClick={(): void => {
-               setActivePage((prev) => {
-                  if (prev === Pages.EXERCISES) {
-                     setActiveExercise(null)
-                  }
-                  if (scrollRef.current) {
-                     scrollRef.current.scrollTo({
-                        top: 0,
-                        behavior: 'smooth',
-                     })
-                  }
-                  return Pages.EXERCISES
-               })
+               if (swiperRef.current?.activeIndex === Pages.EXERCISES) {
+                  setActiveExercise(null)
+               } else {
+                  swiperRef.current?.slideTo(Pages.EXERCISES)
+                  setActivePage(Pages.EXERCISES)
+               }
             }}
          >
             <svg
@@ -54,18 +44,12 @@ const Menu = ({
          <div
             className="flex w-1/3 cursor-pointer flex-col items-center justify-between hover:brightness-70 active:brightness-70"
             onClick={(): void => {
-               setActivePage((prev) => {
-                  if (prev === Pages.WORKOUTS) {
-                     setActiveWorkout(null)
-                  }
-                  if (scrollRef.current) {
-                     scrollRef.current.scrollTo({
-                        top: 0,
-                        behavior: 'smooth',
-                     })
-                  }
-                  return Pages.WORKOUTS
-               })
+               if (swiperRef.current?.activeIndex === Pages.WORKOUTS) {
+                  setActiveWorkout(null)
+               } else {
+                  swiperRef.current?.slideTo(Pages.WORKOUTS)
+                  setActivePage(Pages.WORKOUTS)
+               }
             }}
          >
             <svg
@@ -82,13 +66,8 @@ const Menu = ({
          <div
             className="flex w-1/3 cursor-pointer flex-col items-center justify-center hover:brightness-70 active:brightness-70"
             onClick={(): void => {
+               swiperRef.current?.slideTo(Pages.STATISTICS)
                setActivePage(Pages.STATISTICS)
-               if (scrollRef.current) {
-                  scrollRef.current.scrollTo({
-                     top: 0,
-                     behavior: 'smooth',
-                  })
-               }
             }}
          >
             <svg

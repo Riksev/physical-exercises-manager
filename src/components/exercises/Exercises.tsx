@@ -29,7 +29,7 @@ const Exercises = ({
    return (
       <>
          {!activeExercise ? (
-            <>
+            <div className="app-page">
                <h2 className="horizontal-line title">Список вправ</h2>
                <div className="input-block">
                   <label htmlFor="searchName">Пошук за назвою:</label>
@@ -72,7 +72,7 @@ const Exercises = ({
                   exercises={filteredExercises}
                   clicker={setActiveExercise}
                />
-            </>
+            </div>
          ) : (
             <Exercise
                activeExercise={activeExercise}

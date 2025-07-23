@@ -2,6 +2,7 @@ import { useState, type Dispatch, type SetStateAction } from 'react'
 import type { IExercise, IWorkout } from '../../../interfaces'
 import { useAppDispatch } from '../../../app/hooks'
 import { setExercises, setWorkouts } from '../../../features/dataSlice'
+import { createPortal } from 'react-dom'
 
 interface IImportDataModalProps {
    setIsModalOpen: Dispatch<SetStateAction<boolean>>
@@ -67,7 +68,7 @@ const ImportDataModal = ({ setIsModalOpen }: IImportDataModalProps) => {
       reader.readAsText(file)
    }
 
-   return (
+   return createPortal(
       <div className="modal-bg">
          <div className="modal-content">
             <div className="modal-header">
@@ -111,7 +112,8 @@ const ImportDataModal = ({ setIsModalOpen }: IImportDataModalProps) => {
                </div>
             </div>
          </div>
-      </div>
+      </div>,
+      document.body
    )
 }
 

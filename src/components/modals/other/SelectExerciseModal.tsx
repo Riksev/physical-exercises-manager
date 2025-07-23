@@ -2,6 +2,7 @@ import { useState, type Dispatch, type SetStateAction } from 'react'
 import type { IExercise } from '../../../interfaces'
 import ListOfExercises from '../../exercises/ListOfExercises'
 import { useAppSelector } from '../../../app/hooks'
+import { createPortal } from 'react-dom'
 
 interface ISelectExerciseModalProps {
    setIsModalOpen: Dispatch<SetStateAction<boolean>>
@@ -18,7 +19,7 @@ const SelectExerciseModal = ({
    const [filteredExercises, setFilteredExercises] =
       useState<IExercise[]>(exercises)
 
-   return (
+   return createPortal(
       <div className="modal-bg">
          <div className="modal-content">
             <div className="modal-header">
@@ -72,7 +73,8 @@ const SelectExerciseModal = ({
                </div>
             </div>
          </div>
-      </div>
+      </div>,
+      document.body
    )
 }
 

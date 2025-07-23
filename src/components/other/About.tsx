@@ -4,7 +4,7 @@ const About = () => {
          <summary>Про вебзастосунок</summary>
          <div className="mt-4 flex flex-col text-left">
             <p>Gymanote - менеджер з фізичних вправ.</p>
-            <p>Версія: v1.8.</p>
+            <p>Версія: v1.8.1.</p>
             <p>
                Розробник:{' '}
                <a

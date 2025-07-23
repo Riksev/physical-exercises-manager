@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'swiper/css';
 
 html {
    font-family: 'Inter', sans-serif;
@@ -61,7 +62,7 @@ html {
    }
 
    .title {
-      @apply mt-0 mb-2 rounded-t-none pt-8 pb-2;
+      @apply mt-0 rounded-t-none pt-8 pb-2;
    }
 
    p {
@@ -181,8 +182,8 @@ html {
       @apply flex w-full flex-col items-center bg-gradient-to-br from-fuchsia-200 to-cyan-200 xl:w-1/2;
    }
 
-   .app-main {
-      @apply flex w-full flex-col items-center gap-2 overflow-y-scroll p-4 pt-0 text-center text-lg font-medium;
+   .app-page {
+      @apply !flex !h-full !w-full !flex-col items-center gap-2 overflow-y-scroll p-4 pt-0 text-center text-lg font-medium;
    }
 
    .block-border {
@@ -215,5 +216,9 @@ html {
 
    .responsive-break-on {
       @apply block sm:hidden;
+   }
+
+   .my-swiper {
+      @apply h-full w-full;
    }
 }

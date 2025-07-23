@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react'
 import { useAppDispatch } from '../../../app/hooks'
 import { setExercises, setWorkouts } from '../../../features/dataSlice'
+import { createPortal } from 'react-dom'
 
 interface IRemoveDataModalProps {
    setIsModalOpen: Dispatch<SetStateAction<boolean>>
@@ -16,7 +17,7 @@ const RemoveDataModal = ({ setIsModalOpen }: IRemoveDataModalProps) => {
       setIsModalOpen(false)
    }
 
-   return (
+   return createPortal(
       <div className="modal-bg">
          <div className="modal-content">
             <div className="modal-header">
@@ -38,7 +39,8 @@ const RemoveDataModal = ({ setIsModalOpen }: IRemoveDataModalProps) => {
                видалити
             </button>
          </div>
-      </div>
+      </div>,
+      document.body
    )
 }
 

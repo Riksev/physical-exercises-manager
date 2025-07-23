@@ -15,7 +15,7 @@ const Exercise = ({ activeExercise, setActiveExercise }: IExerciseProps) => {
       useState<boolean>(false)
 
    return (
-      <>
+      <div className="app-page">
          <h2 className="horizontal-line title">{activeExercise?.name}</h2>
          <div className="flex w-full flex-col items-center gap-4">
             <button
@@ -56,7 +56,7 @@ const Exercise = ({ activeExercise, setActiveExercise }: IExerciseProps) => {
                activeExercise={activeExercise}
             />
          )}
-      </>
+      </div>
    )
 }
 

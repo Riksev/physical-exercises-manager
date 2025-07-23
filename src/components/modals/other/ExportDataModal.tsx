@@ -1,5 +1,6 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import { useAppSelector } from '../../../app/hooks'
+import { createPortal } from 'react-dom'
 
 interface IExportDataModalProps {
    setIsModalOpen: Dispatch<SetStateAction<boolean>>
@@ -52,7 +53,7 @@ const ExportDataModal = ({ setIsModalOpen }: IExportDataModalProps) => {
       setIsModalOpen(false)
    }
 
-   return (
+   return createPortal(
       <div className="modal-bg">
          <div className="modal-content">
             <div className="modal-header">
@@ -103,7 +104,8 @@ const ExportDataModal = ({ setIsModalOpen }: IExportDataModalProps) => {
                експортувати
             </button>
          </div>
-      </div>
+      </div>,
+      document.body
    )
 }
 

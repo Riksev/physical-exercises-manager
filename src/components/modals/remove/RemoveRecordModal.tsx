@@ -2,6 +2,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import type { IExercise, IRecord, IWorkout } from '../../../interfaces'
 import { setWorkouts } from '../../../features/dataSlice'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import { createPortal } from 'react-dom'
 
 interface IRemoveRecordModalProps {
    setIsModalOpen: Dispatch<SetStateAction<boolean>>
@@ -40,15 +41,15 @@ const RemoveRecordModal = ({
 
       setIsModalOpen(false)
    }
-   return (
+   return createPortal(
       <div className="modal-bg">
          <div className="modal-content">
             <div className="modal-header">
                <h2>
                   Видалення запису <br className="block sm:hidden"></br>"
                   {[
-                     selectedRecord.reps ?? '-',
                      selectedRecord.weight ?? '-',
+                     selectedRecord.reps ?? '-',
                      selectedRecord.time ?? '-',
                   ].join('x')}
                   "
@@ -70,7 +71,8 @@ const RemoveRecordModal = ({
                видалити
             </button>
          </div>
-      </div>
+      </div>,
+      document.body
    )
 }
 

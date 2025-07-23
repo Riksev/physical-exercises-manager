@@ -2,6 +2,7 @@ import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import type { IWorkout } from '../../../interfaces'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { setWorkouts } from '../../../features/dataSlice'
+import { createPortal } from 'react-dom'
 
 interface IAddWorkoutModalProps {
    setIsModalOpen: Dispatch<SetStateAction<boolean>>
@@ -63,7 +64,7 @@ const AddWorkoutModal = ({
       setIsModalOpen(false)
    }
 
-   return (
+   return createPortal(
       <div className="modal-bg">
          <div className="modal-content">
             <div className="modal-header">
@@ -105,7 +106,8 @@ const AddWorkoutModal = ({
                додати
             </button>
          </div>
-      </div>
+      </div>,
+      document.body
    )
 }
 

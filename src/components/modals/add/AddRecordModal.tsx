@@ -2,6 +2,7 @@ import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import type { IExercise, IRecord, IWorkout } from '../../../interfaces'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { setWorkouts } from '../../../features/dataSlice'
+import { createPortal } from 'react-dom'
 
 export interface IAddRecordModalProps {
    setIsModalOpen: Dispatch<SetStateAction<boolean>>
@@ -88,7 +89,7 @@ const AddRecordModal = ({
       setIsModalOpen(false)
    }
 
-   return (
+   return createPortal(
       <>
          {!isLoading && (
             <>
@@ -201,7 +202,8 @@ const AddRecordModal = ({
                </div>
             </>
          )}
-      </>
+      </>,
+      document.body
    )
 }
 

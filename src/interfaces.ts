@@ -1,9 +1,7 @@
-export type PageNames = 'exercises' | 'workouts' | 'statistics'
-
 export const Pages = {
-   EXERCISES: 'exercises' as const,
-   WORKOUTS: 'workouts' as const,
-   STATISTICS: 'statistics' as const,
+   EXERCISES: 0,
+   WORKOUTS: 1,
+   STATISTICS: 2,
 }
 
 export interface IWorkout {

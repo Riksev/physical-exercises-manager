@@ -53,7 +53,7 @@ const Workout = ({ activeWorkout, setActiveWorkout }: IWorkoutProps) => {
    }, [exercises])
 
    return (
-      <>
+      <div className="app-page">
          <h2 className="horizontal-line title">
             {activeWorkout?.date}
             {' - '}
@@ -311,7 +311,7 @@ const Workout = ({ activeWorkout, setActiveWorkout }: IWorkoutProps) => {
                selectedRecord={selectedRecord}
             />
          )}
-      </>
+      </div>
    )
 }
 

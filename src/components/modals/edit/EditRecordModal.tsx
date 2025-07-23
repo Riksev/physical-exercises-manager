@@ -2,6 +2,7 @@ import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import type { IExercise, IRecord, IWorkout } from '../../../interfaces'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
 import { setWorkouts } from '../../../features/dataSlice'
+import { createPortal } from 'react-dom'
 
 interface IEditRecordModalProps {
    setIsModalOpen: Dispatch<SetStateAction<boolean>>
@@ -102,15 +103,15 @@ const EditRecordModal = ({
       setIsModalOpen(false)
    }
 
-   return (
+   return createPortal(
       <div className="modal-bg">
          <div className="modal-content">
             <div className="modal-header">
                <h2>
                   Редагування запису <br className="block sm:hidden"></br>"
                   {[
-                     selectedRecord.reps ?? '-',
                      selectedRecord.weight ?? '-',
+                     selectedRecord.reps ?? '-',
                      selectedRecord.time ?? '-',
                   ].join('x')}
                   "
@@ -227,7 +228,8 @@ const EditRecordModal = ({
                редагувати
             </button>
          </div>
-      </div>
+      </div>,
+      document.body
    )
 }
 

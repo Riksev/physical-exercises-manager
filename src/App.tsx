@@ -2,21 +2,22 @@ import { useEffect, useRef, useState } from 'react'
 import Menu from './components/Menu'
 import Workouts from './components/workouts/Workouts'
 import Exercises from './components/exercises/Exercises'
-import {
-   Pages,
-   type IExercise,
-   type IWorkout,
-   type PageNames,
-} from './interfaces'
+import { Pages, type IExercise, type IWorkout } from './interfaces'
 import Other from './components/other/Other'
 import { useAppSelector } from './app/hooks'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Swiper as SwiperType } from 'swiper'
 
 function App() {
    // General data
    const exercises = useAppSelector((state) => state.data.exercises)
    const workouts = useAppSelector((state) => state.data.workouts)
 
-   const [activePage, setActivePage] = useState<PageNames>('workouts')
+   const swiperRef = useRef<SwiperType | null>(null)
+
+   const [activePage, setActivePage] = useState<number>(
+      swiperRef.current?.activeIndex || Pages.WORKOUTS
+   )
    const [activeExercise, setActiveExercise] = useState<IExercise | null>(null)
    const [activeWorkout, setActiveWorkout] = useState<IWorkout | null>(null)
 
@@ -72,15 +73,26 @@ function App() {
 
    return (
       <div className="app-bg">
-         <div className="app-main" ref={scrollRef}>
-            {activePage === Pages.EXERCISES && (
+         <Swiper
+            className="my-swiper"
+            grabCursor={true}
+            spaceBetween={0}
+            initialSlide={1}
+            onSwiper={(swiper) => {
+               swiperRef.current = swiper
+            }}
+            onSlideChange={(swiper) => {
+               setActivePage(swiper.activeIndex)
+            }}
+         >
+            <SwiperSlide>
                <Exercises
                   exercises={exercises}
                   activeExercise={activeExercise}
                   setActiveExercise={setActiveExercise}
                />
-            )}
-            {activePage === Pages.WORKOUTS && (
+            </SwiperSlide>
+            <SwiperSlide>
                <Workouts
                   filteredWorkouts={filteredWorkouts}
                   setFilteredWorkouts={setFilteredWorkouts}
@@ -96,15 +108,17 @@ function App() {
                   setActiveWorkout={setActiveWorkout}
                   scrollRef={scrollRef}
                />
-            )}
-            {activePage === Pages.STATISTICS && <Other />}
-         </div>
+            </SwiperSlide>
+            <SwiperSlide>
+               <Other />
+            </SwiperSlide>
+         </Swiper>
          <Menu
             activePage={activePage}
             setActivePage={setActivePage}
             setActiveExercise={setActiveExercise}
             setActiveWorkout={setActiveWorkout}
-            scrollRef={scrollRef}
+            swiperRef={swiperRef}
          />
       </div>
    )
