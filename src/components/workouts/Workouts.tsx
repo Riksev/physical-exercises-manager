@@ -1,10 +1,12 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
-import AddWorkoutModal from '../modals/add/AddWorkoutModal'
-import type { IExercise, IWorkout } from '../../interfaces'
+import type { IExercise, IModal, IWorkout } from '../../interfaces'
 import ListOfWorkouts from './ListOfWorkouts'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers'
 import Workout from './Workout'
 import SelectExerciseModal from '../modals/other/SelectExerciseModal'
 import { useAppSelector } from '../../app/hooks'
+import Box from '@mui/material/Box'
 
 interface IWorkoutsProps {
    filteredWorkouts: IWorkout[]
@@ -20,6 +22,8 @@ interface IWorkoutsProps {
    activeWorkout: IWorkout | null
    setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
    scrollRef: React.RefObject<HTMLDivElement | null>
+   setModal: Dispatch<SetStateAction<IModal | null>>
+   modal: IModal | null
 }
 
 const Workouts = ({
@@ -36,6 +40,8 @@ const Workouts = ({
    activeWorkout,
    setActiveWorkout,
    scrollRef,
+   setModal,
+   modal,
 }: IWorkoutsProps) => {
    const exercises = useAppSelector((state) => state.data.exercises)
    const workouts = useAppSelector((state) => state.data.workouts)
@@ -43,8 +49,6 @@ const Workouts = ({
    const [errorDateBegin, setErrorDateBegin] = useState<string>('')
    const [errorDateEnd, setErrorDateEnd] = useState<string>('')
 
-   const [isAddWorkoutModalOpen, setIsAddWorkoutModalOpen] =
-      useState<boolean>(false)
    const [isSelectExerciseModalOpen, setIsSelectExerciseModalOpen] =
       useState<boolean>(false)
 
@@ -204,21 +208,86 @@ const Workouts = ({
          <button
             className="button-add button-full"
             onClick={() => {
-               setIsAddWorkoutModalOpen(true)
+               setModal({
+                  action: 'add',
+                  item: 'workout',
+                  data: null,
+               })
             }}
          >
-            додати тренування
+            додати
          </button>
+         {/* <div className="w-full">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+               <Box
+                  sx={{
+                     display: 'flex',
+                     justifyContent: 'center',
+                     p: {
+                        xs: '1',
+                        sm: '1',
+                        md: '1',
+                     },
+                  }}
+               >
+                  <DateCalendar
+                     sx={{
+                        width: {
+                           xs: '100%',
+                           sm: '90%',
+                           md: '80%',
+                        },
+                        '& .MuiDayCalendar-weekContainer': {
+                           display: 'flex',
+                           flexDirection: 'row',
+                           justifyContent: 'space-between',
+                        },
+                        '& .MuiDayCalendar-header': {
+                           display: 'flex',
+                           flexDirection: 'row',
+                           justifyContent: 'space-between',
+                        },
+                        '& .MuiYearCalendar-root': {
+                           width: '100%',
+                        },
+                        '& .MuiDayCalendar-root': {
+                           width: '100%',
+                        },
+                        '& .MuiSvgIcon-root': {
+                           width: '1.3em',
+                           height: '1.3em',
+                        },
+                        '& .MuiButtonBase-root': {
+                           fontSize: {
+                              xs: '1rem',
+                              sm: '1.1rem',
+                              md: '1.2rem',
+                           },
+                        },
+                        '& .MuiTypography-root': {
+                           fontSize: {
+                              xs: '1rem',
+                              sm: '1.1rem',
+                              md: '1.2rem',
+                           },
+                        },
+                        '& .MuiPickersCalendarHeader-label': {
+                           fontSize: {
+                              xs: '1rem',
+                              sm: '1.3rem',
+                              md: '1.3rem',
+                           },
+                        },
+                     }}
+                  />
+               </Box>
+            </LocalizationProvider>
+         </div> */}
+
          <ListOfWorkouts
             workouts={filteredWorkouts}
             clicker={setActiveWorkout}
          />
-         {isAddWorkoutModalOpen && (
-            <AddWorkoutModal
-               setIsModalOpen={setIsAddWorkoutModalOpen}
-               setActiveWorkout={setActiveWorkout}
-            />
-         )}
          {isSelectExerciseModalOpen && (
             <SelectExerciseModal
                setIsModalOpen={setIsSelectExerciseModalOpen}
@@ -230,6 +299,8 @@ const Workouts = ({
       <Workout
          activeWorkout={activeWorkout}
          setActiveWorkout={setActiveWorkout}
+         setModal={setModal}
+         modal={modal}
       />
    )
 }

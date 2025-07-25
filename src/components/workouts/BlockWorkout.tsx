@@ -32,13 +32,18 @@ const BlockWorkout = ({ workout, clicker }: IBlockWorkoutProps) => {
          {workout.exercises.map((wex) => {
             const exerciseInfo =
                exercises.find((ex) => ex._id === wex.exercise_id) || null
+            const exerciseHasParams =
+               exerciseInfo &&
+               (exerciseInfo.hasWeight ||
+                  exerciseInfo.hasReps ||
+                  exerciseInfo.hasTime)
             if (exerciseInfo) {
                return (
                   <details key={exerciseInfo._id} className="details">
                      <summary className="font-medium">
                         {exerciseInfo.name}
                      </summary>
-                     {wex.records.length === 0 ? (
+                     {!exerciseHasParams || wex.records.length === 0 ? (
                         <p className="mt-4 block text-left">Записи відсутні.</p>
                      ) : (
                         <>

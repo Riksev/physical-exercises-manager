@@ -1,46 +1,22 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
-import type { IExercise, IRecord, IWorkout } from '../../interfaces'
-import AddExerciseToWorkoutModal from '../modals/add/AddExerciseToWorkoutModal'
-import RemoveWorkoutModal from '../modals/remove/RemoveWorkoutModal'
-import RemoveExerciseFromWorkoutModal from '../modals/remove/RemoveExerciseFromWorkoutModal'
-import AddRecordModal from '../modals/add/AddRecordModal'
-import EditWorkoutModal from '../modals/edit/EditWorkoutModal'
-import RemoveRecordModal from '../modals/remove/RemoveRecordModal'
-import EditRecordModal from '../modals/edit/EditRecordModal'
+import type { IModal, IWorkout } from '../../interfaces'
 import WorkoutStatistics from './WorkoutStatistics'
 import { useAppSelector } from '../../app/hooks'
 
 interface IWorkoutProps {
    activeWorkout: IWorkout
    setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
+   setModal: Dispatch<SetStateAction<IModal | null>>
+   modal: IModal | null
 }
 
-const Workout = ({ activeWorkout, setActiveWorkout }: IWorkoutProps) => {
+const Workout = ({
+   activeWorkout,
+   setActiveWorkout,
+   setModal,
+   modal,
+}: IWorkoutProps) => {
    const exercises = useAppSelector((state) => state.data.exercises)
-
-   const [isRemoveWorkoutModalOpen, setIsRemoveWorkoutModalOpen] =
-      useState<boolean>(false)
-   const [isEditWorkoutModalOpen, setIsEditWorkoutModalOpen] =
-      useState<boolean>(false)
-
-   const [isAddExerciseToWorkoutModalOpen, setIsAddExerciseToWorkoutModalOpen] =
-      useState<boolean>(false)
-   const [
-      isRemoveExerciseFromWorkoutModalOpen,
-      setIsRemoveExerciseFromWorkoutModalOpen,
-   ] = useState<boolean>(false)
-
-   const [isAddRecordModalOpen, setIsAddRecordModalOpen] =
-      useState<boolean>(false)
-   const [isEditRecordModalOpen, setIsEditRecordModalOpen] =
-      useState<boolean>(false)
-   const [isRemoveRecordModalOpen, setIsRemoveRecordModalOpen] =
-      useState<boolean>(false)
-
-   const [selectedExercise, setSelectedExercise] = useState<IExercise | null>(
-      null
-   )
-   const [selectedRecord, setSelectedRecord] = useState<IRecord | null>(null)
 
    const [errorExercises, setErrorExercises] = useState<string>('')
 
@@ -87,22 +63,22 @@ const Workout = ({ activeWorkout, setActiveWorkout }: IWorkoutProps) => {
                               exerciseInfo?.hasTime
                            return (
                               exerciseInfo && (
-                                 <details
-                                    key={index}
-                                    className="details"
-                                    onClick={() => {
-                                       setSelectedExercise(exerciseInfo)
-                                    }}
-                                 >
+                                 <details key={index} className="details">
                                     <summary className="font-medium">
                                        <div className="flex w-full items-center justify-between gap-x-2">
                                           {exerciseInfo.name}
                                           <button
-                                             className="button-remove px-6 py-2 text-sm"
+                                             className="button-delete px-6 py-2 text-sm"
                                              onClick={() => {
-                                                setIsRemoveExerciseFromWorkoutModalOpen(
-                                                   true
-                                                )
+                                                setModal({
+                                                   action: 'delete',
+                                                   item: 'exerciseFromWorkout',
+                                                   data: {
+                                                      activeWorkout,
+                                                      selectedExercise:
+                                                         exerciseInfo,
+                                                   },
+                                                })
                                              }}
                                           >
                                              видалити
@@ -141,12 +117,7 @@ const Workout = ({ activeWorkout, setActiveWorkout }: IWorkoutProps) => {
                                           </div>
                                           {exercise.records.map(
                                              (record, id) => (
-                                                <details
-                                                   key={id}
-                                                   onClick={() => {
-                                                      setSelectedRecord(record)
-                                                   }}
-                                                >
+                                                <details key={id}>
                                                    <summary>
                                                       <div className="table-block-row">
                                                          <p className="table-block-cell table-block-cell-number">
@@ -179,19 +150,35 @@ const Workout = ({ activeWorkout, setActiveWorkout }: IWorkoutProps) => {
                                                       <button
                                                          className="button-edit w-1/2 truncate rounded-none px-4 py-1 max-[400px]:text-sm"
                                                          onClick={() => {
-                                                            setIsEditRecordModalOpen(
-                                                               true
-                                                            )
+                                                            setModal({
+                                                               action: 'edit',
+                                                               item: 'record',
+                                                               data: {
+                                                                  activeWorkout,
+                                                                  selectedExercise:
+                                                                     exerciseInfo,
+                                                                  selectedRecord:
+                                                                     record,
+                                                               },
+                                                            })
                                                          }}
                                                       >
                                                          редагувати
                                                       </button>
                                                       <button
-                                                         className="button-remove w-1/2 truncate rounded-none px-4 py-1 max-[400px]:text-sm"
+                                                         className="button-delete w-1/2 truncate rounded-none px-4 py-1 max-[400px]:text-sm"
                                                          onClick={() => {
-                                                            setIsRemoveRecordModalOpen(
-                                                               true
-                                                            )
+                                                            setModal({
+                                                               action: 'delete',
+                                                               item: 'record',
+                                                               data: {
+                                                                  activeWorkout,
+                                                                  selectedExercise:
+                                                                     exerciseInfo,
+                                                                  selectedRecord:
+                                                                     record,
+                                                               },
+                                                            })
                                                          }}
                                                       >
                                                          видалити
@@ -205,10 +192,17 @@ const Workout = ({ activeWorkout, setActiveWorkout }: IWorkoutProps) => {
                                     <button
                                        className={`button-add button-modal ${!exerciseParams ? 'hidden' : ''}`}
                                        onClick={() => {
-                                          setIsAddRecordModalOpen(true)
+                                          setModal({
+                                             action: 'add',
+                                             item: 'record',
+                                             data: {
+                                                activeWorkout,
+                                                selectedExercise: exerciseInfo,
+                                             },
+                                          })
                                        }}
                                     >
-                                       додати запис
+                                       додати
                                     </button>
                                  </details>
                               )
@@ -218,40 +212,46 @@ const Workout = ({ activeWorkout, setActiveWorkout }: IWorkoutProps) => {
                      <button
                         className="button-add button-full"
                         onClick={() => {
-                           setIsAddExerciseToWorkoutModalOpen(true)
+                           setModal({
+                              action: 'add',
+                              item: 'exerciseFromWorkout',
+                              data: { activeWorkout },
+                           })
                         }}
                         disabled={errorExercises !== ''}
                      >
-                        додати вправу
+                        додати
                      </button>
                   </div>
                )}
             </div>
             <WorkoutStatistics
                activeWorkout={activeWorkout}
-               isAnyModalOpen={
-                  isAddRecordModalOpen ||
-                  isEditRecordModalOpen ||
-                  isRemoveRecordModalOpen ||
-                  isAddExerciseToWorkoutModalOpen ||
-                  isRemoveExerciseFromWorkoutModalOpen
-               }
+               isAnyModalOpen={modal !== null}
             />
             <button
                className="button-edit button-full"
                onClick={() => {
-                  setIsEditWorkoutModalOpen(true)
+                  setModal({
+                     action: 'edit',
+                     item: 'workout',
+                     data: { activeWorkout },
+                  })
                }}
             >
-               редагувати тренування
+               редагувати
             </button>
             <button
-               className="button-remove button-full"
+               className="button-delete button-full"
                onClick={() => {
-                  setIsRemoveWorkoutModalOpen(true)
+                  setModal({
+                     action: 'delete',
+                     item: 'workout',
+                     data: { activeWorkout },
+                  })
                }}
             >
-               видалити тренування
+               видалити
             </button>
             <button
                className="button-action button-full"
@@ -262,55 +262,6 @@ const Workout = ({ activeWorkout, setActiveWorkout }: IWorkoutProps) => {
                назад
             </button>
          </div>
-
-         {isRemoveWorkoutModalOpen && (
-            <RemoveWorkoutModal
-               setIsModalOpen={setIsRemoveWorkoutModalOpen}
-               activeWorkout={activeWorkout}
-            />
-         )}
-         {isEditWorkoutModalOpen && (
-            <EditWorkoutModal
-               setIsModalOpen={setIsEditWorkoutModalOpen}
-               activeWorkout={activeWorkout}
-            />
-         )}
-         {isAddExerciseToWorkoutModalOpen && (
-            <AddExerciseToWorkoutModal
-               setIsModalOpen={setIsAddExerciseToWorkoutModalOpen}
-               workout={activeWorkout}
-            />
-         )}
-         {isRemoveExerciseFromWorkoutModalOpen && selectedExercise && (
-            <RemoveExerciseFromWorkoutModal
-               setIsModalOpen={setIsRemoveExerciseFromWorkoutModalOpen}
-               activeWorkout={activeWorkout}
-               selectedExercise={selectedExercise}
-            />
-         )}
-         {isAddRecordModalOpen && selectedExercise && (
-            <AddRecordModal
-               setIsModalOpen={setIsAddRecordModalOpen}
-               selectedExercise={selectedExercise}
-               selectedWorkout={activeWorkout}
-            />
-         )}
-         {isEditRecordModalOpen && selectedExercise && selectedRecord && (
-            <EditRecordModal
-               setIsModalOpen={setIsEditRecordModalOpen}
-               selectedWorkout={activeWorkout}
-               selectedExercise={selectedExercise}
-               selectedRecord={selectedRecord}
-            />
-         )}
-         {isRemoveRecordModalOpen && selectedExercise && selectedRecord && (
-            <RemoveRecordModal
-               setIsModalOpen={setIsRemoveRecordModalOpen}
-               selectedWorkout={activeWorkout}
-               selectedExercise={selectedExercise}
-               selectedRecord={selectedRecord}
-            />
-         )}
       </div>
    )
 }

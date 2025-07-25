@@ -1,16 +1,11 @@
-import { useState } from 'react'
-import DataImportModal from '../modals/other/ImportDataModal'
-import DataRemoveModal from '../modals/remove/RemoveDataModal'
-import DataExportModal from '../modals/other/ExportDataModal'
+import { type Dispatch, type SetStateAction } from 'react'
+import type { IModal } from '../../interfaces'
 
-const DataManager = () => {
-   const [isDataExportModalOpen, setIsDataExportModalOpen] =
-      useState<boolean>(false)
-   const [isDataImportModalOpen, setIsDataImportModalOpen] =
-      useState<boolean>(false)
-   const [isDataRemoveModalOpen, setIsDataRemoveModalOpen] =
-      useState<boolean>(false)
+interface IDataManagerProps {
+   setModal: Dispatch<SetStateAction<IModal | null>>
+}
 
+const DataManager = ({ setModal }: IDataManagerProps) => {
    return (
       <>
          <details className="details">
@@ -19,7 +14,11 @@ const DataManager = () => {
                <button
                   className="button-action button-full"
                   onClick={() => {
-                     setIsDataExportModalOpen(true)
+                     setModal({
+                        action: 'export',
+                        item: 'data',
+                        data: {},
+                     })
                   }}
                >
                   експорт даних
@@ -27,30 +26,29 @@ const DataManager = () => {
                <button
                   className="button-action button-full"
                   onClick={() => {
-                     setIsDataImportModalOpen(true)
+                     setModal({
+                        action: 'import',
+                        item: 'data',
+                        data: {},
+                     })
                   }}
                >
                   імпорт даних
                </button>
                <button
-                  className="button-remove button-full"
+                  className="button-delete button-full"
                   onClick={() => {
-                     setIsDataRemoveModalOpen(true)
+                     setModal({
+                        action: 'delete',
+                        item: 'data',
+                        data: {},
+                     })
                   }}
                >
                   повне видалення
                </button>
             </div>
          </details>
-         {isDataExportModalOpen && (
-            <DataExportModal setIsModalOpen={setIsDataExportModalOpen} />
-         )}
-         {isDataImportModalOpen && (
-            <DataImportModal setIsModalOpen={setIsDataImportModalOpen} />
-         )}
-         {isDataRemoveModalOpen && (
-            <DataRemoveModal setIsModalOpen={setIsDataRemoveModalOpen} />
-         )}
       </>
    )
 }

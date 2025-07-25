@@ -26,14 +26,15 @@ html {
       @apply rounded-2xl text-lg font-bold uppercase transition-all delay-100 disabled:opacity-50;
    }
 
-   .button-remove {
+   .button-delete {
       @apply bg-rose-500 hover:bg-rose-800 active:bg-rose-900 disabled:cursor-not-allowed disabled:bg-rose-900;
    }
 
    .button-edit {
       @apply bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 disabled:cursor-not-allowed disabled:bg-yellow-700;
    }
-   .button-add {
+   .button-add,
+   .button-export {
       @apply bg-lime-500 hover:bg-lime-600 active:bg-lime-700 disabled:cursor-not-allowed disabled:bg-lime-700;
    }
 

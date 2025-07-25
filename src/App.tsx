@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import Menu from './components/Menu'
 import Workouts from './components/workouts/Workouts'
 import Exercises from './components/exercises/Exercises'
-import { Pages, type IExercise, type IWorkout } from './interfaces'
+import { Pages, type IExercise, type IModal, type IWorkout } from './interfaces'
 import Other from './components/other/Other'
 import { useAppSelector } from './app/hooks'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Swiper as SwiperType } from 'swiper'
+import Modal from './components/modals/Modal'
 
 function App() {
    // General data
@@ -14,6 +15,8 @@ function App() {
    const workouts = useAppSelector((state) => state.data.workouts)
 
    const swiperRef = useRef<SwiperType | null>(null)
+
+   const [modal, setModal] = useState<IModal | null>(null)
 
    const [activePage, setActivePage] = useState<number>(
       swiperRef.current?.activeIndex || Pages.WORKOUTS
@@ -90,6 +93,7 @@ function App() {
                   exercises={exercises}
                   activeExercise={activeExercise}
                   setActiveExercise={setActiveExercise}
+                  setModal={setModal}
                />
             </SwiperSlide>
             <SwiperSlide>
@@ -107,10 +111,12 @@ function App() {
                   activeWorkout={activeWorkout}
                   setActiveWorkout={setActiveWorkout}
                   scrollRef={scrollRef}
+                  setModal={setModal}
+                  modal={modal}
                />
             </SwiperSlide>
             <SwiperSlide>
-               <Other />
+               <Other setModal={setModal} />
             </SwiperSlide>
          </Swiper>
          <Menu
@@ -120,6 +126,7 @@ function App() {
             setActiveWorkout={setActiveWorkout}
             swiperRef={swiperRef}
          />
+         {modal && <Modal info={modal} setModal={setModal} />}
       </div>
    )
 }

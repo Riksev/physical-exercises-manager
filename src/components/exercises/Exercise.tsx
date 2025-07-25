@@ -1,19 +1,17 @@
-import { useState, type Dispatch, type SetStateAction } from 'react'
-import EditExerciseModal from '../modals/edit/EditExerciseModal'
-import RemoveExerciseModal from '../modals/remove/RemoveExerciseModal'
-import type { IExercise } from '../../interfaces'
+import { type Dispatch, type SetStateAction } from 'react'
+import type { IExercise, IModal } from '../../interfaces'
 
 interface IExerciseProps {
    activeExercise: IExercise
    setActiveExercise: Dispatch<SetStateAction<IExercise | null>>
+   setModal: Dispatch<SetStateAction<IModal | null>>
 }
 
-const Exercise = ({ activeExercise, setActiveExercise }: IExerciseProps) => {
-   const [isEditExerciseModalOpen, setIsEditExerciseModalOpen] =
-      useState<boolean>(false)
-   const [isRemoveExerciseModalOpen, setIsRemoveExerciseModalOpen] =
-      useState<boolean>(false)
-
+const Exercise = ({
+   activeExercise,
+   setActiveExercise,
+   setModal,
+}: IExerciseProps) => {
    return (
       <div className="app-page">
          <h2 className="horizontal-line title">{activeExercise?.name}</h2>
@@ -21,15 +19,23 @@ const Exercise = ({ activeExercise, setActiveExercise }: IExerciseProps) => {
             <button
                className="button-edit button-full"
                onClick={() => {
-                  setIsEditExerciseModalOpen(true)
+                  setModal({
+                     action: 'edit',
+                     item: 'exercise',
+                     data: { activeExercise },
+                  })
                }}
             >
                редагувати
             </button>
             <button
-               className="button-remove button-full"
+               className="button-delete button-full"
                onClick={() => {
-                  setIsRemoveExerciseModalOpen(true)
+                  setModal({
+                     action: 'delete',
+                     item: 'exercise',
+                     data: { activeExercise },
+                  })
                }}
             >
                видалити
@@ -43,19 +49,6 @@ const Exercise = ({ activeExercise, setActiveExercise }: IExerciseProps) => {
                назад
             </button>
          </div>
-
-         {isEditExerciseModalOpen && (
-            <EditExerciseModal
-               setIsModalOpen={setIsEditExerciseModalOpen}
-               activeExercise={activeExercise}
-            />
-         )}
-         {isRemoveExerciseModalOpen && (
-            <RemoveExerciseModal
-               setIsModalOpen={setIsRemoveExerciseModalOpen}
-               activeExercise={activeExercise}
-            />
-         )}
       </div>
    )
 }

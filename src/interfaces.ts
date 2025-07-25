@@ -32,3 +32,14 @@ export interface IExercise {
    hasWeight?: boolean
    hasTime?: boolean
 }
+
+export interface IModal {
+   action: string | null
+   item: string | null
+   data: {
+      activeExercise?: IExercise
+      activeWorkout?: IWorkout
+      selectedExercise?: IExercise
+      selectedRecord?: IRecord
+   } | null
+}

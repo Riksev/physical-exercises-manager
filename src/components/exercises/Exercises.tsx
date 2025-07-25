@@ -1,23 +1,21 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
-import AddExerciseModal from '../modals/add/AddExerciseModal'
 import ListOfExercises from './ListOfExercises'
-import type { IExercise } from '../../interfaces'
+import type { IExercise, IModal } from '../../interfaces'
 import Exercise from './Exercise'
 
 interface IExercisesProps {
    exercises: IExercise[]
    activeExercise: IExercise | null
    setActiveExercise: Dispatch<SetStateAction<IExercise | null>>
+   setModal: Dispatch<SetStateAction<IModal | null>>
 }
 
 const Exercises = ({
    exercises,
    activeExercise,
    setActiveExercise,
+   setModal,
 }: IExercisesProps) => {
-   const [isAddExerciseModalOpen, setIsAddExerciseModalOpen] =
-      useState<boolean>(false)
-
    const [searchName, setSearchName] = useState<string>('')
    const [filteredExercises, setFilteredExercises] =
       useState<IExercise[]>(exercises)
@@ -57,16 +55,20 @@ const Exercises = ({
                   }}
                   disabled={exercises.length === 0}
                >
-                  пошук вправ
+                  пошук
                </button>
                <h2 className="horizontal-line my-1"></h2>
                <button
                   className="button-add button-full mb-2"
                   onClick={() => {
-                     setIsAddExerciseModalOpen(true)
+                     setModal({
+                        action: 'add',
+                        item: 'exercise',
+                        data: null,
+                     })
                   }}
                >
-                  додати вправу
+                  додати
                </button>
                <ListOfExercises
                   exercises={filteredExercises}
@@ -77,10 +79,8 @@ const Exercises = ({
             <Exercise
                activeExercise={activeExercise}
                setActiveExercise={setActiveExercise}
+               setModal={setModal}
             />
-         )}
-         {isAddExerciseModalOpen && (
-            <AddExerciseModal setIsModalOpen={setIsAddExerciseModalOpen} />
          )}
       </>
    )
