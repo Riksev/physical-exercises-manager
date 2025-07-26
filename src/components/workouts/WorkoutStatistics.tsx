@@ -119,7 +119,11 @@ const WorkoutStatistics = ({
                // Workout volume calculation
                const currentReps = record?.reps
                const currentWeight = record?.weight
-               if (exerciseData?.hasWeight && currentWeight) {
+               if (
+                  exerciseData?.hasWeight &&
+                  currentWeight &&
+                  currentWeight > 0
+               ) {
                   const currentVolume = (currentReps ?? 1) * currentWeight
                   localVolume += currentVolume
                   workoutVolume += currentVolume
@@ -141,10 +145,26 @@ const WorkoutStatistics = ({
                ...(exerciseData?.hasReps ||
                exerciseData?.hasWeight ||
                exerciseData?.hasTime
-                  ? { sets: setsLocal }
+                  ? {
+                       sets:
+                          (exerciseInfoLocal.get(exercise.exercise_id)?.sets ??
+                             0) + setsLocal,
+                    }
                   : {}),
-               ...(exerciseData?.hasReps ? { reps: repsLocal } : {}),
-               ...(exerciseData?.hasWeight ? { volume: localVolume } : {}),
+               ...(exerciseData?.hasReps
+                  ? {
+                       reps:
+                          (exerciseInfoLocal.get(exercise.exercise_id)?.reps ??
+                             0) + repsLocal,
+                    }
+                  : {}),
+               ...(exerciseData?.hasWeight
+                  ? {
+                       volume:
+                          (exerciseInfoLocal.get(exercise.exercise_id)
+                             ?.volume ?? 0) + localVolume,
+                    }
+                  : {}),
             })
 
             setsGlobal += setsLocal
@@ -184,7 +204,13 @@ const WorkoutStatistics = ({
                кількість
             </summary>
             <h2 className="horizontal-line"></h2>
-            <p>Кількість вправ: {activeWorkout.exercises.length}</p>
+            <p>
+               Кількість вправ:{' '}
+               {
+                  new Set(activeWorkout.exercises.map((ex) => ex.exercise_id))
+                     .size
+               }
+            </p>
             <table className="mt-4">
                <thead>
                   <tr>

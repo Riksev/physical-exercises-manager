@@ -8,6 +8,7 @@ import { useAppSelector } from './app/hooks'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Swiper as SwiperType } from 'swiper'
 import Modal from './components/modals/Modal'
+import dayjs from 'dayjs'
 
 function App() {
    // General data
@@ -23,42 +24,31 @@ function App() {
    )
    const [activeExercise, setActiveExercise] = useState<IExercise | null>(null)
    const [activeWorkout, setActiveWorkout] = useState<IWorkout | null>(null)
-
-   const scrollRef = useRef<HTMLDivElement>(null)
-
-   const getDate = (now: Date = new Date()): string => {
-      const year = now.getFullYear()
-      const month = String(now.getMonth() + 1).padStart(2, '0')
-      const day = String(now.getDate()).padStart(2, '0')
-      return `${year}-${month}-${day}`
-   }
-   const [dateBegin, setDateBegin] = useState<string>('')
-   const [dateEnd, setDateEnd] = useState<string>('')
    const [selectedExercise, setSelectedExercise] = useState<IExercise | null>(
       null
    )
+   const [date, setDate] = useState<dayjs.Dayjs | null | undefined>(dayjs())
    const [filteredWorkouts, setFilteredWorkouts] = useState(
       workouts.slice().reverse()
    )
-   const [isFiltered, setIsFiltered] = useState<boolean>(false)
 
    useEffect((): void => {
-      if (workouts.length > 0) {
-         setDateBegin(getDate(new Date(workouts[workouts.length - 1].date)))
-         setDateEnd(getDate(new Date(workouts[0].date)))
-      } else {
-         setDateBegin(getDate())
-         setDateEnd(getDate())
-      }
-      setFilteredWorkouts(workouts.slice().reverse())
-      setIsFiltered(false)
+      setFilteredWorkouts(
+         workouts
+            .filter((workout) => {
+               if (!date) return true
+               return workout.date === date.format('YYYY-MM-DD')
+            })
+            .slice()
+            .reverse()
+      )
       if (activeWorkout) {
          setActiveWorkout(
             workouts.find((w) => w._id === activeWorkout._id) || null
          )
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [workouts])
+   }, [workouts, date])
 
    useEffect((): void => {
       if (selectedExercise) {
@@ -99,18 +89,12 @@ function App() {
             <SwiperSlide>
                <Workouts
                   filteredWorkouts={filteredWorkouts}
-                  setFilteredWorkouts={setFilteredWorkouts}
-                  dateBegin={dateBegin}
-                  setDateBegin={setDateBegin}
-                  dateEnd={dateEnd}
-                  setDateEnd={setDateEnd}
-                  isFiltered={isFiltered}
-                  setIsFiltered={setIsFiltered}
+                  date={date}
+                  setDate={setDate}
                   selectedExercise={selectedExercise}
                   setSelectedExercise={setSelectedExercise}
                   activeWorkout={activeWorkout}
                   setActiveWorkout={setActiveWorkout}
-                  scrollRef={scrollRef}
                   setModal={setModal}
                   modal={modal}
                />

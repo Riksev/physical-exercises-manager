@@ -8,10 +8,13 @@ export interface IWorkout {
    readonly _id: string
    date: string
    addedAt?: string
+   name?: string
+   difficulty?: string
    exercises: IWorkoutExercise[]
 }
 
 export interface IWorkoutExercise {
+   readonly _id: string
    exercise_id: string
    addedAt?: string
    records: IRecord[]
@@ -39,7 +42,9 @@ export interface IModal {
    data: {
       activeExercise?: IExercise
       activeWorkout?: IWorkout
-      selectedExercise?: IExercise
+      selectedExerciseFromWorkout?: IWorkoutExercise
+      selectedExerciseInfo?: IExercise
       selectedRecord?: IRecord
+      date?: Date
    } | null
 }

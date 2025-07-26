@@ -10,7 +10,7 @@ const BlockWorkout = ({ workout, clicker }: IBlockWorkoutProps) => {
    const exercises = useAppSelector((state) => state.data.exercises)
 
    return (
-      <div className="block-border">
+      <div className={`block-border border-${workout.difficulty || 'medium'}`}>
          <div className="mb-2 flex w-full flex-row items-center justify-between">
             <p className="pr-3">
                {workout.date}
@@ -19,6 +19,13 @@ const BlockWorkout = ({ workout, clicker }: IBlockWorkoutProps) => {
                {new Date(workout.date)
                   .toLocaleDateString('uk-UA', { weekday: 'long' })
                   .replace(/^./, (c) => c.toUpperCase())}
+
+               {workout.name && (
+                  <>
+                     <br></br>
+                     {workout.name}
+                  </>
+               )}
             </p>
             <button
                className="button-edit button-modal w-2/3 truncate text-sm max-[400px]:text-xs sm:w-1/3"
@@ -39,7 +46,10 @@ const BlockWorkout = ({ workout, clicker }: IBlockWorkoutProps) => {
                   exerciseInfo.hasTime)
             if (exerciseInfo) {
                return (
-                  <details key={exerciseInfo._id} className="details">
+                  <details
+                     key={wex._id ? wex._id : exerciseInfo._id}
+                     className="details"
+                  >
                      <summary className="font-medium">
                         {exerciseInfo.name}
                      </summary>

@@ -1,8 +1,9 @@
 @import 'tailwindcss';
 @import 'swiper/css';
 
-html {
-   font-family: 'Inter', sans-serif;
+html,
+.MuiFormLabel-root {
+   font-family: 'Inter', sans-serif !important;
 }
 
 @layer base {
@@ -188,7 +189,19 @@ html {
    }
 
    .block-border {
-      @apply w-full rounded-2xl border-2 border-gray-400 p-2 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:shadow-xl active:border-gray-600;
+      @apply w-full rounded-2xl border-3 border-gray-400 p-2 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:shadow-xl active:border-gray-600;
+   }
+
+   .border-easy {
+      @apply border-green-500 hover:border-green-600 active:border-green-500;
+   }
+
+   .border-medium {
+      @apply border-blue-500 hover:border-blue-600 active:border-blue-500;
+   }
+
+   .border-hard {
+      @apply border-red-500 hover:border-red-600 active:border-red-500;
    }
 
    .table-block-row {
@@ -221,5 +234,91 @@ html {
 
    .my-swiper {
       @apply h-full w-full;
+   }
+
+   /* MUI */
+   .MuiBox-root {
+      @apply flex justify-center rounded-xl border bg-gradient-to-br from-fuchsia-300 to-cyan-300 p-1 shadow-lg transition-all duration-200 hover:border-gray-600 hover:shadow-xl active:border-gray-500;
+   }
+
+   .MuiDateCalendar-root {
+      @apply !w-full sm:!w-9/10 md:!w-4/5;
+   }
+
+   .MuiDayCalendar-weekContainer,
+   .MuiDayCalendar-header {
+      @apply !flex !flex-row !justify-between;
+   }
+
+   @media (min-width: 350px) {
+      .MuiDayCalendar-weekContainer,
+      .MuiDayCalendar-header {
+         @apply !px-2;
+      }
+   }
+
+   .MuiYearCalendar-root,
+   .MuiDayCalendar-root {
+      @apply !w-full;
+   }
+
+   .MuiPickersArrowSwitcher-rightArrowIcon,
+   .MuiPickersArrowSwitcher-leftArrowIcon {
+      @apply !h-[1.3em] !w-[1.3em] !text-black !transition-all duration-200 hover:!scale-130;
+   }
+
+   .MuiPickersDay-root,
+   .MuiDayCalendar-weekDayLabel,
+   .MuiPickersCalendarHeader-label {
+      @apply !text-base !text-black sm:!text-lg md:!text-xl;
+   }
+
+   .MuiPickersCalendarHeader-label,
+   .MuiDayCalendar-weekDayLabel {
+      @apply !font-bold;
+   }
+
+   .MuiButtonBase-root.MuiPickersDay-root {
+      @apply !p-4 !transition-all duration-200 hover:!scale-110 hover:!border-2 hover:!border-fuchsia-700;
+   }
+
+   .Mui-selected {
+      @apply animate-pulse !bg-fuchsia-700 !font-bold !text-black;
+   }
+
+   .multiple-workouts {
+      @apply !bg-violet-500;
+   }
+
+   .easy-workout {
+      @apply !bg-green-500;
+   }
+
+   .medium-workout {
+      @apply !bg-blue-500;
+   }
+
+   .hard-workout {
+      @apply !bg-red-500;
+   }
+
+   .MuiBadge-badge {
+      @apply !rounded-[50%] !border !bg-red-500 !p-1 !font-bold;
+   }
+
+   .radio-easy {
+      @apply !text-green-500;
+   }
+
+   .radio-medium {
+      @apply !text-blue-500;
+   }
+
+   .radio-hard {
+      @apply !text-red-500;
+   }
+
+   .MuiFormLabel-root {
+      @apply !p-2 !font-medium !text-black;
    }
 }

@@ -1,53 +1,42 @@
-import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import { useState, type Dispatch, type SetStateAction } from 'react'
 import type { IExercise, IModal, IWorkout } from '../../interfaces'
 import ListOfWorkouts from './ListOfWorkouts'
+import {
+   DateCalendar,
+   LocalizationProvider,
+   PickersDay,
+} from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers'
+import Badge from '@mui/material/Badge'
 import Workout from './Workout'
 import SelectExerciseModal from '../modals/other/SelectExerciseModal'
 import { useAppSelector } from '../../app/hooks'
 import Box from '@mui/material/Box'
+import dayjs, { Dayjs } from 'dayjs'
 
 interface IWorkoutsProps {
    filteredWorkouts: IWorkout[]
-   setFilteredWorkouts: Dispatch<SetStateAction<IWorkout[]>>
-   dateBegin: string
-   setDateBegin: Dispatch<SetStateAction<string>>
-   dateEnd: string
-   setDateEnd: Dispatch<SetStateAction<string>>
-   isFiltered: boolean
-   setIsFiltered: Dispatch<SetStateAction<boolean>>
+   date: dayjs.Dayjs | null | undefined
+   setDate: Dispatch<SetStateAction<dayjs.Dayjs | null | undefined>>
    selectedExercise: IExercise | null
    setSelectedExercise: Dispatch<SetStateAction<IExercise | null>>
    activeWorkout: IWorkout | null
    setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
-   scrollRef: React.RefObject<HTMLDivElement | null>
    setModal: Dispatch<SetStateAction<IModal | null>>
    modal: IModal | null
 }
 
 const Workouts = ({
    filteredWorkouts,
-   dateBegin,
-   setDateBegin,
-   dateEnd,
-   setDateEnd,
-   setFilteredWorkouts,
-   isFiltered,
-   setIsFiltered,
-   selectedExercise,
+   date,
+   setDate,
    setSelectedExercise,
    activeWorkout,
    setActiveWorkout,
-   scrollRef,
    setModal,
    modal,
 }: IWorkoutsProps) => {
-   const exercises = useAppSelector((state) => state.data.exercises)
    const workouts = useAppSelector((state) => state.data.workouts)
-
-   const [errorDateBegin, setErrorDateBegin] = useState<string>('')
-   const [errorDateEnd, setErrorDateEnd] = useState<string>('')
 
    const [isSelectExerciseModalOpen, setIsSelectExerciseModalOpen] =
       useState<boolean>(false)
@@ -57,30 +46,66 @@ const Workouts = ({
       setIsSelectExerciseModalOpen(false)
    }
 
-   useEffect(() => {
-      if (scrollRef.current) {
-         scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' })
-      }
-   }, [activeWorkout, scrollRef])
+   const getWorkoutsOnDate = (dateJS: Dayjs): IWorkout[] => {
+      const dateRaw = dateJS.format('YYYY-MM-DD')
+      const workoutsOnDate: Array<IWorkout> = workouts.filter(
+         (workout) => workout.date === dateRaw
+      )
+      return workoutsOnDate
+   }
 
-   useEffect(() => {
-      if (!dateBegin.match(/^\d{4}-\d{2}-\d{2}$/)) {
-         setErrorDateBegin('Дата не може бути порожньою.')
-      } else {
-         setErrorDateBegin('')
+   interface CustomDayProps {
+      foundWorkouts: IWorkout[]
+   }
+
+   const CustomDay = (
+      props: CustomDayProps & React.ComponentProps<typeof PickersDay>
+   ) => {
+      const { foundWorkouts, ...other } = props
+
+      const getWorkoutColor = (w: IWorkout) => {
+         if (other.selected) {
+            return ''
+         }
+         switch (w.difficulty) {
+            case 'easy':
+               return 'easy-workout'
+            case 'medium':
+               return 'medium-workout'
+            case 'hard':
+               return 'hard-workout'
+            default:
+               return 'medium-workout'
+         }
       }
 
-      if (!dateEnd.match(/^\d{4}-\d{2}-\d{2}$/)) {
-         setErrorDateEnd('Дата не може бути порожньою.')
-      } else {
-         setErrorDateEnd('')
-      }
-   }, [dateBegin, dateEnd])
+      return (
+         <Badge
+            badgeContent={
+               foundWorkouts.length > 1 ? foundWorkouts.length : undefined
+            }
+            overlap="circular"
+         >
+            <PickersDay
+               {...other}
+               className={
+                  foundWorkouts.length > 1
+                     ? other.selected
+                        ? ''
+                        : 'multiple-workouts'
+                     : foundWorkouts.length === 1
+                       ? getWorkoutColor(foundWorkouts[0])
+                       : ''
+               }
+            />
+         </Badge>
+      )
+   }
 
    return !activeWorkout ? (
       <div className="app-page">
          <h2 className="horizontal-line title">Мої тренування</h2>
-         <details className="details">
+         {/* <details className="details">
             <summary>
                Фільтри{' '}
                <span className="text-red-500">{isFiltered ? '✅' : '❌'}</span>
@@ -203,7 +228,25 @@ const Workouts = ({
                   скинути
                </button>
             </div>
-         </details>
+         </details> */}
+         <div className="w-full">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+               <Box>
+                  <DateCalendar
+                     value={date}
+                     onChange={(newDate) => setDate(newDate)}
+                     slots={{
+                        day: (dayProps) => (
+                           <CustomDay
+                              {...dayProps}
+                              foundWorkouts={getWorkoutsOnDate(dayProps.day)}
+                           />
+                        ),
+                     }}
+                  />
+               </Box>
+            </LocalizationProvider>
+         </div>
          <h2 className="horizontal-line my-1"></h2>
          <button
             className="button-add button-full"
@@ -211,79 +254,14 @@ const Workouts = ({
                setModal({
                   action: 'add',
                   item: 'workout',
-                  data: null,
+                  data: {
+                     date: date?.toDate(),
+                  },
                })
             }}
          >
             додати
          </button>
-         {/* <div className="w-full">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-               <Box
-                  sx={{
-                     display: 'flex',
-                     justifyContent: 'center',
-                     p: {
-                        xs: '1',
-                        sm: '1',
-                        md: '1',
-                     },
-                  }}
-               >
-                  <DateCalendar
-                     sx={{
-                        width: {
-                           xs: '100%',
-                           sm: '90%',
-                           md: '80%',
-                        },
-                        '& .MuiDayCalendar-weekContainer': {
-                           display: 'flex',
-                           flexDirection: 'row',
-                           justifyContent: 'space-between',
-                        },
-                        '& .MuiDayCalendar-header': {
-                           display: 'flex',
-                           flexDirection: 'row',
-                           justifyContent: 'space-between',
-                        },
-                        '& .MuiYearCalendar-root': {
-                           width: '100%',
-                        },
-                        '& .MuiDayCalendar-root': {
-                           width: '100%',
-                        },
-                        '& .MuiSvgIcon-root': {
-                           width: '1.3em',
-                           height: '1.3em',
-                        },
-                        '& .MuiButtonBase-root': {
-                           fontSize: {
-                              xs: '1rem',
-                              sm: '1.1rem',
-                              md: '1.2rem',
-                           },
-                        },
-                        '& .MuiTypography-root': {
-                           fontSize: {
-                              xs: '1rem',
-                              sm: '1.1rem',
-                              md: '1.2rem',
-                           },
-                        },
-                        '& .MuiPickersCalendarHeader-label': {
-                           fontSize: {
-                              xs: '1rem',
-                              sm: '1.3rem',
-                              md: '1.3rem',
-                           },
-                        },
-                     }}
-                  />
-               </Box>
-            </LocalizationProvider>
-         </div> */}
-
          <ListOfWorkouts
             workouts={filteredWorkouts}
             clicker={setActiveWorkout}

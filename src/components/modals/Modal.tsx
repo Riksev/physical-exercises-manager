@@ -1,10 +1,4 @@
-import {
-   useEffect,
-   useRef,
-   useState,
-   type Dispatch,
-   type SetStateAction,
-} from 'react'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import type {
    IExercise,
    IModal,
@@ -15,6 +9,9 @@ import type {
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { setExercises, setWorkouts } from '../../features/dataSlice'
 import ListOfExercises from '../exercises/ListOfExercises'
+import FormControl from '@mui/material/FormControl'
+import RadioGroup from '@mui/material/RadioGroup'
+import Radio from '@mui/material/Radio'
 
 interface IModalProps {
    info: IModal | null
@@ -30,7 +27,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
    const workouts = useAppSelector((state) => state.data.workouts)
    const dispatch = useAppDispatch()
 
-   const getDate = (date = '') => {
+   const getDate = (date = data?.date?.toString()) => {
       const now = new Date(date || Date.now())
       const year = now.getFullYear()
       const month = String(now.getMonth() + 1).padStart(2, '0')
@@ -39,7 +36,13 @@ const Modal = ({ info, setModal }: IModalProps) => {
    }
 
    const [title, setTitle] = useState<Array<string>>([])
-   const [name, setName] = useState<string>(data?.activeExercise?.name ?? '')
+   const [exerciseName, setExerciseName] = useState<string>(
+      data?.activeExercise?.name ?? ''
+   )
+   const [workoutName, setWorkoutName] = useState<string>('')
+   const [workoutDifficulty, setWorkoutDifficulty] = useState<string>(
+      data?.activeWorkout?.difficulty ?? 'medium'
+   )
    const [hasReps, setHasReps] = useState<boolean>(
       data?.activeExercise?.hasReps ?? false
    )
@@ -54,13 +57,13 @@ const Modal = ({ info, setModal }: IModalProps) => {
    const [filteredExercises, setFilteredExercises] =
       useState<IExercise[]>(exercises)
    const [reps, setReps] = useState<string>(
-      data?.selectedRecord?.reps?.toString() || ''
+      (data?.selectedRecord?.reps || '').toString()
    )
    const [weight, setWeight] = useState<string>(
-      data?.selectedRecord?.weight?.toString() || ''
+      (data?.selectedRecord?.weight || '').toString()
    )
    const [time, setTime] = useState<string>(
-      data?.selectedRecord?.time?.toString() || ''
+      (data?.selectedRecord?.time || '').toString()
    )
    const [fileName, setFileName] = useState<string>(
       action === 'export' ? getDate() : ''
@@ -68,16 +71,11 @@ const Modal = ({ info, setModal }: IModalProps) => {
    const [infoImport, setInfoImport] = useState('')
 
    const [errorName, setErrorName] = useState<string>('')
-   const [errorDate, setErrorDate] = useState<string>('')
    const [errorTime, setErrorTime] = useState<string>('')
    const [errorFileName, setErrorFileName] = useState<string>('')
    const [errorImport, setErrorImport] = useState('')
 
    const [isLoading, setIsLoading] = useState<boolean>(true)
-
-   const buttonConfirm = useRef(
-      null
-   ) as React.RefObject<HTMLButtonElement | null>
 
    const importData = (parsed: {
       exercises: IExercise[]
@@ -180,10 +178,8 @@ const Modal = ({ info, setModal }: IModalProps) => {
                   newTitle.push(data?.activeWorkout?.date || '')
                   break
                case 'delete':
-                  newTitle.push('Видалення вправи')
-                  newTitle.push(data?.selectedExercise?.name || '')
-                  newTitle.push('з тренування')
-                  newTitle.push(data?.activeWorkout?.date || '')
+                  newTitle.push('Видалення з тренування вправи')
+                  newTitle.push(data?.selectedExerciseInfo?.name || '')
                   break
                default:
                   newTitle.push('Вправа з тренування')
@@ -253,7 +249,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                   case 'add': {
                      const newExercise: IExercise = {
                         _id: Date.now().toString(),
-                        name,
+                        name: exerciseName,
                         hasReps,
                         hasWeight,
                         hasTime,
@@ -288,7 +284,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                      if (exerciseIndex !== -1) {
                         newExercises[exerciseIndex] = {
                            ...newExercises[exerciseIndex],
-                           name,
+                           name: exerciseName,
                            hasReps,
                            hasWeight,
                            hasTime,
@@ -337,6 +333,8 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            _id: new Date().getTime().toString(),
                            date,
                            addedAt: new Date().toISOString(),
+                           name: workoutName,
+                           difficulty: workoutDifficulty,
                            exercises: [],
                         }
                         let isInserted = false
@@ -362,6 +360,8 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            addedAt:
                               data?.activeWorkout?.addedAt ??
                               new Date().toISOString(),
+                           name: workoutName,
+                           difficulty: workoutDifficulty,
                            exercises: data?.activeWorkout?.exercises ?? [],
                         }
                         const workoutIndex = newWorkouts.findIndex(
@@ -416,8 +416,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                     })
                                  ),
                                  {
+                                    _id: new Date().getTime().toString(),
                                     exercise_id:
-                                       data?.selectedExercise?._id ??
+                                       data?.selectedExerciseInfo?._id ??
                                        new Date().getTime().toString(),
                                     addedAt: new Date().toISOString(),
                                     records: [],
@@ -437,10 +438,12 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               ...newWorkouts[workoutIndex],
                               exercises: newWorkouts[
                                  workoutIndex
-                              ].exercises.filter(
-                                 (exercise) =>
-                                    exercise.exercise_id !==
-                                    data?.selectedExercise?._id
+                              ].exercises.filter((exercise) =>
+                                 data?.selectedExerciseFromWorkout?._id
+                                    ? exercise._id !==
+                                      data?.selectedExerciseFromWorkout?._id
+                                    : exercise.exercise_id !==
+                                      data?.selectedExerciseInfo?._id
                               ),
                            }
                         }
@@ -456,13 +459,13 @@ const Modal = ({ info, setModal }: IModalProps) => {
                case 'add': {
                   const newRecord: IRecord = {
                      _id: new Date().getTime().toString(),
-                     ...(data?.selectedExercise?.hasReps && {
+                     ...(data?.selectedExerciseInfo?.hasReps && {
                         reps: parseFloat(reps || '0'),
                      }),
-                     ...(data?.selectedExercise?.hasWeight && {
+                     ...(data?.selectedExerciseInfo?.hasWeight && {
                         weight: parseFloat(weight || '0'),
                      }),
-                     ...(data?.selectedExercise?.hasTime && {
+                     ...(data?.selectedExerciseInfo?.hasTime && {
                         time,
                      }),
                      addedAt: new Date().toISOString(),
@@ -475,9 +478,22 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         ...newWorkouts[workoutIndex],
                         exercises: newWorkouts[workoutIndex].exercises.map(
                            (exercise) => {
-                              if (
+                              if (data?.selectedExerciseFromWorkout?._id) {
+                                 if (
+                                    exercise._id ===
+                                    data?.selectedExerciseFromWorkout?._id
+                                 ) {
+                                    return {
+                                       ...exercise,
+                                       records: [
+                                          ...exercise.records,
+                                          newRecord,
+                                       ],
+                                    }
+                                 }
+                              } else if (
                                  exercise.exercise_id ===
-                                 data?.selectedExercise?._id
+                                 data?.selectedExerciseInfo?._id
                               ) {
                                  return {
                                     ...exercise,
@@ -498,13 +514,13 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         _id:
                            data?.selectedRecord?._id ??
                            new Date().getTime().toString(),
-                        ...(data?.selectedExercise?.hasReps && {
+                        ...(data?.selectedExerciseInfo?.hasReps && {
                            reps: parseFloat(reps),
                         }),
-                        ...(data?.selectedExercise?.hasWeight && {
+                        ...(data?.selectedExerciseInfo?.hasWeight && {
                            weight: parseFloat(weight),
                         }),
-                        ...(data?.selectedExercise?.hasTime && {
+                        ...(data?.selectedExerciseInfo?.hasTime && {
                            time: time,
                         }),
                      }
@@ -515,9 +531,12 @@ const Modal = ({ info, setModal }: IModalProps) => {
                      if (workoutIndex !== -1) {
                         const exerciseIndex = newWorkouts[
                            workoutIndex
-                        ].exercises.findIndex(
-                           (ex) =>
-                              ex.exercise_id === data?.selectedExercise?._id
+                        ].exercises.findIndex((ex) =>
+                           data?.selectedExerciseFromWorkout?._id
+                              ? ex._id ===
+                                data?.selectedExerciseFromWorkout?._id
+                              : ex.exercise_id ===
+                                data?.selectedExerciseInfo?._id
                         )
                         if (exerciseIndex !== -1) {
                            const recordIndex = newWorkouts[
@@ -568,9 +587,12 @@ const Modal = ({ info, setModal }: IModalProps) => {
                      if (workoutIndex !== -1) {
                         const exerciseIndex = newWorkouts[
                            workoutIndex
-                        ].exercises.findIndex(
-                           (ex) =>
-                              ex.exercise_id === data?.selectedExercise?._id
+                        ].exercises.findIndex((ex) =>
+                           data?.selectedExerciseFromWorkout?._id
+                              ? ex._id ===
+                                data?.selectedExerciseFromWorkout?._id
+                              : ex.exercise_id ===
+                                data?.selectedExerciseInfo?._id
                         )
                         if (exerciseIndex !== -1) {
                            const updatedRecords = newWorkouts[
@@ -642,52 +664,22 @@ const Modal = ({ info, setModal }: IModalProps) => {
    }
 
    useEffect(() => {
-      if (buttonConfirm.current) {
-         buttonConfirm.current.disabled = false
-      }
-      setErrorName('')
       if (item === 'exercise' && (action === 'add' || action === 'edit')) {
-         if (name === '') {
-            if (buttonConfirm.current) {
-               buttonConfirm.current.disabled = true
-            }
+         if (exerciseName === '') {
             setErrorName('Назва вправи не може бути порожньою.')
+         } else {
+            setErrorName('')
          }
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [name])
+   }, [exerciseName])
 
    useEffect(() => {
-      if (buttonConfirm.current) {
-         buttonConfirm.current.disabled = false
-      }
-      setErrorDate('')
-      if (item === 'workout' && (action === 'add' || action === 'edit')) {
-         if (!date.match(/^\d{4}-\d{2}-\d{2}$/)) {
-            if (buttonConfirm.current) {
-               buttonConfirm.current.disabled = true
-            }
-            setErrorDate('Дата не може бути порожньою.')
-         } else if (workouts.findIndex((w) => w.date === date) !== -1) {
-            if (buttonConfirm.current) {
-               buttonConfirm.current.disabled = true
-            }
-            setErrorDate('Тренування на цю дату вже існує.')
-         }
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [date])
-
-   useEffect(() => {
-      if (buttonConfirm.current) {
-         buttonConfirm.current.disabled = false
-      }
-      setErrorTime('')
       if (item === 'record' && (action === 'add' || action === 'edit')) {
-         if (!time.match(/^\d{2}:\d{2}:\d{2}$/)) {
-            if (buttonConfirm.current) {
-               buttonConfirm.current.disabled = true
-            }
+         if (
+            data?.activeExercise?.hasTime &&
+            time.match(/^\d{2}:\d{2}:\d{2}$/)
+         ) {
             setErrorTime('Невірний формат часу. Використовуйте HH:MM:SS.')
          } else {
             setErrorTime('')
@@ -697,15 +689,8 @@ const Modal = ({ info, setModal }: IModalProps) => {
    }, [time])
 
    useEffect(() => {
-      if (buttonConfirm.current) {
-         buttonConfirm.current.disabled = false
-      }
-      setErrorFileName('')
       if (item === 'data' && action === 'export') {
          if (fileName === '') {
-            if (buttonConfirm.current) {
-               buttonConfirm.current.disabled = true
-            }
             setErrorFileName('Назва файлу не може бути порожньою.')
          } else {
             setErrorFileName('')
@@ -715,37 +700,22 @@ const Modal = ({ info, setModal }: IModalProps) => {
    }, [fileName])
 
    useEffect(() => {
-      if (item === 'exerciseFromWorkout' && action === 'add') {
-         setFilteredExercises(() => {
-            return exercises.filter(
-               (exercise) =>
-                  !data?.activeWorkout?.exercises.some(
-                     (exerciseInWorkout) =>
-                        exercise._id === exerciseInWorkout.exercise_id
-                  )
-            )
-         })
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [exercises, data?.activeWorkout])
-
-   useEffect(() => {
       initTitle()
       if (item === 'record' && action === 'add') {
          const exerciseInWorkout = data?.activeWorkout?.exercises.find(
-            (ex) => ex.exercise_id === data?.selectedExercise?._id
+            (ex) => ex._id === data?.selectedExerciseFromWorkout?._id
          )
          const lastRecord =
             exerciseInWorkout?.records[exerciseInWorkout.records.length - 1]
-         if (data?.selectedExercise?.hasReps) {
-            const prevReps = lastRecord?.reps ?? ''
+         if (data?.selectedExerciseInfo?.hasReps) {
+            const prevReps = lastRecord?.reps || ''
             setReps(prevReps.toString())
          }
-         if (data?.selectedExercise?.hasWeight) {
-            const prevWeight = lastRecord?.weight ?? ''
+         if (data?.selectedExerciseInfo?.hasWeight) {
+            const prevWeight = lastRecord?.weight || ''
             setWeight(prevWeight.toString())
          }
-         if (data?.selectedExercise?.hasTime) {
+         if (data?.selectedExerciseInfo?.hasTime) {
             const prevTime = lastRecord?.time ?? '00:00:00'
             setTime(prevTime.toString())
          }
@@ -803,9 +773,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                     id="name"
                                     placeholder="Введіть назву вправи"
                                     autoComplete="off"
-                                    value={name}
+                                    value={exerciseName}
                                     onChange={(e) => {
-                                       setName(
+                                       setExerciseName(
                                           e.target.value.trim() === ''
                                              ? ''
                                              : e.target.value
@@ -874,11 +844,59 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                     onChange={(e) => {
                                        setDate(e.target.value)
                                     }}
+                                    disabled={Boolean(!data?.activeWorkout)}
                                  />
-                                 {errorDate && (
-                                    <p className="error-message">{errorDate}</p>
-                                 )}
                               </div>
+                              <div className="input-block">
+                                 <label htmlFor="workoutName">
+                                    Назва тренування
+                                 </label>
+                                 <input
+                                    type="text"
+                                    id="workoutName"
+                                    placeholder="Введіть назву тренування"
+                                    autoComplete="off"
+                                    value={workoutName}
+                                    onChange={(e) => {
+                                       setWorkoutName(
+                                          e.target.value.trim() === ''
+                                             ? ''
+                                             : e.target.value
+                                       )
+                                    }}
+                                    onKeyDown={(e) => {
+                                       if (e.key === 'Enter') {
+                                          e.preventDefault()
+                                       }
+                                    }}
+                                 />
+                              </div>
+                              <FormControl>
+                                 <p className="p-2 font-medium">Складність</p>
+                                 <RadioGroup
+                                    row
+                                    aria-labelledby="demo-controlled-radio-buttons-group"
+                                    name="controlled-radio-buttons-group"
+                                    className="flex w-full justify-around"
+                                    value={workoutDifficulty}
+                                    onChange={(e) =>
+                                       setWorkoutDifficulty(e.target.value)
+                                    }
+                                 >
+                                    <Radio
+                                       className="radio-easy w-1/3"
+                                       value="easy"
+                                    />
+                                    <Radio
+                                       className="radio-medium w-1/3"
+                                       value="medium"
+                                    />
+                                    <Radio
+                                       className="radio-hard w-1/3"
+                                       value="hard"
+                                    />
+                                 </RadioGroup>
+                              </FormControl>
                            </>
                         )}
                      {item === 'exerciseFromWorkout' && action === 'add' && (
@@ -925,7 +943,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               exercises={filteredExercises}
                               clicker={(exercise: IExercise) => {
                                  if (data) {
-                                    data.selectedExercise = exercise
+                                    data.selectedExerciseInfo = exercise
                                  }
                                  handleClick()
                               }}
@@ -935,14 +953,13 @@ const Modal = ({ info, setModal }: IModalProps) => {
                      {item === 'record' &&
                         (action === 'add' || action === 'edit') && (
                            <>
-                              {data?.selectedExercise?.hasWeight && (
+                              {data?.selectedExerciseInfo?.hasWeight && (
                                  <div className="input-block">
                                     <label htmlFor="weight">Робоча вага:</label>
                                     <input
                                        type="number"
                                        step="any"
                                        id="weight"
-                                       min="0"
                                        placeholder="Введіть робочу вагу"
                                        value={weight}
                                        onChange={(e) =>
@@ -950,7 +967,6 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                        }
                                        onKeyDown={(e) => {
                                           if (
-                                             e.key === '-' ||
                                              e.key === 'e' ||
                                              e.key === 'Enter'
                                           ) {
@@ -961,7 +977,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                     />
                                  </div>
                               )}
-                              {data?.selectedExercise?.hasReps && (
+                              {data?.selectedExerciseInfo?.hasReps && (
                                  <div className="input-block">
                                     <label htmlFor="reps">Повторення:</label>
                                     <input
@@ -987,7 +1003,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                     />
                                  </div>
                               )}
-                              {data?.selectedExercise?.hasTime && (
+                              {data?.selectedExerciseInfo?.hasTime && (
                                  <div className="input-block">
                                     <label htmlFor="time">Час виконання:</label>
                                     <input
@@ -1092,7 +1108,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            type="button"
                            className={`button-${action} button-modal`}
                            onClick={handleClick}
-                           ref={buttonConfirm}
+                           disabled={Boolean(
+                              errorName || errorTime || errorFileName
+                           )}
                         >
                            {action === 'add'
                               ? 'додати'
