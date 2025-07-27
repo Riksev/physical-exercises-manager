@@ -12,7 +12,10 @@ import Workout from './Workout'
 import { useAppSelector } from '../../app/hooks'
 import Box from '@mui/material/Box'
 import dayjs, { Dayjs } from 'dayjs'
-import { enUS, ruRU, ukUA } from '@mui/x-date-pickers/locales'
+import 'dayjs/locale/uk'
+import 'dayjs/locale/en'
+import 'dayjs/locale/ru'
+import { enUS, ukUA, ruRU } from '@mui/x-date-pickers/locales'
 
 interface IWorkoutsProps {
    filteredWorkouts: IWorkout[]
@@ -46,7 +49,7 @@ const Workouts = ({
       for (const lang of browserLangs) {
          const baseLang = lang.split('-')[0]
 
-         if (baseLang === 'uk') {
+         if (baseLang.includes('uk')) {
             return {
                dayjsLocale: 'uk',
                muiLocaleText:
@@ -54,11 +57,20 @@ const Workouts = ({
                      .localeText,
             }
          }
-         if (baseLang === 'ru') {
+         if (baseLang.includes('ru')) {
             return {
                dayjsLocale: 'ru',
                muiLocaleText:
                   ruRU.components.MuiLocalizationProvider.defaultProps
+                     .localeText,
+            }
+         }
+
+         if (baseLang.includes('en')) {
+            return {
+               dayjsLocale: 'en',
+               muiLocaleText:
+                  enUS.components.MuiLocalizationProvider.defaultProps
                      .localeText,
             }
          }
@@ -266,6 +278,14 @@ const Workouts = ({
                   <DateCalendar
                      value={date}
                      onChange={(newDate) => setDate(newDate)}
+                     dayOfWeekFormatter={(day) => {
+                        return day
+                           .toDate()
+                           .toLocaleDateString(localeInfo.dayjsLocale, {
+                              weekday: 'short',
+                           })
+                           .slice(0, 2)
+                     }}
                      slots={{
                         day: (dayProps) => (
                            <CustomDay

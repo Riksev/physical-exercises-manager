@@ -274,7 +274,7 @@ html,
    .MuiPickersDay-root,
    .MuiDayCalendar-weekDayLabel,
    .MuiPickersCalendarHeader-label {
-      @apply !text-base !text-black sm:!text-lg md:!text-xl;
+      @apply !text-base !text-black capitalize sm:!text-lg md:!text-xl;
    }
 
    .MuiPickersCalendarHeader-label,
