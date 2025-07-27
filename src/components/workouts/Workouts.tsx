@@ -44,35 +44,20 @@ const Workouts = ({
    }
 
    const getBrowserLocaleInfo = (): DetectedLocale => {
-      const browserLangs = navigator.languages || [navigator.language]
+      const browserLang = navigator.language
 
-      for (const lang of browserLangs) {
-         const baseLang = lang.split('-')[0]
-
-         if (baseLang.includes('uk')) {
-            return {
-               dayjsLocale: 'uk',
-               muiLocaleText:
-                  ukUA.components.MuiLocalizationProvider.defaultProps
-                     .localeText,
-            }
+      if (browserLang.includes('uk')) {
+         return {
+            dayjsLocale: 'uk',
+            muiLocaleText:
+               ukUA.components.MuiLocalizationProvider.defaultProps.localeText,
          }
-         if (baseLang.includes('ru')) {
-            return {
-               dayjsLocale: 'ru',
-               muiLocaleText:
-                  ruRU.components.MuiLocalizationProvider.defaultProps
-                     .localeText,
-            }
-         }
-
-         if (baseLang.includes('en')) {
-            return {
-               dayjsLocale: 'en',
-               muiLocaleText:
-                  enUS.components.MuiLocalizationProvider.defaultProps
-                     .localeText,
-            }
+      }
+      if (browserLang.includes('ru')) {
+         return {
+            dayjsLocale: 'ru',
+            muiLocaleText:
+               ruRU.components.MuiLocalizationProvider.defaultProps.localeText,
          }
       }
 
@@ -83,6 +68,7 @@ const Workouts = ({
       }
    }
 
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    const localeInfo = useMemo(() => getBrowserLocaleInfo(), [])
 
    const getWorkoutsOnDate = (dateJS: Dayjs): IWorkout[] => {
