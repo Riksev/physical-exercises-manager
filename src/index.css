@@ -251,13 +251,13 @@ html,
 
    .MuiDayCalendar-weekContainer,
    .MuiDayCalendar-header {
-      @apply !flex !flex-row !justify-between;
+      @apply !flex !flex-row;
    }
 
    @media (min-width: 350px) {
       .MuiDayCalendar-weekContainer,
       .MuiDayCalendar-header {
-         @apply !px-2;
+         @apply !justify-between !px-2;
       }
    }
 
@@ -268,7 +268,14 @@ html,
 
    .MuiPickersArrowSwitcher-rightArrowIcon,
    .MuiPickersArrowSwitcher-leftArrowIcon {
-      @apply !h-[1.3em] !w-[1.3em] !text-black !transition-all duration-200 hover:!scale-130;
+      @apply !h-[1em] !w-[1em] !text-black !transition-all duration-200 hover:!scale-130;
+   }
+
+   @media (min-width: 350px) {
+      .MuiPickersArrowSwitcher-rightArrowIcon,
+      .MuiPickersArrowSwitcher-leftArrowIcon {
+         @apply !h-[1.3em] !w-[1.3em];
+      }
    }
 
    .MuiPickersDay-root,
@@ -279,7 +286,11 @@ html,
 
    .MuiPickersCalendarHeader-label,
    .MuiDayCalendar-weekDayLabel {
-      @apply !font-bold;
+      @apply !m-0 !font-bold;
+   }
+
+   .MuiButtonBase-root.MuiPickersDay-root.MuiPickersDay-dayWithMargin {
+      @apply !m-0;
    }
 
    .MuiButtonBase-root.MuiPickersDay-root {
