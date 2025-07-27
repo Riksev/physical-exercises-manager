@@ -1,5 +1,5 @@
-import { useState, type Dispatch, type SetStateAction } from 'react'
-import type { IExercise, IModal, IWorkout } from '../../interfaces'
+import { useMemo, type Dispatch, type SetStateAction } from 'react'
+import type { IModal, IWorkout } from '../../interfaces'
 import ListOfWorkouts from './ListOfWorkouts'
 import {
    DateCalendar,
@@ -9,17 +9,15 @@ import {
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import Badge from '@mui/material/Badge'
 import Workout from './Workout'
-import SelectExerciseModal from '../modals/other/SelectExerciseModal'
 import { useAppSelector } from '../../app/hooks'
 import Box from '@mui/material/Box'
 import dayjs, { Dayjs } from 'dayjs'
+import { enUS, ruRU, ukUA } from '@mui/x-date-pickers/locales'
 
 interface IWorkoutsProps {
    filteredWorkouts: IWorkout[]
    date: dayjs.Dayjs | null | undefined
    setDate: Dispatch<SetStateAction<dayjs.Dayjs | null | undefined>>
-   selectedExercise: IExercise | null
-   setSelectedExercise: Dispatch<SetStateAction<IExercise | null>>
    activeWorkout: IWorkout | null
    setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
    setModal: Dispatch<SetStateAction<IModal | null>>
@@ -30,7 +28,6 @@ const Workouts = ({
    filteredWorkouts,
    date,
    setDate,
-   setSelectedExercise,
    activeWorkout,
    setActiveWorkout,
    setModal,
@@ -38,13 +35,43 @@ const Workouts = ({
 }: IWorkoutsProps) => {
    const workouts = useAppSelector((state) => state.data.workouts)
 
-   const [isSelectExerciseModalOpen, setIsSelectExerciseModalOpen] =
-      useState<boolean>(false)
-
-   const exerciseInteraction = (exercise: IExercise) => {
-      setSelectedExercise(exercise)
-      setIsSelectExerciseModalOpen(false)
+   interface DetectedLocale {
+      dayjsLocale: string
+      muiLocaleText: object
    }
+
+   const getBrowserLocaleInfo = (): DetectedLocale => {
+      const browserLangs = navigator.languages || [navigator.language]
+
+      for (const lang of browserLangs) {
+         const baseLang = lang.split('-')[0]
+
+         if (baseLang === 'uk') {
+            return {
+               dayjsLocale: 'uk',
+               muiLocaleText:
+                  ukUA.components.MuiLocalizationProvider.defaultProps
+                     .localeText,
+            }
+         }
+         if (baseLang === 'ru') {
+            return {
+               dayjsLocale: 'ru',
+               muiLocaleText:
+                  ruRU.components.MuiLocalizationProvider.defaultProps
+                     .localeText,
+            }
+         }
+      }
+
+      return {
+         dayjsLocale: 'en',
+         muiLocaleText:
+            enUS.components.MuiLocalizationProvider.defaultProps.localeText,
+      }
+   }
+
+   const localeInfo = useMemo(() => getBrowserLocaleInfo(), [])
 
    const getWorkoutsOnDate = (dateJS: Dayjs): IWorkout[] => {
       const dateRaw = dateJS.format('YYYY-MM-DD')
@@ -230,7 +257,11 @@ const Workouts = ({
             </div>
          </details> */}
          <div className="w-full">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <LocalizationProvider
+               dateAdapter={AdapterDayjs}
+               adapterLocale={localeInfo.dayjsLocale}
+               localeText={localeInfo.muiLocaleText}
+            >
                <Box>
                   <DateCalendar
                      value={date}
@@ -266,12 +297,6 @@ const Workouts = ({
             workouts={filteredWorkouts}
             clicker={setActiveWorkout}
          />
-         {isSelectExerciseModalOpen && (
-            <SelectExerciseModal
-               setIsModalOpen={setIsSelectExerciseModalOpen}
-               clicker={exerciseInteraction}
-            />
-         )}
       </div>
    ) : (
       <Workout

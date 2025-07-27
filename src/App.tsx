@@ -91,8 +91,6 @@ function App() {
                   filteredWorkouts={filteredWorkouts}
                   date={date}
                   setDate={setDate}
-                  selectedExercise={selectedExercise}
-                  setSelectedExercise={setSelectedExercise}
                   activeWorkout={activeWorkout}
                   setActiveWorkout={setActiveWorkout}
                   setModal={setModal}
