@@ -56,7 +56,7 @@ html,
    }
 
    .button-full {
-      @apply w-full p-4;
+      @apply w-full px-4 py-2;
    }
 
    .horizontal-line {
@@ -125,7 +125,7 @@ html,
    }
 
    .details {
-      @apply mb-2 w-full cursor-pointer rounded-2xl border-2 border-gray-400 bg-gray-300 p-3 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:bg-gray-400/50 hover:shadow-xl active:border-gray-500 active:bg-gray-400/50;
+      @apply mb-2 w-full cursor-pointer rounded-2xl border-2 border-gray-400 bg-gray-300/50 p-3 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:bg-gray-400/50 hover:shadow-xl active:border-gray-500 active:bg-gray-400/50;
    }
 
    summary {

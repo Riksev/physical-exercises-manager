@@ -1,13 +1,17 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import ListOfExercises from './ListOfExercises'
-import type { IExercise, IModal } from '../../interfaces'
+import type { IExercise, IModal, IWorkout } from '../../interfaces'
 import Exercise from './Exercise'
+import { Swiper as SwiperType } from 'swiper'
 
 interface IExercisesProps {
    exercises: IExercise[]
    activeExercise: IExercise | null
    setActiveExercise: Dispatch<SetStateAction<IExercise | null>>
    setModal: Dispatch<SetStateAction<IModal | null>>
+   swiperRef: React.RefObject<SwiperType | null>
+   setActivePage: Dispatch<SetStateAction<number>>
+   setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
 }
 
 const Exercises = ({
@@ -15,6 +19,9 @@ const Exercises = ({
    activeExercise,
    setActiveExercise,
    setModal,
+   swiperRef,
+   setActivePage,
+   setActiveWorkout,
 }: IExercisesProps) => {
    const [searchName, setSearchName] = useState<string>('')
    const [filteredExercises, setFilteredExercises] =
@@ -80,6 +87,9 @@ const Exercises = ({
                activeExercise={activeExercise}
                setActiveExercise={setActiveExercise}
                setModal={setModal}
+               swiperRef={swiperRef}
+               setActivePage={setActivePage}
+               setActiveWorkout={setActiveWorkout}
             />
          )}
       </>

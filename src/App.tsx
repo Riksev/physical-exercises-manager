@@ -84,6 +84,9 @@ function App() {
                   activeExercise={activeExercise}
                   setActiveExercise={setActiveExercise}
                   setModal={setModal}
+                  swiperRef={swiperRef}
+                  setActivePage={setActivePage}
+                  setActiveWorkout={setActiveWorkout}
                />
             </SwiperSlide>
             <SwiperSlide>
@@ -95,6 +98,9 @@ function App() {
                   setActiveWorkout={setActiveWorkout}
                   setModal={setModal}
                   modal={modal}
+                  swiperRef={swiperRef}
+                  setActivePage={setActivePage}
+                  setActiveExercise={setActiveExercise}
                />
             </SwiperSlide>
             <SwiperSlide>

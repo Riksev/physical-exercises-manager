@@ -1,5 +1,5 @@
 import { useMemo, type Dispatch, type SetStateAction } from 'react'
-import type { IModal, IWorkout } from '../../interfaces'
+import type { IExercise, IModal, IWorkout } from '../../interfaces'
 import ListOfWorkouts from './ListOfWorkouts'
 import {
    DateCalendar,
@@ -16,6 +16,7 @@ import 'dayjs/locale/uk'
 import 'dayjs/locale/en'
 import 'dayjs/locale/ru'
 import { enUS, ukUA, ruRU } from '@mui/x-date-pickers/locales'
+import { Swiper as SwiperType } from 'swiper'
 
 interface IWorkoutsProps {
    filteredWorkouts: IWorkout[]
@@ -25,6 +26,9 @@ interface IWorkoutsProps {
    setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
    setModal: Dispatch<SetStateAction<IModal | null>>
    modal: IModal | null
+   swiperRef: React.RefObject<SwiperType | null>
+   setActivePage: Dispatch<SetStateAction<number>>
+   setActiveExercise: Dispatch<SetStateAction<IExercise | null>>
 }
 
 const Workouts = ({
@@ -35,9 +39,11 @@ const Workouts = ({
    setActiveWorkout,
    setModal,
    modal,
+   swiperRef,
+   setActivePage,
+   setActiveExercise,
 }: IWorkoutsProps) => {
    const workouts = useAppSelector((state) => state.data.workouts)
-
    interface DetectedLocale {
       dayjsLocale: string
       muiLocaleText: object
@@ -130,130 +136,6 @@ const Workouts = ({
    return !activeWorkout ? (
       <div className="app-page">
          <h2 className="horizontal-line title">Мої тренування</h2>
-         {/* <details className="details">
-            <summary>
-               Фільтри{' '}
-               <span className="text-red-500">{isFiltered ? '✅' : '❌'}</span>
-            </summary>
-            <div className="flex w-full flex-col items-center justify-between gap-2">
-               <div className="input-block-row">
-                  <label htmlFor="dateBegin">Від:</label>
-                  <input
-                     type="date"
-                     id="dateBegin"
-                     className="w-2/3 sm:w-1/2"
-                     value={dateBegin}
-                     onChange={(e) => {
-                        setDateBegin(e.target.value)
-                     }}
-                  />
-               </div>
-               {errorDateBegin && (
-                  <p className="error-message">{errorDateBegin}</p>
-               )}
-               <div className="input-block-row">
-                  <label htmlFor="dateEnd">До:</label>
-                  <input
-                     type="date"
-                     id="dateEnd"
-                     className="w-2/3 sm:w-1/2"
-                     value={dateEnd}
-                     onChange={(e) => {
-                        setDateEnd(e.target.value)
-                     }}
-                  />
-               </div>
-               {errorDateEnd && <p className="error-message">{errorDateEnd}</p>}
-               <div className="input-block-row">
-                  <label htmlFor="exercise">Вправа:</label>
-                  <div className="relative flex w-full items-center justify-end">
-                     <input
-                        readOnly
-                        type="text"
-                        id="exercise"
-                        className="w-9/10 pr-8 sm:w-4/7"
-                        value={selectedExercise?.name || 'Всі вправи'}
-                        onClick={() => setIsSelectExerciseModalOpen(true)}
-                     />
-                     <span className="pointer-events-none absolute right-3 text-gray-500 hover:text-gray-700">
-                        <svg
-                           className="h-5 w-5"
-                           fill="none"
-                           viewBox="0 0 24 24"
-                           stroke="currentColor"
-                        >
-                           <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M9 5l7 7-7 7"
-                           />
-                        </svg>
-                     </span>
-                  </div>
-               </div>
-               <button
-                  className="button-action button-modal mb-2"
-                  onClick={() => {
-                     setFilteredWorkouts(() => {
-                        const updatedWorkouts = [...workouts]
-                        const exerciseInfo: IExercise | null = selectedExercise
-                           ? exercises.find(
-                                (exercise) =>
-                                   exercise.name === selectedExercise.name
-                             ) || null
-                           : null
-                        const fromDate =
-                           dateBegin < dateEnd ? dateBegin : dateEnd
-                        const toDate = dateBegin < dateEnd ? dateEnd : dateBegin
-                        const newWorkouts = updatedWorkouts.flatMap(
-                           (workout) => {
-                              if (
-                                 workout.date < fromDate ||
-                                 workout.date > toDate
-                              ) {
-                                 return []
-                              }
-                              if (!exerciseInfo) {
-                                 return [workout]
-                              }
-                              const exerciseIndex = workout.exercises.findIndex(
-                                 (ex) => ex.exercise_id === exerciseInfo._id
-                              )
-                              if (exerciseIndex === -1) {
-                                 return []
-                              }
-                              return [
-                                 {
-                                    ...workout,
-                                    exercises: [
-                                       workout.exercises[exerciseIndex],
-                                    ],
-                                 },
-                              ]
-                           }
-                        )
-                        return dateBegin > dateEnd
-                           ? newWorkouts.reverse()
-                           : newWorkouts
-                     })
-                     setIsFiltered(true)
-                  }}
-                  disabled={errorDateBegin !== '' || errorDateEnd !== ''}
-               >
-                  застосувати
-               </button>
-               <button
-                  className="button-action button-modal"
-                  onClick={() => {
-                     setFilteredWorkouts(workouts.slice().reverse())
-                     setIsFiltered(false)
-                  }}
-               >
-                  скинути
-               </button>
-            </div>
-         </details> */}
          <div className="w-full">
             <LocalizationProvider
                dateAdapter={AdapterDayjs}
@@ -310,6 +192,9 @@ const Workouts = ({
          setActiveWorkout={setActiveWorkout}
          setModal={setModal}
          modal={modal}
+         swiperRef={swiperRef}
+         setActivePage={setActivePage}
+         setActiveExercise={setActiveExercise}
       />
    )
 }
