@@ -121,13 +121,17 @@ const ExerciseHistory = ({
                               ) {
                                  return []
                               }
+                              const newExercises = workout.exercises.filter(
+                                 (ex) => ex.exercise_id === activeExercise?._id
+                              )
+                              if (newExercises.length === 0) {
+                                 return []
+                              }
+
                               return [
                                  {
                                     ...workout,
-                                    exercises: workout.exercises.filter(
-                                       (ex) =>
-                                          ex.exercise_id === activeExercise?._id
-                                    ),
+                                    exercises: newExercises,
                                  },
                               ]
                            })
