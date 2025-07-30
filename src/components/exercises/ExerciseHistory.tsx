@@ -48,9 +48,19 @@ const ExerciseHistory = ({
             .reverse()
       )
       setDateBegin(workouts[workouts.length - 1]?.date || '')
-      setDateEnd(workouts[0]?.date || '')
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [workouts])
+      setDateBegin(
+         [...workouts]
+            .reverse()
+            .find((w) =>
+               w.exercises.some((ex) => ex.exercise_id === activeExercise?._id)
+            )?.date || ''
+      )
+      setDateEnd(
+         workouts.find((w) =>
+            w.exercises.some((ex) => ex.exercise_id === activeExercise?._id)
+         )?.date || ''
+      )
+   }, [workouts, activeExercise])
 
    useEffect(() => {
       if (!dateBegin.match(/^\d{4}-\d{2}-\d{2}$/)) {
@@ -160,8 +170,22 @@ const ExerciseHistory = ({
                            .filter((workout) => workout.exercises.length > 0)
                            .reverse()
                      )
-                     setDateBegin(workouts[workouts.length - 1]?.date || '')
-                     setDateEnd(workouts[0]?.date || '')
+                     setDateBegin(
+                        [...workouts]
+                           .reverse()
+                           .find((w) =>
+                              w.exercises.some(
+                                 (ex) => ex.exercise_id === activeExercise?._id
+                              )
+                           )?.date || ''
+                     )
+                     setDateEnd(
+                        workouts.find((w) =>
+                           w.exercises.some(
+                              (ex) => ex.exercise_id === activeExercise?._id
+                           )
+                        )?.date || ''
+                     )
                      setIsFiltered(false)
                   }}
                >
