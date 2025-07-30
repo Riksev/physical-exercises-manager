@@ -113,8 +113,8 @@ const ExerciseHistory = ({
                         const fromDate =
                            dateBegin < dateEnd ? dateBegin : dateEnd
                         const toDate = dateBegin < dateEnd ? dateEnd : dateBegin
-                        const newWorkouts = updatedWorkouts.flatMap(
-                           (workout) => {
+                        const newWorkouts = updatedWorkouts
+                           .flatMap((workout) => {
                               if (
                                  workout.date < fromDate ||
                                  workout.date > toDate
@@ -130,8 +130,8 @@ const ExerciseHistory = ({
                                     ),
                                  },
                               ]
-                           }
-                        )
+                           })
+                           .filter((workout) => workout.exercises.length > 0)
                         return dateBegin > dateEnd
                            ? newWorkouts.reverse()
                            : newWorkouts
