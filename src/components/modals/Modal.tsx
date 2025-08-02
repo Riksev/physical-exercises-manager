@@ -39,7 +39,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
    const [exerciseName, setExerciseName] = useState<string>(
       data?.activeExercise?.name ?? ''
    )
-   const [workoutName, setWorkoutName] = useState<string>('')
+   const [workoutName, setWorkoutName] = useState<string>(
+      data?.activeWorkout?.name ?? ''
+   )
    const [workoutDifficulty, setWorkoutDifficulty] = useState<string>(
       data?.activeWorkout?.difficulty ?? 'medium'
    )
