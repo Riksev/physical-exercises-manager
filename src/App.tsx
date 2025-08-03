@@ -9,6 +9,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Swiper as SwiperType } from 'swiper'
 import Modal from './components/modals/Modal'
 import dayjs from 'dayjs'
+import IconImage from './assets/icon.svg'
 
 function App() {
    // General data
@@ -28,9 +29,7 @@ function App() {
       null
    )
    const [date, setDate] = useState<dayjs.Dayjs | null | undefined>(dayjs())
-   const [filteredWorkouts, setFilteredWorkouts] = useState(
-      workouts.slice().reverse()
-   )
+   const [filteredWorkouts, setFilteredWorkouts] = useState(workouts.slice())
 
    useEffect((): void => {
       setFilteredWorkouts(
@@ -40,7 +39,6 @@ function App() {
                return workout.date === date.format('YYYY-MM-DD')
             })
             .slice()
-            .reverse()
       )
       if (activeWorkout) {
          setActiveWorkout(
@@ -65,7 +63,19 @@ function App() {
    }, [exercises])
 
    return (
-      <div className="app-bg">
+      <div className="app-bg relative pt-6">
+         <div className="absolute top-0 z-10000 flex w-full flex-row items-center justify-center gap-2 rounded-b-2xl bg-gradient-to-br from-fuchsia-900 to-blue-600 py-2 shadow-xl select-none">
+            <img
+               src={IconImage}
+               alt="gymanote icon"
+               className="inline-block h-8 w-8 align-middle"
+               draggable="false"
+            />
+            <p className="inline-block w-fit text-center text-2xl font-bold text-white uppercase">
+               gymanote
+            </p>
+         </div>
+
          <Swiper
             className="my-swiper"
             grabCursor={true}

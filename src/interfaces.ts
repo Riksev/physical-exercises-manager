@@ -11,6 +11,8 @@ export interface IWorkout {
    name?: string
    difficulty?: string
    exercises: IWorkoutExercise[]
+   startTime?: string
+   endTime?: string
 }
 
 export interface IWorkoutExercise {

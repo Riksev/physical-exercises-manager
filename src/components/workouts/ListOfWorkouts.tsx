@@ -5,9 +5,14 @@ import BlockWorkout from './BlockWorkout'
 interface IListOfWorkoutsProps {
    workouts: IWorkout[]
    clicker: (workout: IWorkout) => void
+   controlOrder?: boolean
 }
 
-const ListOfWorkouts = ({ workouts, clicker }: IListOfWorkoutsProps) => {
+const ListOfWorkouts = ({
+   workouts,
+   clicker,
+   controlOrder,
+}: IListOfWorkoutsProps) => {
    const exercises = useAppSelector((state) => state.data.exercises)
 
    return (
@@ -23,7 +28,14 @@ const ListOfWorkouts = ({ workouts, clicker }: IListOfWorkoutsProps) => {
             )
          ) : (
             workouts.map((training, index) => (
-               <BlockWorkout key={index} workout={training} clicker={clicker} />
+               <BlockWorkout
+                  key={index}
+                  workout={training}
+                  clicker={clicker}
+                  controlOrder={controlOrder}
+                  {...(controlOrder ? { index } : {})}
+                  {...(controlOrder ? { filteredLength: workouts.length } : {})}
+               />
             ))
          )}
       </div>

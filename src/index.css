@@ -31,7 +31,9 @@ html,
       @apply bg-rose-500 hover:bg-rose-800 active:bg-rose-900 disabled:cursor-not-allowed disabled:bg-rose-900;
    }
 
-   .button-edit {
+   .button-edit,
+   .button-setStartTime,
+   .button-setEndTime {
       @apply bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 disabled:cursor-not-allowed disabled:bg-yellow-700;
    }
    .button-add,
@@ -335,5 +337,9 @@ html,
 
    .MuiFormLabel-root {
       @apply !p-2 !font-medium !text-black;
+   }
+
+   .MuiPickersInputBase-root.MuiPickersOutlinedInput-root {
+      @apply !rounded-2xl !border !border-black/50 !font-medium !text-black;
    }
 }

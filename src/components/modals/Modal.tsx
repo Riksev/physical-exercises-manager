@@ -12,6 +12,11 @@ import ListOfExercises from '../exercises/ListOfExercises'
 import FormControl from '@mui/material/FormControl'
 import RadioGroup from '@mui/material/RadioGroup'
 import Radio from '@mui/material/Radio'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { TimePicker } from '@mui/x-date-pickers/TimePicker'
+import dayjs from 'dayjs'
+import { getWorkoutEndTime, getWorkoutStartTime } from '../../features/workout'
 
 interface IModalProps {
    info: IModal | null
@@ -71,6 +76,14 @@ const Modal = ({ info, setModal }: IModalProps) => {
       action === 'export' ? getDate() : ''
    )
    const [infoImport, setInfoImport] = useState('')
+
+   const [clockTime, setClockTime] = useState<dayjs.Dayjs | null>(
+      action === 'setStartTime'
+         ? dayjs(new Date(getWorkoutStartTime(false, data?.activeWorkout)))
+         : action === 'setEndTime'
+           ? dayjs(new Date(getWorkoutEndTime(false, data?.activeWorkout)))
+           : dayjs(new Date())
+   )
 
    const [errorName, setErrorName] = useState<string>('')
    const [errorTime, setErrorTime] = useState<string>('')
@@ -167,6 +180,12 @@ const Modal = ({ info, setModal }: IModalProps) => {
                case 'delete':
                   newTitle.push('Видалення тренування')
                   newTitle.push(data?.activeWorkout?.date || '')
+                  break
+               case 'setStartTime':
+                  newTitle.push('Встановлення часу початку тренування')
+                  break
+               case 'setEndTime':
+                  newTitle.push('Встановлення часу кінця тренування')
                   break
                default:
                   newTitle.push('Тренування')
@@ -338,6 +357,8 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            name: workoutName,
                            difficulty: workoutDifficulty,
                            exercises: [],
+                           startTime: new Date().toISOString(),
+                           endTime: new Date().toISOString(),
                         }
                         let isInserted = false
                         for (let i = 0; i < newWorkouts.length; i++) {
@@ -355,13 +376,11 @@ const Modal = ({ info, setModal }: IModalProps) => {
                   case 'edit':
                      {
                         const editedWorkout: IWorkout = {
+                           ...data?.activeWorkout,
                            _id:
                               data?.activeWorkout?._id ??
                               new Date().getTime().toString(),
                            date,
-                           addedAt:
-                              data?.activeWorkout?.addedAt ??
-                              new Date().toISOString(),
                            name: workoutName,
                            difficulty: workoutDifficulty,
                            exercises: data?.activeWorkout?.exercises ?? [],
@@ -395,6 +414,35 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         }
                      }
                      break
+                  case 'setStartTime':
+                     {
+                        const workoutIndex = newWorkouts.findIndex(
+                           (w) => w._id === data?.activeWorkout?._id
+                        )
+                        if (workoutIndex !== -1) {
+                           newWorkouts[workoutIndex] = {
+                              ...newWorkouts[workoutIndex],
+                              startTime: clockTime?.toDate().toISOString(),
+                           }
+                        }
+                     }
+                     break
+                  case 'setEndTime':
+                     {
+                        const workoutIndex = newWorkouts.findIndex(
+                           (w) => w._id === data?.activeWorkout?._id
+                        )
+                        console.log(clockTime)
+                        console.log('2 ', clockTime?.toDate().toISOString())
+
+                        if (workoutIndex !== -1) {
+                           newWorkouts[workoutIndex] = {
+                              ...newWorkouts[workoutIndex],
+                              endTime: clockTime?.toDate().toISOString(),
+                           }
+                        }
+                     }
+                     break
                }
                dispatch(setWorkouts(newWorkouts))
             }
@@ -411,6 +459,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         if (workoutIndex !== -1) {
                            newWorkouts[workoutIndex] = {
                               ...newWorkouts[workoutIndex],
+                              endTime: new Date().toISOString(),
                               exercises: [
                                  ...newWorkouts[workoutIndex].exercises.map(
                                     (ex) => ({
@@ -478,6 +527,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                   if (workoutIndex !== -1) {
                      newWorkouts[workoutIndex] = {
                         ...newWorkouts[workoutIndex],
+                        endTime: new Date().toISOString(),
                         exercises: newWorkouts[workoutIndex].exercises.map(
                            (exercise) => {
                               if (data?.selectedExerciseFromWorkout?._id) {
@@ -1094,11 +1144,54 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            )}
                         </div>
                      )}
+                     {(action === 'setStartTime' ||
+                        action === 'setEndTime') && (
+                        <div className="flex w-full flex-col items-center justify-center gap-2">
+                           <LocalizationProvider dateAdapter={AdapterDayjs}>
+                              <TimePicker
+                                 defaultValue={dayjs(new Date())}
+                                 value={clockTime}
+                                 className="w-full"
+                                 ampm={false}
+                              />
+                           </LocalizationProvider>
+                           <button
+                              className="button-action button-modal"
+                              onClick={() => {
+                                 setClockTime(dayjs(new Date()))
+                              }}
+                           >
+                              поточний час
+                           </button>
+                           <button
+                              className="button-action button-modal"
+                              onClick={() => {
+                                 const newTime: string =
+                                    action === 'setStartTime'
+                                       ? getWorkoutStartTime(
+                                            true,
+                                            data?.activeWorkout
+                                         )
+                                       : action === 'setEndTime'
+                                         ? getWorkoutEndTime(
+                                              true,
+                                              data?.activeWorkout
+                                           )
+                                         : ''
+                                 setClockTime(dayjs(newTime))
+                              }}
+                           >
+                              із записів
+                           </button>
+                        </div>
+                     )}
                   </div>
                </div>
                {(action === 'add' ||
                   action === 'edit' ||
-                  action === 'export') && (
+                  action === 'export' ||
+                  action == 'setStartTime' ||
+                  action == 'setEndTime') && (
                   <>
                      <h2 className="horizontal-line"></h2>
                   </>
@@ -1116,7 +1209,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         >
                            {action === 'add'
                               ? 'додати'
-                              : action === 'edit'
+                              : action === 'edit' ||
+                                  action == 'setStartTime' ||
+                                  action == 'setEndTime'
                                 ? 'зберегти'
                                 : action === 'delete'
                                   ? 'видалити'

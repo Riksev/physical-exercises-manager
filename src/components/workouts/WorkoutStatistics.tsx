@@ -1,20 +1,23 @@
-import { useEffect, useState } from 'react'
-import type { IWorkout } from '../../interfaces'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import type { IModal, IWorkout } from '../../interfaces'
 import { useAppSelector } from '../../app/hooks'
+import { getWorkoutEndTime, getWorkoutStartTime } from '../../features/workout'
 
 interface IWorkoutStatisticsProps {
    activeWorkout: IWorkout
    isAnyModalOpen: boolean
+   setModal: Dispatch<SetStateAction<IModal | null>>
 }
 
 const WorkoutStatistics = ({
    activeWorkout,
    isAnyModalOpen,
+   setModal,
 }: IWorkoutStatisticsProps) => {
    const exercises = useAppSelector((state) => state.data.exercises)
 
-   const [startTime, setStartTime] = useState<string>('-')
-   const [endTime, setEndTime] = useState<string>('-')
+   const startTime = getWorkoutStartTime(false, activeWorkout)
+   const endTime = getWorkoutEndTime(false, activeWorkout)
    const [duration, setDuration] = useState<string>('-')
    const [volume, setVolume] = useState<number>(0)
    const [setsTotal, setSetsTotal] = useState<number>(0)
@@ -37,8 +40,7 @@ const WorkoutStatistics = ({
       const day = String(date.getDate()).padStart(2, '0')
       const hours = String(date.getHours()).padStart(2, '0')
       const minutes = String(date.getMinutes()).padStart(2, '0')
-      const seconds = String(date.getSeconds()).padStart(2, '0')
-      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+      return `${year}-${month}-${day} ${hours}:${minutes}`
    }
 
    const getDurationString = (
@@ -59,20 +61,14 @@ const WorkoutStatistics = ({
          const minutes: string = String(
             Math.floor((diff % 3600000) / 60000)
          ).padStart(2, '0')
-         const seconds: string = String(
-            Math.floor((diff % 60000) / 1000)
-         ).padStart(2, '0')
 
-         return `${hours} год. ${minutes} хв. ${seconds} сек.`
+         return `${hours} год. ${minutes} хв.`
       }
       return '-'
    }
 
    useEffect(() => {
       if (!isAnyModalOpen) {
-         let minTime: string = '-'
-         let maxTime: string = '-'
-
          const exerciseInfoLocal: Map<string, ExerciseInfo> = new Map<
             string,
             ExerciseInfo
@@ -81,41 +77,16 @@ const WorkoutStatistics = ({
          let setsGlobal: number = 0
          let repsGlobal: number = 0
 
-         if (activeWorkout?.addedAt) {
-            minTime = activeWorkout.addedAt
-            maxTime = activeWorkout.addedAt
-         }
-
          for (const exercise of activeWorkout.exercises) {
             let setsLocal: number = 0
             let repsLocal: number = 0
             let localVolume: number = 0
-
-            if (exercise.addedAt) {
-               if (minTime === '-' || exercise.addedAt < minTime) {
-                  minTime = exercise.addedAt
-               }
-               if (maxTime === '-' || exercise.addedAt > maxTime) {
-                  maxTime = exercise.addedAt
-               }
-            }
 
             const exerciseData = exercises.find(
                (ex) => ex._id === exercise.exercise_id
             )
 
             for (const record of exercise.records) {
-               // Exercise time calculation
-               const currentRecordTime = record?.addedAt
-               if (currentRecordTime) {
-                  if (minTime === '-' || currentRecordTime < minTime) {
-                     minTime = currentRecordTime
-                  }
-                  if (maxTime === '-' || currentRecordTime > maxTime) {
-                     maxTime = currentRecordTime
-                  }
-               }
-
                // Workout volume calculation
                const currentReps = record?.reps
                const currentWeight = record?.weight
@@ -170,16 +141,13 @@ const WorkoutStatistics = ({
             setsGlobal += setsLocal
             repsGlobal += repsLocal
          }
-
-         setStartTime(minTime)
-         setEndTime(maxTime)
-         setDuration(getDurationString(minTime, maxTime))
+         setDuration(getDurationString(startTime, endTime))
          setExerciseInfo(exerciseInfoLocal)
          setVolume(workoutVolume)
          setSetsTotal(setsGlobal)
          setRepsTotal(repsGlobal)
       }
-   }, [activeWorkout, exercises, isAnyModalOpen])
+   }, [activeWorkout, endTime, exercises, isAnyModalOpen, startTime])
 
    return (
       <details className="details">
@@ -187,16 +155,58 @@ const WorkoutStatistics = ({
          <details className="details mt-4">
             <summary className="text-center font-bold uppercase">час</summary>
             <h2 className="horizontal-line"></h2>
-            <p>
-               Початок:{' '}
-               {startTime === '-'
-                  ? startTime
-                  : getTimeString(new Date(startTime))}
-            </p>
-            <p>
-               Кінець:{' '}
-               {endTime === '-' ? endTime : getTimeString(new Date(endTime))}
-            </p>
+            <div className="flex w-full flex-row items-center justify-between gap-2">
+               <p>
+                  Початок:{' '}
+                  {startTime === '-'
+                     ? startTime
+                     : getTimeString(new Date(startTime))}
+               </p>
+               <button
+                  onClick={() => {
+                     setModal({
+                        action: 'setStartTime',
+                        item: 'workout',
+                        data: {
+                           activeWorkout,
+                        },
+                     })
+                  }}
+               >
+                  <svg
+                     xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 640 640"
+                     className="h-6 w-6 fill-fuchsia-800 stroke-black stroke-[6]"
+                  >
+                     <path d="M535.6 85.7C513.7 63.8 478.3 63.8 456.4 85.7L432 110.1L529.9 208L554.3 183.6C576.2 161.7 576.2 126.3 554.3 104.4L535.6 85.7zM236.4 305.7C230.3 311.8 225.6 319.3 222.9 327.6L193.3 416.4C190.4 425 192.7 434.5 199.1 441C205.5 447.5 215 449.7 223.7 446.8L312.5 417.2C320.7 414.5 328.2 409.8 334.4 403.7L496 241.9L398.1 144L236.4 305.7zM160 128C107 128 64 171 64 224L64 480C64 533 107 576 160 576L416 576C469 576 512 533 512 480L512 384C512 366.3 497.7 352 480 352C462.3 352 448 366.3 448 384L448 480C448 497.7 433.7 512 416 512L160 512C142.3 512 128 497.7 128 480L128 224C128 206.3 142.3 192 160 192L256 192C273.7 192 288 177.7 288 160C288 142.3 273.7 128 256 128L160 128z" />
+                  </svg>
+               </button>
+            </div>
+            <div className="flex w-full flex-row items-center justify-between gap-2">
+               <p>
+                  Кінець:{' '}
+                  {endTime === '-' ? endTime : getTimeString(new Date(endTime))}
+               </p>
+               <button
+                  onClick={() => {
+                     setModal({
+                        action: 'setEndTime',
+                        item: 'workout',
+                        data: {
+                           activeWorkout,
+                        },
+                     })
+                  }}
+               >
+                  <svg
+                     xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 640 640"
+                     className="h-6 w-6 fill-fuchsia-800 stroke-black stroke-[6]"
+                  >
+                     <path d="M535.6 85.7C513.7 63.8 478.3 63.8 456.4 85.7L432 110.1L529.9 208L554.3 183.6C576.2 161.7 576.2 126.3 554.3 104.4L535.6 85.7zM236.4 305.7C230.3 311.8 225.6 319.3 222.9 327.6L193.3 416.4C190.4 425 192.7 434.5 199.1 441C205.5 447.5 215 449.7 223.7 446.8L312.5 417.2C320.7 414.5 328.2 409.8 334.4 403.7L496 241.9L398.1 144L236.4 305.7zM160 128C107 128 64 171 64 224L64 480C64 533 107 576 160 576L416 576C469 576 512 533 512 480L512 384C512 366.3 497.7 352 480 352C462.3 352 448 366.3 448 384L448 480C448 497.7 433.7 512 416 512L160 512C142.3 512 128 497.7 128 480L128 224C128 206.3 142.3 192 160 192L256 192C273.7 192 288 177.7 288 160C288 142.3 273.7 128 256 128L160 128z" />
+                  </svg>
+               </button>
+            </div>
             <p>Тривалість: {duration}</p>
          </details>
          <details className="details">

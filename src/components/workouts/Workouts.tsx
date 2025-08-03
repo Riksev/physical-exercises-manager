@@ -184,6 +184,7 @@ const Workouts = ({
          <ListOfWorkouts
             workouts={filteredWorkouts}
             clicker={setActiveWorkout}
+            controlOrder={true}
          />
       </div>
    ) : (
