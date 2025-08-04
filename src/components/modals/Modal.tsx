@@ -17,6 +17,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { TimePicker } from '@mui/x-date-pickers/TimePicker'
 import dayjs from 'dayjs'
 import { getWorkoutEndTime, getWorkoutStartTime } from '../../features/workout'
+import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers'
 
 interface IModalProps {
    info: IModal | null
@@ -59,7 +60,17 @@ const Modal = ({ info, setModal }: IModalProps) => {
    const [hasTime, setHasTime] = useState<boolean>(
       data?.activeExercise?.hasTime ?? false
    )
-   const [date, setDate] = useState<string>(getDate(data?.activeWorkout?.date))
+   const [date, setDate] = useState<string>(
+      getDate(
+         action === 'edit'
+            ? data?.activeWorkout?.date
+            : action === 'setStartTime'
+              ? getWorkoutStartTime(false, data?.activeWorkout)
+              : action === 'setEndTime'
+                ? getWorkoutEndTime(false, data?.activeWorkout)
+                : new Date().toISOString()
+      )
+   )
    const [searchName, setSearchName] = useState<string>('')
    const [filteredExercises, setFilteredExercises] =
       useState<IExercise[]>(exercises)
@@ -87,6 +98,8 @@ const Modal = ({ info, setModal }: IModalProps) => {
 
    const [errorName, setErrorName] = useState<string>('')
    const [errorTime, setErrorTime] = useState<string>('')
+   const [errorDate, setErrorDate] = useState<string>('')
+   const [errorClock, setErrorClock] = useState<string>('')
    const [errorFileName, setErrorFileName] = useState<string>('')
    const [errorImport, setErrorImport] = useState('')
 
@@ -419,10 +432,12 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         const workoutIndex = newWorkouts.findIndex(
                            (w) => w._id === data?.activeWorkout?._id
                         )
+                        const newDate =
+                           date + 'T' + clockTime?.format('HH:mm:ss')
                         if (workoutIndex !== -1) {
                            newWorkouts[workoutIndex] = {
                               ...newWorkouts[workoutIndex],
-                              startTime: clockTime?.toDate().toISOString(),
+                              startTime: newDate,
                            }
                         }
                      }
@@ -432,13 +447,12 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         const workoutIndex = newWorkouts.findIndex(
                            (w) => w._id === data?.activeWorkout?._id
                         )
-                        console.log(clockTime)
-                        console.log('2 ', clockTime?.toDate().toISOString())
-
+                        const newDate =
+                           date + 'T' + clockTime?.format('HH:mm:ss')
                         if (workoutIndex !== -1) {
                            newWorkouts[workoutIndex] = {
                               ...newWorkouts[workoutIndex],
-                              endTime: clockTime?.toDate().toISOString(),
+                              endTime: newDate,
                            }
                         }
                      }
@@ -716,6 +730,20 @@ const Modal = ({ info, setModal }: IModalProps) => {
    }
 
    useEffect(() => {
+      if (
+         item === 'workout' &&
+         (action === 'setStartTime' || action === 'setEndTime')
+      ) {
+         if (clockTime && clockTime.isValid()) {
+            setErrorClock('')
+         } else {
+            setErrorClock('Будь ласка, виберіть дійсний час.')
+         }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [clockTime])
+
+   useEffect(() => {
       if (item === 'exercise' && (action === 'add' || action === 'edit')) {
          if (exerciseName === '') {
             setErrorName('Назва вправи не може бути порожньою.')
@@ -750,6 +778,22 @@ const Modal = ({ info, setModal }: IModalProps) => {
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [fileName])
+
+   useEffect(() => {
+      if (
+         item === 'workout' &&
+         (action === 'setStartTime' ||
+            action === 'setEndTime' ||
+            action === 'edit')
+      ) {
+         if (!date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            setErrorDate('Невірний формат дати. Використовуйте YYYY-MM-DD.')
+         } else {
+            setErrorDate('')
+         }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [date])
 
    useEffect(() => {
       initTitle()
@@ -884,7 +928,10 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               </div>
                            </>
                         )}
-                     {(action === 'add' || action === 'edit') &&
+                     {(action === 'add' ||
+                        action === 'edit' ||
+                        action === 'setEndTime' ||
+                        action === 'setStartTime') &&
                         item === 'workout' && (
                            <>
                               <div className="input-block">
@@ -898,7 +945,15 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                     }}
                                     disabled={Boolean(!data?.activeWorkout)}
                                  />
+                                 {errorDate && (
+                                    <p className="error-message">{errorDate}</p>
+                                 )}
                               </div>
+                           </>
+                        )}
+                     {(action === 'add' || action === 'edit') &&
+                        item === 'workout' && (
+                           <>
                               <div className="input-block">
                                  <label htmlFor="workoutName">
                                     Назва тренування
@@ -1147,14 +1202,30 @@ const Modal = ({ info, setModal }: IModalProps) => {
                      {(action === 'setStartTime' ||
                         action === 'setEndTime') && (
                         <div className="flex w-full flex-col items-center justify-center gap-2">
-                           <LocalizationProvider dateAdapter={AdapterDayjs}>
-                              <TimePicker
-                                 defaultValue={dayjs(new Date())}
-                                 value={clockTime}
-                                 className="w-full"
-                                 ampm={false}
-                              />
-                           </LocalizationProvider>
+                           <div className="input-block">
+                              <p className="mb-2 ml-1">Час</p>
+                              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                 <TimePicker
+                                    defaultValue={dayjs(new Date())}
+                                    value={clockTime}
+                                    className="w-full"
+                                    ampm={false}
+                                    minutesStep={1}
+                                    format="HH:mm"
+                                    onChange={(newValue) => {
+                                       setClockTime(newValue)
+                                    }}
+                                    viewRenderers={{
+                                       hours: renderTimeViewClock,
+                                       minutes: renderTimeViewClock,
+                                       seconds: renderTimeViewClock,
+                                    }}
+                                 />
+                              </LocalizationProvider>
+                              {errorClock && (
+                                 <p className="error-message">{errorClock}</p>
+                              )}
+                           </div>
                            <button
                               className="button-action button-modal"
                               onClick={() => {
@@ -1179,6 +1250,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                            )
                                          : ''
                                  setClockTime(dayjs(newTime))
+                                 setDate(newTime.split('T')[0])
                               }}
                            >
                               із записів
@@ -1204,7 +1276,11 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            className={`button-${action} button-modal`}
                            onClick={handleClick}
                            disabled={Boolean(
-                              errorName || errorTime || errorFileName
+                              errorName ||
+                                 errorTime ||
+                                 errorFileName ||
+                                 errorClock ||
+                                 errorDate
                            )}
                         >
                            {action === 'add'

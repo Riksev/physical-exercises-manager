@@ -39,9 +39,9 @@ const BlockWorkout = ({
                   </>
                )}
             </p>
-            <div className="flex w-2/3 flex-col items-center justify-end gap-2">
+            <div className="flex w-2/3 flex-col items-center justify-end gap-2 sm:w-1/3">
                <button
-                  className="button-edit button-modal truncate text-sm max-[400px]:text-xs sm:w-1/3"
+                  className="button-edit button-modal truncate text-sm max-[400px]:text-xs"
                   onClick={() => {
                      clicker(workout)
                   }}
