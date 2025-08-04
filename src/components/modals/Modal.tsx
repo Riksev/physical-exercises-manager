@@ -1230,6 +1230,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               className="button-action button-modal"
                               onClick={() => {
                                  setClockTime(dayjs(new Date()))
+                                 setDate(dayjs(new Date()).format('YYYY-MM-DD'))
                               }}
                            >
                               поточний час
