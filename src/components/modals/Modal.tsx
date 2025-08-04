@@ -95,6 +95,11 @@ const Modal = ({ info, setModal }: IModalProps) => {
            ? dayjs(new Date(getWorkoutEndTime(false, data?.activeWorkout)))
            : dayjs(new Date())
    )
+   const [notes, setNotes] = useState<string>(
+      item === 'workout'
+         ? data?.activeWorkout?.notes || ''
+         : data?.activeExercise?.notes || ''
+   )
 
    const [errorName, setErrorName] = useState<string>('')
    const [errorTime, setErrorTime] = useState<string>('')
@@ -176,6 +181,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
                   newTitle.push('Видалення вправи')
                   newTitle.push(data?.activeExercise?.name || '')
                   break
+               case 'notes':
+                  newTitle.push('Примітки до вправи')
+                  break
                default:
                   newTitle.push('Вправа')
                   break
@@ -199,6 +207,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
                   break
                case 'setEndTime':
                   newTitle.push('Встановлення часу кінця тренування')
+                  break
+               case 'notes':
+                  newTitle.push('Примітки до тренування')
                   break
                default:
                   newTitle.push('Тренування')
@@ -280,79 +291,98 @@ const Modal = ({ info, setModal }: IModalProps) => {
             {
                const newExercises: IExercise[] = [...exercises]
                switch (action) {
-                  case 'add': {
-                     const newExercise: IExercise = {
-                        _id: Date.now().toString(),
-                        name: exerciseName,
-                        hasReps,
-                        hasWeight,
-                        hasTime,
-                     }
-
-                     let inserted: boolean = false
-                     for (let i: number = 0; i < newExercises.length; i++) {
-                        if (
-                           newExercises[i].name.trim().toLowerCase() ===
-                           newExercise.name.trim().toLowerCase()
-                        ) {
-                           inserted = true
-                           break
-                        } else if (
-                           newExercises[i].name.trim().toLowerCase() >
-                           newExercise.name.trim().toLowerCase()
-                        ) {
-                           inserted = true
-                           newExercises.splice(i, 0, newExercise)
-                           break
-                        }
-                     }
-                     if (!inserted) {
-                        newExercises.push(newExercise)
-                     }
-                     break
-                  }
-                  case 'edit': {
-                     const exerciseIndex: number = newExercises.findIndex(
-                        (ex) => ex._id === data?.activeExercise?._id
-                     )
-                     if (exerciseIndex !== -1) {
-                        newExercises[exerciseIndex] = {
-                           ...newExercises[exerciseIndex],
+                  case 'add':
+                     {
+                        const newExercise: IExercise = {
+                           _id: Date.now().toString(),
                            name: exerciseName,
                            hasReps,
                            hasWeight,
                            hasTime,
                         }
-                     }
-                     break
-                  }
-                  case 'delete': {
-                     const exerciseIndex: number = newExercises.findIndex(
-                        (ex) => ex._id === data?.activeExercise?._id
-                     )
-                     if (exerciseIndex !== -1) {
-                        newExercises.splice(exerciseIndex, 1)
-                     }
 
-                     const newWorkouts: IWorkout[] = workouts.flatMap((w) => {
-                        const filteredExercises: IWorkoutExercise[] =
-                           w.exercises.filter(
-                              (ex) =>
-                                 ex.exercise_id !== data?.activeExercise?._id
-                           )
-                        if (filteredExercises.length !== 0) {
-                           return [
-                              {
-                                 ...w,
-                                 exercises: filteredExercises,
-                              },
-                           ]
+                        let inserted: boolean = false
+                        for (let i: number = 0; i < newExercises.length; i++) {
+                           if (
+                              newExercises[i].name.trim().toLowerCase() ===
+                              newExercise.name.trim().toLowerCase()
+                           ) {
+                              inserted = true
+                              break
+                           } else if (
+                              newExercises[i].name.trim().toLowerCase() >
+                              newExercise.name.trim().toLowerCase()
+                           ) {
+                              inserted = true
+                              newExercises.splice(i, 0, newExercise)
+                              break
+                           }
                         }
-                        return []
-                     })
-                     dispatch(setWorkouts(newWorkouts))
+                        if (!inserted) {
+                           newExercises.push(newExercise)
+                        }
+                     }
                      break
-                  }
+                  case 'edit':
+                     {
+                        const exerciseIndex: number = newExercises.findIndex(
+                           (ex) => ex._id === data?.activeExercise?._id
+                        )
+                        if (exerciseIndex !== -1) {
+                           newExercises[exerciseIndex] = {
+                              ...newExercises[exerciseIndex],
+                              name: exerciseName,
+                              hasReps,
+                              hasWeight,
+                              hasTime,
+                           }
+                        }
+                     }
+                     break
+                  case 'delete':
+                     {
+                        const exerciseIndex: number = newExercises.findIndex(
+                           (ex) => ex._id === data?.activeExercise?._id
+                        )
+                        if (exerciseIndex !== -1) {
+                           newExercises.splice(exerciseIndex, 1)
+                        }
+
+                        const newWorkouts: IWorkout[] = workouts.flatMap(
+                           (w) => {
+                              const filteredExercises: IWorkoutExercise[] =
+                                 w.exercises.filter(
+                                    (ex) =>
+                                       ex.exercise_id !==
+                                       data?.activeExercise?._id
+                                 )
+                              if (filteredExercises.length !== 0) {
+                                 return [
+                                    {
+                                       ...w,
+                                       exercises: filteredExercises,
+                                    },
+                                 ]
+                              }
+                              return []
+                           }
+                        )
+                        dispatch(setWorkouts(newWorkouts))
+                     }
+                     break
+                  case 'notes':
+                     {
+                        const exerciseIndex: number = newExercises.findIndex(
+                           (ex) => ex._id === data?.activeExercise?._id
+                        )
+                        if (exerciseIndex !== -1) {
+                           newExercises[exerciseIndex] = {
+                              ...newExercises[exerciseIndex],
+                              notes: notes,
+                           }
+                        }
+                     }
+                     break
                }
                dispatch(setExercises(newExercises))
             }
@@ -453,6 +483,19 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            newWorkouts[workoutIndex] = {
                               ...newWorkouts[workoutIndex],
                               endTime: newDate,
+                           }
+                        }
+                     }
+                     break
+                  case 'notes':
+                     {
+                        const workoutIndex = newWorkouts.findIndex(
+                           (w) => w._id === data?.activeWorkout?._id
+                        )
+                        if (workoutIndex !== -1) {
+                           newWorkouts[workoutIndex] = {
+                              ...newWorkouts[workoutIndex],
+                              notes: notes,
                            }
                         }
                      }
@@ -943,6 +986,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                     onChange={(e) => {
                                        setDate(e.target.value)
                                     }}
+                                    placeholder="YYYY-MM-DD"
                                     disabled={Boolean(!data?.activeWorkout)}
                                  />
                                  {errorDate && (
@@ -1258,13 +1302,25 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            </button>
                         </div>
                      )}
+                     {action === 'notes' && (
+                        <textarea
+                           name="notes"
+                           rows={10}
+                           id="notes"
+                           value={notes}
+                           onChange={(e) => setNotes(e.target.value)}
+                           className="rounded-2xl border p-4"
+                           placeholder={`Введіть примітки до ${item === 'workout' ? 'тренування' : 'вправи'}...`}
+                        ></textarea>
+                     )}
                   </div>
                </div>
                {(action === 'add' ||
                   action === 'edit' ||
                   action === 'export' ||
                   action == 'setStartTime' ||
-                  action == 'setEndTime') && (
+                  action == 'setEndTime' ||
+                  action === 'notes') && (
                   <>
                      <h2 className="horizontal-line"></h2>
                   </>
@@ -1288,7 +1344,8 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               ? 'додати'
                               : action === 'edit' ||
                                   action == 'setStartTime' ||
-                                  action == 'setEndTime'
+                                  action == 'setEndTime' ||
+                                  action === 'notes'
                                 ? 'зберегти'
                                 : action === 'delete'
                                   ? 'видалити'

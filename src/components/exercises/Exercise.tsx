@@ -68,6 +68,18 @@ const Exercise = ({
                Youtube
             </a>
             <button
+               className="button-action button-full"
+               onClick={() => {
+                  setModal({
+                     action: 'notes',
+                     item: 'exercise',
+                     data: { activeExercise },
+                  })
+               }}
+            >
+               нотатки
+            </button>
+            <button
                className="button-edit button-full"
                onClick={() => {
                   setModal({

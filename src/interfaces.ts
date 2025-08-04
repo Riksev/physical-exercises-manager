@@ -13,6 +13,7 @@ export interface IWorkout {
    exercises: IWorkoutExercise[]
    startTime?: string
    endTime?: string
+   notes?: string
 }
 
 export interface IWorkoutExercise {
@@ -36,6 +37,7 @@ export interface IExercise {
    hasReps?: boolean
    hasWeight?: boolean
    hasTime?: boolean
+   notes?: string
 }
 
 export interface IModal {

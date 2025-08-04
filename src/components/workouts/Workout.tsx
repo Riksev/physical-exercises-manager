@@ -38,7 +38,8 @@ const Workout = ({
       <div className="app-page">
          <h2 className="horizontal-line title">
             {activeWorkout?.date}
-            {' - '}
+            <p className="hidden sm:inline">{' - '}</p>
+            <p className="sm:hidden"></p>
             {activeWorkout?.date &&
                new Date(activeWorkout.date)
                   .toLocaleDateString('uk-UA', { weekday: 'long' })
@@ -399,6 +400,18 @@ const Workout = ({
                isAnyModalOpen={modal !== null}
                setModal={setModal}
             />
+            <button
+               className="button-action button-full"
+               onClick={() => {
+                  setModal({
+                     action: 'notes',
+                     item: 'workout',
+                     data: { activeWorkout },
+                  })
+               }}
+            >
+               нотатки
+            </button>
             <button
                className="button-edit button-full"
                onClick={() => {
