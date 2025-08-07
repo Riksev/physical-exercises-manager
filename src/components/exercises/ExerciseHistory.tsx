@@ -30,42 +30,33 @@ const ExerciseHistory = ({
    const [records, setRecords] = useState<IWorkout[]>([])
 
    const handleClick = (workout: IWorkout) => {
-      setActiveWorkout(workouts.find((w) => w._id === workout._id) || null)
+      setActiveWorkout(workouts.find((w) => w._id === workout._id) ?? null)
       setActivePage(Pages.WORKOUTS)
       swiperRef.current?.slideTo(Pages.WORKOUTS)
    }
 
    useEffect(() => {
-      setRecords(
-         workouts
+      setRecords(() => {
+         const newRecords = workouts
             .map((workout) => ({
                ...workout,
                exercises: workout.exercises.filter(
-                  (ex) => ex.exercise_id === activeExercise?._id
+                  (ex) =>
+                     ex.exercise_id === activeExercise?._id ||
+                     ex._id === activeExercise?._id
                ),
             }))
             .filter((workout) => workout.exercises.length > 0)
             .reverse()
-      )
-      if (workouts.length === 0) {
-         setDateBegin(
-            [...workouts]
-               .reverse()
-               .find((w) =>
-                  w.exercises.some(
-                     (ex) => ex.exercise_id === activeExercise?._id
-                  )
-               )?.date || ''
-         )
-         setDateEnd(
-            workouts.find((w) =>
-               w.exercises.some((ex) => ex.exercise_id === activeExercise?._id)
-            )?.date || ''
-         )
-      } else {
-         setDateBegin(new Date().toISOString().split('T')[0])
-         setDateEnd(new Date().toISOString().split('T')[0])
-      }
+         if (newRecords.length > 0) {
+            setDateBegin(newRecords[0].date || '')
+            setDateEnd(newRecords[newRecords.length - 1].date || '')
+         } else {
+            setDateBegin(new Date().toISOString().split('T')[0])
+            setDateEnd(new Date().toISOString().split('T')[0])
+         }
+         return newRecords
+      })
    }, [workouts, activeExercise])
 
    useEffect(() => {
