@@ -68,7 +68,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
               ? getWorkoutStartTime(false, data?.activeWorkout)
               : action === 'setEndTime'
                 ? getWorkoutEndTime(false, data?.activeWorkout)
-                : new Date().toISOString()
+                : action === 'add'
+                  ? (data?.date?.toISOString() ?? new Date().toISOString())
+                  : new Date().toISOString()
       )
    )
    const [searchName, setSearchName] = useState<string>('')
@@ -99,6 +101,11 @@ const Modal = ({ info, setModal }: IModalProps) => {
       item === 'workout'
          ? data?.activeWorkout?.notes || ''
          : data?.activeExercise?.notes || ''
+   )
+   const [isPlanned, setIsPlanned] = useState<boolean>(
+      data?.activeWorkout?.done !== undefined
+         ? !data?.activeWorkout?.done
+         : false
    )
 
    const [errorName, setErrorName] = useState<string>('')
@@ -396,12 +403,15 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         const newWorkout: IWorkout = {
                            _id: new Date().getTime().toString(),
                            date,
-                           addedAt: new Date().toISOString(),
+                           addedAt: isPlanned ? '-' : new Date().toISOString(),
                            name: workoutName,
                            difficulty: workoutDifficulty,
                            exercises: [],
-                           startTime: new Date().toISOString(),
-                           endTime: new Date().toISOString(),
+                           startTime: isPlanned
+                              ? '-'
+                              : new Date().toISOString(),
+                           endTime: isPlanned ? '-' : new Date().toISOString(),
+                           done: !isPlanned,
                         }
                         let isInserted = false
                         for (let i = 0; i < newWorkouts.length; i++) {
@@ -418,6 +428,40 @@ const Modal = ({ info, setModal }: IModalProps) => {
                      break
                   case 'edit':
                      {
+                        const changePlan = !(
+                           !data?.activeWorkout?.done === isPlanned
+                        )
+                        const newExercises: IWorkoutExercise[] =
+                           data?.activeWorkout?.exercises.map((ex) => {
+                              const newRecords = ex.records.map((record) => ({
+                                 ...record,
+                                 addedAt: changePlan
+                                    ? isPlanned
+                                       ? '-'
+                                       : record?.addedAt === '-'
+                                         ? new Date().toISOString()
+                                         : record?.addedAt
+                                    : record?.addedAt,
+                                 done: changePlan
+                                    ? !isPlanned
+                                    : (record?.done ?? true),
+                              }))
+                              const newExerciseFromWorkout: IWorkoutExercise = {
+                                 ...ex,
+                                 addedAt: changePlan
+                                    ? isPlanned
+                                       ? '-'
+                                       : ex?.addedAt === '-'
+                                         ? new Date().toISOString()
+                                         : ex?.addedAt
+                                    : ex?.addedAt,
+                                 records: newRecords,
+                                 done: changePlan
+                                    ? !isPlanned
+                                    : (ex?.done ?? true),
+                              }
+                              return newExerciseFromWorkout
+                           }) ?? []
                         const editedWorkout: IWorkout = {
                            ...data?.activeWorkout,
                            _id:
@@ -426,7 +470,29 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            date,
                            name: workoutName,
                            difficulty: workoutDifficulty,
-                           exercises: data?.activeWorkout?.exercises ?? [],
+                           done: changePlan
+                              ? !isPlanned
+                              : (data?.activeWorkout?.done ?? true),
+                           exercises: newExercises,
+                           addedAt: changePlan
+                              ? isPlanned
+                                 ? '-'
+                                 : data?.activeWorkout?.addedAt === '-'
+                                   ? new Date().toISOString()
+                                   : data?.activeWorkout?.addedAt
+                              : data?.activeWorkout?.addedAt,
+                           startTime: changePlan
+                              ? isPlanned
+                                 ? '-'
+                                 : data?.activeWorkout?.startTime === '-'
+                                   ? new Date().toISOString()
+                                   : data?.activeWorkout?.startTime
+                              : data?.activeWorkout?.startTime,
+                           endTime: changePlan
+                              ? isPlanned
+                                 ? '-'
+                                 : new Date().toISOString()
+                              : data?.activeWorkout?.endTime,
                         }
                         const workoutIndex = newWorkouts.findIndex(
                            (w) => w._id === data?.activeWorkout?._id
@@ -514,25 +580,37 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            (w) => w._id === data?.activeWorkout?._id
                         )
                         if (workoutIndex !== -1) {
-                           newWorkouts[workoutIndex] = {
+                           const newExerciseFromWorkout: IWorkoutExercise = {
+                              _id: new Date().getTime().toString(),
+                              exercise_id:
+                                 data?.selectedExerciseInfo?._id ??
+                                 new Date().getTime().toString(),
+                              addedAt: data?.activeWorkout?.done
+                                 ? new Date().toISOString()
+                                 : '-',
+                              done: data?.activeWorkout?.done ?? true,
+                              records: [],
+                           }
+                           const newWorkout: IWorkout = {
                               ...newWorkouts[workoutIndex],
-                              endTime: new Date().toISOString(),
+                              startTime: data?.activeWorkout?.done
+                                 ? data?.activeWorkout?.startTime === '-'
+                                    ? new Date().toISOString()
+                                    : data?.activeWorkout?.startTime
+                                 : data?.activeWorkout?.startTime,
+                              endTime: data?.activeWorkout?.done
+                                 ? new Date().toISOString()
+                                 : data?.activeWorkout?.endTime,
                               exercises: [
                                  ...newWorkouts[workoutIndex].exercises.map(
                                     (ex) => ({
                                        ...ex,
                                     })
                                  ),
-                                 {
-                                    _id: new Date().getTime().toString(),
-                                    exercise_id:
-                                       data?.selectedExerciseInfo?._id ??
-                                       new Date().getTime().toString(),
-                                    addedAt: new Date().toISOString(),
-                                    records: [],
-                                 },
+                                 newExerciseFromWorkout,
                               ],
                            }
+                           newWorkouts[workoutIndex] = newWorkout
                         }
                      }
                      break
@@ -542,17 +620,32 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            (w) => w._id === data?.activeWorkout?._id
                         )
                         if (workoutIndex !== -1) {
+                           const newExercises = newWorkouts[
+                              workoutIndex
+                           ].exercises.filter((exercise) =>
+                              data?.selectedExerciseFromWorkout?._id
+                                 ? exercise._id !==
+                                   data?.selectedExerciseFromWorkout?._id
+                                 : exercise.exercise_id !==
+                                   data?.selectedExerciseInfo?._id
+                           )
                            newWorkouts[workoutIndex] = {
                               ...newWorkouts[workoutIndex],
-                              exercises: newWorkouts[
-                                 workoutIndex
-                              ].exercises.filter((exercise) =>
-                                 data?.selectedExerciseFromWorkout?._id
-                                    ? exercise._id !==
-                                      data?.selectedExerciseFromWorkout?._id
-                                    : exercise.exercise_id !==
-                                      data?.selectedExerciseInfo?._id
+                              done: newExercises.every(
+                                 (ex) => ex?.done ?? true
                               ),
+                              exercises: newExercises,
+                              addedAt: '-',
+                              startTime: getWorkoutStartTime(true, {
+                                 ...newWorkouts[workoutIndex],
+                                 exercises: newExercises,
+                                 addedAt: '-',
+                              }),
+                              endTime: getWorkoutEndTime(true, {
+                                 ...newWorkouts[workoutIndex],
+                                 exercises: newExercises,
+                                 addedAt: '-',
+                              }),
                            }
                         }
                      }
@@ -565,54 +658,65 @@ const Modal = ({ info, setModal }: IModalProps) => {
             const newWorkouts: IWorkout[] = [...workouts]
             switch (action) {
                case 'add': {
-                  const newRecord: IRecord = {
-                     _id: new Date().getTime().toString(),
-                     ...(data?.selectedExerciseInfo?.hasReps && {
-                        reps: parseFloat(reps || '0'),
-                     }),
-                     ...(data?.selectedExerciseInfo?.hasWeight && {
-                        weight: parseFloat(weight || '0'),
-                     }),
-                     ...(data?.selectedExerciseInfo?.hasTime && {
-                        time,
-                     }),
-                     addedAt: new Date().toISOString(),
-                  }
                   const workoutIndex = newWorkouts.findIndex(
                      (w) => w._id === data?.activeWorkout?._id
                   )
                   if (workoutIndex !== -1) {
-                     newWorkouts[workoutIndex] = {
-                        ...newWorkouts[workoutIndex],
-                        endTime: new Date().toISOString(),
-                        exercises: newWorkouts[workoutIndex].exercises.map(
-                           (exercise) => {
-                              if (data?.selectedExerciseFromWorkout?._id) {
-                                 if (
-                                    exercise._id ===
-                                    data?.selectedExerciseFromWorkout?._id
-                                 ) {
-                                    return {
-                                       ...exercise,
-                                       records: [
-                                          ...exercise.records,
-                                          newRecord,
-                                       ],
-                                    }
-                                 }
-                              } else if (
-                                 exercise.exercise_id ===
-                                 data?.selectedExerciseInfo?._id
-                              ) {
-                                 return {
-                                    ...exercise,
-                                    records: [...exercise.records, newRecord],
-                                 }
-                              }
-                              return exercise
+                     const newExercises = newWorkouts[
+                        workoutIndex
+                     ].exercises.map((exercise) => {
+                        if (
+                           exercise._id ===
+                              data?.selectedExerciseFromWorkout?._id ||
+                           exercise.exercise_id ===
+                              data?.selectedExerciseInfo?._id
+                        ) {
+                           const newRecord: IRecord = {
+                              _id: new Date().getTime().toString(),
+                              ...(data?.selectedExerciseInfo?.hasReps && {
+                                 reps: parseFloat(reps || '0'),
+                              }),
+                              ...(data?.selectedExerciseInfo?.hasWeight && {
+                                 weight: parseFloat(weight || '0'),
+                              }),
+                              ...(data?.selectedExerciseInfo?.hasTime && {
+                                 time,
+                              }),
+                              addedAt: data?.selectedExerciseFromWorkout?.done
+                                 ? new Date().toISOString()
+                                 : '-',
+                              done: data?.selectedExerciseFromWorkout?.done,
                            }
-                        ),
+                           const newRecords = [...exercise.records, newRecord]
+                           const isExerciseFromWorkoutDone = newRecords.every(
+                              (record) => record?.done ?? true
+                           )
+                           const newExerciseFromWorkout: IWorkoutExercise = {
+                              ...exercise,
+                              done: isExerciseFromWorkoutDone,
+                              records: newRecords,
+                           }
+                           return newExerciseFromWorkout
+                        }
+                        return exercise
+                     })
+                     const isWorkoutDone = newExercises.every(
+                        (ex) => ex?.done ?? true
+                     )
+                     const newWorkout: IWorkout = {
+                        ...newWorkouts[workoutIndex],
+                        startTime: data?.selectedExerciseFromWorkout?.done
+                           ? data?.activeWorkout?.startTime === '-'
+                              ? new Date().toISOString()
+                              : data?.activeWorkout?.startTime
+                           : data?.activeWorkout?.startTime,
+                        endTime: data?.selectedExerciseFromWorkout?.done
+                           ? new Date().toISOString()
+                           : data?.activeWorkout?.endTime,
+                        exercises: newExercises,
+                        done: isWorkoutDone,
                      }
+                     newWorkouts[workoutIndex] = newWorkout
                   }
                   break
                }
@@ -716,6 +820,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               idx === exerciseIndex
                                  ? {
                                       ...ex,
+                                      done: updatedRecords.every(
+                                         (record) => record?.done ?? true
+                                      ),
                                       records: updatedRecords,
                                    }
                                  : ex
@@ -723,6 +830,20 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            newWorkouts[workoutIndex] = {
                               ...newWorkouts[workoutIndex],
                               exercises: updatedExercises,
+                              done: updatedExercises.every(
+                                 (ex) => ex?.done ?? true
+                              ),
+                              addedAt: '-',
+                              startTime: getWorkoutStartTime(true, {
+                                 ...newWorkouts[workoutIndex],
+                                 exercises: updatedExercises,
+                                 addedAt: '-',
+                              }),
+                              endTime: getWorkoutEndTime(true, {
+                                 ...newWorkouts[workoutIndex],
+                                 exercises: updatedExercises,
+                                 addedAt: '-',
+                              }),
                            }
                         }
                      }
@@ -1020,6 +1141,17 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                           e.preventDefault()
                                        }
                                     }}
+                                 />
+                              </div>
+                              <div className="checkbox-block">
+                                 <label htmlFor="isPlanned">Заплановане:</label>
+                                 <input
+                                    type="checkbox"
+                                    id="isPlanned"
+                                    checked={isPlanned}
+                                    onChange={(e) =>
+                                       setIsPlanned(e.target.checked)
+                                    }
                                  />
                               </div>
                               <FormControl>

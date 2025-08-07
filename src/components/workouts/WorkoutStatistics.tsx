@@ -40,7 +40,8 @@ const WorkoutStatistics = ({
       const day = String(date.getDate()).padStart(2, '0')
       const hours = String(date.getHours()).padStart(2, '0')
       const minutes = String(date.getMinutes()).padStart(2, '0')
-      return `${year}-${month}-${day} ${hours}:${minutes}`
+      const seconds = String(date.getSeconds()).padStart(2, '0')
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
    }
 
    const getDurationString = (
@@ -61,8 +62,11 @@ const WorkoutStatistics = ({
          const minutes: string = String(
             Math.floor((diff % 3600000) / 60000)
          ).padStart(2, '0')
+         const seconds: string = String(
+            Math.ceil((diff % 60000) / 1000)
+         ).padStart(2, '0')
 
-         return `${hours} год. ${minutes} хв.`
+         return `${hours} год. ${minutes} хв. ${seconds} сек.`
       }
       return '-'
    }
@@ -93,7 +97,8 @@ const WorkoutStatistics = ({
                if (
                   exerciseData?.hasWeight &&
                   currentWeight &&
-                  currentWeight > 0
+                  currentWeight > 0 &&
+                  (record.done ?? true)
                ) {
                   const currentVolume = (currentReps ?? 1) * currentWeight
                   localVolume += currentVolume
@@ -101,14 +106,17 @@ const WorkoutStatistics = ({
                }
 
                if (
-                  exerciseData?.hasReps ||
-                  exerciseData?.hasWeight ||
-                  exerciseData?.hasTime
+                  (exerciseData?.hasReps ||
+                     exerciseData?.hasWeight ||
+                     exerciseData?.hasTime) &&
+                  (record.done ?? true)
                ) {
                   setsLocal += 1
                }
 
-               repsLocal += currentReps || 0
+               if (record.done ?? true) {
+                  repsLocal += currentReps || 0
+               }
             }
 
             exerciseInfoLocal.set(exercise.exercise_id, {
@@ -157,7 +165,7 @@ const WorkoutStatistics = ({
             <h2 className="horizontal-line"></h2>
             <div className="flex w-full flex-row items-center justify-between gap-2">
                <p>
-                  Початок:{' '}
+                  Початок: <br className="block sm:hidden"></br>
                   {startTime === '-'
                      ? startTime
                      : getTimeString(new Date(startTime))}
@@ -184,7 +192,7 @@ const WorkoutStatistics = ({
             </div>
             <div className="flex w-full flex-row items-center justify-between gap-2">
                <p>
-                  Кінець:{' '}
+                  Кінець: <br className="block sm:hidden"></br>
                   {endTime === '-' ? endTime : getTimeString(new Date(endTime))}
                </p>
                <button
@@ -207,7 +215,10 @@ const WorkoutStatistics = ({
                   </svg>
                </button>
             </div>
-            <p>Тривалість: {duration}</p>
+            <p>
+               Тривалість: <br className="block sm:hidden"></br>
+               {duration}
+            </p>
          </details>
          <details className="details">
             <summary className="text-center font-bold uppercase">

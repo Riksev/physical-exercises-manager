@@ -14,12 +14,14 @@ export interface IWorkout {
    startTime?: string
    endTime?: string
    notes?: string
+   done?: boolean
 }
 
 export interface IWorkoutExercise {
    readonly _id: string
    exercise_id: string
    addedAt?: string
+   done?: boolean
    records: IRecord[]
 }
 
@@ -29,6 +31,7 @@ export interface IRecord {
    weight?: number
    time?: string
    addedAt?: string
+   done?: boolean
 }
 
 export interface IExercise {

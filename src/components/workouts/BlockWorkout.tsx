@@ -31,13 +31,9 @@ const BlockWorkout = ({
                {new Date(workout.date)
                   .toLocaleDateString('uk-UA', { weekday: 'long' })
                   .replace(/^./, (c) => c.toUpperCase())}
-
-               {workout.name && (
-                  <>
-                     <br></br>
-                     {workout.name}
-                  </>
-               )}
+               <br></br>
+               {(workout?.done ?? true) ? '✅ ' : '❌ '}
+               {workout?.name}
             </p>
             <div className="flex w-2/3 flex-col items-center justify-end gap-2 sm:w-1/3">
                <button
@@ -130,53 +126,31 @@ const BlockWorkout = ({
                      {!exerciseHasParams || wex.records.length === 0 ? (
                         <p className="mt-4 block text-left">Записи відсутні.</p>
                      ) : (
-                        <>
-                           <div className="table-block-row header mt-4">
-                              <p className="table-block-cell table-block-cell-number">
-                                 №
-                              </p>
-                              {exerciseInfo.hasWeight && (
-                                 <p className="table-block-cell table-block-cell-text">
-                                    Вага
-                                 </p>
-                              )}
-                              {exerciseInfo.hasReps && (
-                                 <p className="table-block-cell table-block-cell-text">
-                                    Повтори
-                                 </p>
-                              )}
-                              {exerciseInfo.hasTime && (
-                                 <p className="table-block-cell table-block-cell-text">
-                                    Час
-                                 </p>
-                              )}
-                           </div>
+                        <div className="mt-4 flex w-full flex-row flex-wrap items-stretch justify-center gap-1">
                            {wex.records.map((record: IRecord, id: number) => (
                               <div
                                  key={exerciseInfo._id + id + 1}
-                                 className="table-block-row"
+                                 className={`record-block ${(record?.done ?? true) ? 'border-lime-500' : ''}`}
                               >
-                                 <p className="table-block-cell table-block-cell-number">
-                                    {id + 1}
-                                 </p>
-                                 {exerciseInfo.hasWeight && (
-                                    <p className="table-block-cell table-block-cell-text">
-                                       {record.weight ? record.weight : '-'}
+                                 <p>#{id + 1}</p>
+                                 {exerciseInfo?.hasWeight && (
+                                    <p>
+                                       {record.weight ? record.weight : '-'}{' '}
+                                       <span className="text-sm">КГ</span>
                                     </p>
                                  )}
-                                 {exerciseInfo.hasReps && (
-                                    <p className="table-block-cell table-block-cell-text">
-                                       {record.reps ? record.reps : '-'}
+                                 {exerciseInfo?.hasReps && (
+                                    <p>
+                                       {record.reps ? record.reps : '-'}{' '}
+                                       <span className="text-sm">ПВТ</span>
                                     </p>
                                  )}
-                                 {exerciseInfo.hasTime && (
-                                    <p className="table-block-cell table-block-cell-text">
-                                       {record.time ? record.time : '-'}
-                                    </p>
+                                 {exerciseInfo?.hasTime && (
+                                    <p>{record.time ? record.time : '-'}</p>
                                  )}
                               </div>
                            ))}
-                        </>
+                        </div>
                      )}
                   </details>
                )

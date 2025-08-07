@@ -9,11 +9,19 @@ export const getWorkoutStartTime = (
       start = workout?.startTime || '-'
    }
    if (start === '-') {
-      if (workout?.addedAt) {
+      if (
+         workout?.addedAt &&
+         workout?.addedAt !== '-' &&
+         (workout?.done ?? true)
+      ) {
          start = workout.addedAt
       }
       workout?.exercises.forEach((exercise) => {
-         if (exercise?.addedAt) {
+         if (
+            exercise?.addedAt &&
+            exercise?.addedAt !== '-' &&
+            (exercise?.done ?? true)
+         ) {
             if (start === '-') {
                start = exercise.addedAt
             } else {
@@ -21,7 +29,11 @@ export const getWorkoutStartTime = (
             }
          }
          exercise.records.forEach((record) => {
-            if (record?.addedAt) {
+            if (
+               record?.addedAt &&
+               record?.addedAt !== '-' &&
+               (record?.done ?? true)
+            ) {
                if (start === '-') {
                   start = record.addedAt
                } else {
@@ -43,11 +55,19 @@ export const getWorkoutEndTime = (
       end = workout?.endTime || '-'
    }
    if (end === '-') {
-      if (workout?.addedAt) {
+      if (
+         workout?.addedAt &&
+         workout?.addedAt !== '-' &&
+         (workout?.done ?? true)
+      ) {
          end = workout.addedAt
       }
       workout?.exercises.forEach((exercise) => {
-         if (exercise?.addedAt) {
+         if (
+            exercise?.addedAt &&
+            exercise?.addedAt !== '-' &&
+            (exercise?.done ?? true)
+         ) {
             if (end === '-') {
                end = exercise.addedAt
             } else {
@@ -55,7 +75,11 @@ export const getWorkoutEndTime = (
             }
          }
          exercise.records.forEach((record) => {
-            if (record?.addedAt) {
+            if (
+               record?.addedAt &&
+               record?.addedAt !== '-' &&
+               (record?.done ?? true)
+            ) {
                if (end === '-') {
                   end = record.addedAt
                } else {

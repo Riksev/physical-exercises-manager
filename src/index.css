@@ -7,6 +7,10 @@ html,
    font-family: 'Inter', sans-serif !important;
 }
 
+.rounded-checkbox {
+   clip-path: circle(40% at 50% 50%);
+}
+
 @layer base {
    html {
       @apply overflow-y-hidden;
@@ -129,7 +133,7 @@ html,
    }
 
    .details {
-      @apply mb-2 w-full cursor-pointer rounded-2xl border-2 border-gray-400 bg-gray-300/50 p-3 text-left text-lg font-semibold shadow-lg transition-all hover:border-gray-600 hover:bg-gray-400/50 hover:shadow-xl active:border-gray-500 active:bg-gray-400/50;
+      @apply mb-2 w-full cursor-pointer rounded-2xl border-2 border-gray-400 bg-gradient-to-br from-lime-100/33 to-cyan-100/66 p-3 text-left text-lg font-semibold shadow-lg transition-all hover:shadow-xl;
    }
 
    summary {
@@ -343,5 +347,9 @@ html,
 
    .MuiPickersInputBase-root.MuiPickersOutlinedInput-root {
       @apply !rounded-2xl !border !border-black/50 !font-medium !text-black;
+   }
+
+   .record-block {
+      @apply w-fit rounded-2xl border-2 p-2 text-center shadow-2xs outline-1 outline-black/50;
    }
 }
