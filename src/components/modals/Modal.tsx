@@ -549,6 +549,10 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         if (workoutIndex !== -1) {
                            const newWorkout: IWorkout = {
                               ...newWorkouts[workoutIndex],
+                              addedAt:
+                                 newWorkouts[workoutIndex]?.addedAt === '-'
+                                    ? newDate
+                                    : newWorkouts[workoutIndex]?.addedAt,
                               startTime: newDate,
                            }
                            newWorkouts[workoutIndex] = newWorkout
@@ -570,6 +574,14 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         if (workoutIndex !== -1) {
                            const newWorkout: IWorkout = {
                               ...newWorkouts[workoutIndex],
+                              addedAt:
+                                 newWorkouts[workoutIndex]?.addedAt === '-'
+                                    ? newDate
+                                    : newWorkouts[workoutIndex]?.addedAt,
+                              startTime:
+                                 newWorkouts[workoutIndex]?.startTime === '-'
+                                    ? newDate
+                                    : newWorkouts[workoutIndex]?.startTime,
                               endTime: newDate,
                            }
                            newWorkouts[workoutIndex] = newWorkout
