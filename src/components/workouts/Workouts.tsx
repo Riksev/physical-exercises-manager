@@ -44,12 +44,8 @@ const Workouts = ({
    setActiveExercise,
 }: IWorkoutsProps) => {
    const workouts = useAppSelector((state) => state.data.workouts)
-   interface DetectedLocale {
-      dayjsLocale: string
-      muiLocaleText: object
-   }
 
-   const getBrowserLocaleInfo = (): DetectedLocale => {
+   const localeInfo = useMemo(() => {
       const browserLang = navigator.language
 
       if (browserLang.includes('uk')) {
@@ -72,10 +68,7 @@ const Workouts = ({
          muiLocaleText:
             enUS.components.MuiLocalizationProvider.defaultProps.localeText,
       }
-   }
-
-   // eslint-disable-next-line react-hooks/exhaustive-deps
-   const localeInfo = useMemo(() => getBrowserLocaleInfo(), [])
+   }, [])
 
    const getWorkoutsOnDate = (dateJS: Dayjs): IWorkout[] => {
       const dateRaw = dateJS.format('YYYY-MM-DD')

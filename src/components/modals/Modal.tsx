@@ -16,7 +16,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { TimePicker } from '@mui/x-date-pickers/TimePicker'
 import dayjs from 'dayjs'
-import { getWorkoutEndTime, getWorkoutStartTime } from '../../features/workout'
+import { getWorkoutTime } from '../../features/workout'
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers'
 
 interface IModalProps {
@@ -60,14 +60,21 @@ const Modal = ({ info, setModal }: IModalProps) => {
    const [hasTime, setHasTime] = useState<boolean>(
       data?.activeExercise?.hasTime ?? false
    )
+   const workoutStartTime = getWorkoutTime(false, data?.activeWorkout, 'start')
+   const workoutEndTime = getWorkoutTime(false, data?.activeWorkout, 'end')
+
    const [date, setDate] = useState<string>(
       getDate(
          action === 'edit'
             ? data?.activeWorkout?.date
             : action === 'setStartTime'
-              ? getWorkoutStartTime(false, data?.activeWorkout)
+              ? workoutStartTime === '-'
+                 ? new Date().toISOString()
+                 : workoutStartTime
               : action === 'setEndTime'
-                ? getWorkoutEndTime(false, data?.activeWorkout)
+                ? workoutEndTime === '-'
+                   ? new Date().toISOString()
+                   : workoutEndTime
                 : action === 'add'
                   ? (data?.date?.toISOString() ?? new Date().toISOString())
                   : new Date().toISOString()
@@ -77,13 +84,13 @@ const Modal = ({ info, setModal }: IModalProps) => {
    const [filteredExercises, setFilteredExercises] =
       useState<IExercise[]>(exercises)
    const [reps, setReps] = useState<string>(
-      (data?.selectedRecord?.reps || '').toString()
+      (data?.selectedRecord?.reps ?? '').toString()
    )
    const [weight, setWeight] = useState<string>(
-      (data?.selectedRecord?.weight || '').toString()
+      (data?.selectedRecord?.weight ?? '').toString()
    )
    const [time, setTime] = useState<string>(
-      (data?.selectedRecord?.time || '').toString()
+      (data?.selectedRecord?.time ?? '').toString()
    )
    const [fileName, setFileName] = useState<string>(
       action === 'export' ? getDate() : ''
@@ -92,15 +99,19 @@ const Modal = ({ info, setModal }: IModalProps) => {
 
    const [clockTime, setClockTime] = useState<dayjs.Dayjs | null>(
       action === 'setStartTime'
-         ? dayjs(new Date(getWorkoutStartTime(false, data?.activeWorkout)))
+         ? dayjs(
+              new Date(workoutStartTime === '-' ? Date.now() : workoutStartTime)
+           )
          : action === 'setEndTime'
-           ? dayjs(new Date(getWorkoutEndTime(false, data?.activeWorkout)))
+           ? dayjs(
+                new Date(workoutEndTime === '-' ? Date.now() : workoutEndTime)
+             )
            : dayjs(new Date())
    )
    const [notes, setNotes] = useState<string>(
       item === 'workout'
-         ? data?.activeWorkout?.notes || ''
-         : data?.activeExercise?.notes || ''
+         ? (data?.activeWorkout?.notes ?? '')
+         : (data?.activeExercise?.notes ?? '')
    )
    const [isPlanned, setIsPlanned] = useState<boolean>(
       data?.activeWorkout?.done !== undefined
@@ -121,8 +132,8 @@ const Modal = ({ info, setModal }: IModalProps) => {
       exercises: IExercise[]
       workouts: IWorkout[]
    }) => {
-      dispatch(setExercises(parsed.exercises || []))
-      dispatch(setWorkouts(parsed.workouts || []))
+      dispatch(setExercises(parsed.exercises ?? []))
+      dispatch(setWorkouts(parsed.workouts ?? []))
    }
 
    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -182,11 +193,10 @@ const Modal = ({ info, setModal }: IModalProps) => {
                   break
                case 'edit':
                   newTitle.push('Редагування вправи')
-                  newTitle.push(data?.activeExercise?.name || '')
+                  newTitle.push(data?.activeExercise?.name ?? '')
                   break
                case 'delete':
                   newTitle.push('Видалення вправи')
-                  newTitle.push(data?.activeExercise?.name || '')
                   break
                case 'notes':
                   newTitle.push('Примітки до вправи')
@@ -203,11 +213,11 @@ const Modal = ({ info, setModal }: IModalProps) => {
                   break
                case 'edit':
                   newTitle.push('Редагування тренування')
-                  newTitle.push(data?.activeWorkout?.date || '')
+                  newTitle.push(data?.activeWorkout?.date ?? '')
+                  newTitle.push(data?.activeWorkout?.name ?? '')
                   break
                case 'delete':
                   newTitle.push('Видалення тренування')
-                  newTitle.push(data?.activeWorkout?.date || '')
                   break
                case 'setStartTime':
                   newTitle.push('Встановлення часу початку тренування')
@@ -227,11 +237,10 @@ const Modal = ({ info, setModal }: IModalProps) => {
             switch (action) {
                case 'add':
                   newTitle.push('Додавання вправи до тренування')
-                  newTitle.push(data?.activeWorkout?.date || '')
                   break
                case 'delete':
                   newTitle.push('Видалення з тренування вправи')
-                  newTitle.push(data?.selectedExerciseInfo?.name || '')
+                  newTitle.push(data?.selectedExerciseInfo?.name ?? '')
                   break
                default:
                   newTitle.push('Вправа з тренування')
@@ -336,13 +345,14 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            (ex) => ex._id === data?.activeExercise?._id
                         )
                         if (exerciseIndex !== -1) {
-                           newExercises[exerciseIndex] = {
+                           const newExercise: IExercise = {
                               ...newExercises[exerciseIndex],
                               name: exerciseName,
                               hasReps,
                               hasWeight,
                               hasTime,
                            }
+                           newExercises[exerciseIndex] = newExercise
                         }
                      }
                      break
@@ -364,12 +374,11 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                        data?.activeExercise?._id
                                  )
                               if (filteredExercises.length !== 0) {
-                                 return [
-                                    {
-                                       ...w,
-                                       exercises: filteredExercises,
-                                    },
-                                 ]
+                                 const newWorkout: IWorkout = {
+                                    ...w,
+                                    exercises: filteredExercises,
+                                 }
+                                 return [newWorkout]
                               }
                               return []
                            }
@@ -383,10 +392,11 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            (ex) => ex._id === data?.activeExercise?._id
                         )
                         if (exerciseIndex !== -1) {
-                           newExercises[exerciseIndex] = {
+                           const newExercise: IExercise = {
                               ...newExercises[exerciseIndex],
                               notes: notes,
                            }
+                           newExercises[exerciseIndex] = newExercise
                         }
                      }
                      break
@@ -528,13 +538,20 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         const workoutIndex = newWorkouts.findIndex(
                            (w) => w._id === data?.activeWorkout?._id
                         )
+
                         const newDate =
-                           date + 'T' + clockTime?.format('HH:mm:ss')
+                           date.match(/^0001-01-01/) &&
+                           clockTime?.format('HH:mm:ss') === '00:00:00'
+                              ? '-'
+                              : new Date(
+                                   date + 'T' + clockTime?.format('HH:mm:ss')
+                                ).toISOString()
                         if (workoutIndex !== -1) {
-                           newWorkouts[workoutIndex] = {
+                           const newWorkout: IWorkout = {
                               ...newWorkouts[workoutIndex],
                               startTime: newDate,
                            }
+                           newWorkouts[workoutIndex] = newWorkout
                         }
                      }
                      break
@@ -544,12 +561,18 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            (w) => w._id === data?.activeWorkout?._id
                         )
                         const newDate =
-                           date + 'T' + clockTime?.format('HH:mm:ss')
+                           date.match(/^0001-01-01/) &&
+                           clockTime?.format('HH:mm:ss') === '00:00:00'
+                              ? '-'
+                              : new Date(
+                                   date + 'T' + clockTime?.format('HH:mm:ss')
+                                ).toISOString()
                         if (workoutIndex !== -1) {
-                           newWorkouts[workoutIndex] = {
+                           const newWorkout: IWorkout = {
                               ...newWorkouts[workoutIndex],
                               endTime: newDate,
                            }
+                           newWorkouts[workoutIndex] = newWorkout
                         }
                      }
                      break
@@ -559,10 +582,11 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            (w) => w._id === data?.activeWorkout?._id
                         )
                         if (workoutIndex !== -1) {
-                           newWorkouts[workoutIndex] = {
+                           const newWorkout: IWorkout = {
                               ...newWorkouts[workoutIndex],
                               notes: notes,
                            }
+                           newWorkouts[workoutIndex] = newWorkout
                         }
                      }
                      break
@@ -629,24 +653,30 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  : exercise.exercise_id !==
                                    data?.selectedExerciseInfo?._id
                            )
-                           newWorkouts[workoutIndex] = {
+                           const newWorkout: IWorkout = {
                               ...newWorkouts[workoutIndex],
                               done: newExercises.every(
                                  (ex) => ex?.done ?? true
                               ),
                               exercises: newExercises,
-                              addedAt: '-',
-                              startTime: getWorkoutStartTime(true, {
-                                 ...newWorkouts[workoutIndex],
-                                 exercises: newExercises,
-                                 addedAt: '-',
-                              }),
-                              endTime: getWorkoutEndTime(true, {
-                                 ...newWorkouts[workoutIndex],
-                                 exercises: newExercises,
-                                 addedAt: '-',
-                              }),
+                              startTime: getWorkoutTime(
+                                 true,
+                                 {
+                                    ...newWorkouts[workoutIndex],
+                                    exercises: newExercises,
+                                 },
+                                 'start'
+                              ),
+                              endTime: getWorkoutTime(
+                                 true,
+                                 {
+                                    ...newWorkouts[workoutIndex],
+                                    exercises: newExercises,
+                                 },
+                                 'end'
+                              ),
                            }
+                           newWorkouts[workoutIndex] = newWorkout
                         }
                      }
                      break
@@ -722,7 +752,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                }
                case 'edit':
                   {
-                     const editedRecord = {
+                     const newRecord = {
                         ...data?.selectedRecord,
                         _id:
                            data?.selectedRecord?._id ??
@@ -758,35 +788,36 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               (rec) => rec._id === data?.selectedRecord?._id
                            )
                            if (recordIndex !== -1) {
-                              const updatedRecords = [
+                              const newRecords: IRecord[] = [
                                  ...newWorkouts[workoutIndex].exercises[
                                     exerciseIndex
                                  ].records.slice(0, recordIndex),
-                                 editedRecord,
+                                 newRecord,
                                  ...newWorkouts[workoutIndex].exercises[
                                     exerciseIndex
                                  ].records.slice(recordIndex + 1),
                               ]
-                              const updatedExercise = {
+                              const newExerciseFromWorkout: IWorkoutExercise = {
                                  ...newWorkouts[workoutIndex].exercises[
                                     exerciseIndex
                                  ],
-                                 records: updatedRecords,
+                                 records: newRecords,
                               }
-                              const updatedExercises = [
-                                 ...newWorkouts[workoutIndex].exercises.slice(
-                                    0,
-                                    exerciseIndex
-                                 ),
-                                 updatedExercise,
-                                 ...newWorkouts[workoutIndex].exercises.slice(
-                                    exerciseIndex + 1
-                                 ),
-                              ]
-                              newWorkouts[workoutIndex] = {
+                              const newExercisesFromWorkout: IWorkoutExercise[] =
+                                 [
+                                    ...newWorkouts[
+                                       workoutIndex
+                                    ].exercises.slice(0, exerciseIndex),
+                                    newExerciseFromWorkout,
+                                    ...newWorkouts[
+                                       workoutIndex
+                                    ].exercises.slice(exerciseIndex + 1),
+                                 ]
+                              const newWorkout: IWorkout = {
                                  ...newWorkouts[workoutIndex],
-                                 exercises: updatedExercises,
+                                 exercises: newExercisesFromWorkout,
                               }
+                              newWorkouts[workoutIndex] = newWorkout
                            }
                         }
                      }
@@ -808,43 +839,52 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                 data?.selectedExerciseInfo?._id
                         )
                         if (exerciseIndex !== -1) {
-                           const updatedRecords = newWorkouts[
+                           const newRecords: IRecord[] = newWorkouts[
                               workoutIndex
                            ].exercises[exerciseIndex].records.filter(
                               (record) =>
                                  record._id !== data?.selectedRecord?._id
                            )
-                           const updatedExercises = newWorkouts[
-                              workoutIndex
-                           ].exercises.map((ex, idx) =>
-                              idx === exerciseIndex
-                                 ? {
-                                      ...ex,
-                                      done: updatedRecords.every(
-                                         (record) => record?.done ?? true
-                                      ),
-                                      records: updatedRecords,
-                                   }
-                                 : ex
-                           )
-                           newWorkouts[workoutIndex] = {
+                           const newExercisesFromWorkout: IWorkoutExercise[] =
+                              newWorkouts[workoutIndex].exercises.map(
+                                 (ex, idx) =>
+                                    idx === exerciseIndex
+                                       ? {
+                                            ...ex,
+                                            done: newRecords.every(
+                                               (record) => record?.done ?? true
+                                            ),
+                                            records: newRecords,
+                                         }
+                                       : ex
+                              )
+                           const newWorkout: IWorkout = {
                               ...newWorkouts[workoutIndex],
-                              exercises: updatedExercises,
-                              done: updatedExercises.every(
+                              exercises: newExercisesFromWorkout,
+                              done: newExercisesFromWorkout.every(
                                  (ex) => ex?.done ?? true
                               ),
                               addedAt: '-',
-                              startTime: getWorkoutStartTime(true, {
-                                 ...newWorkouts[workoutIndex],
-                                 exercises: updatedExercises,
-                                 addedAt: '-',
-                              }),
-                              endTime: getWorkoutEndTime(true, {
-                                 ...newWorkouts[workoutIndex],
-                                 exercises: updatedExercises,
-                                 addedAt: '-',
-                              }),
+                              startTime: getWorkoutTime(
+                                 true,
+                                 {
+                                    ...newWorkouts[workoutIndex],
+                                    exercises: newExercisesFromWorkout,
+                                    addedAt: '-',
+                                 },
+                                 'start'
+                              ),
+                              endTime: getWorkoutTime(
+                                 true,
+                                 {
+                                    ...newWorkouts[workoutIndex],
+                                    exercises: newExercisesFromWorkout,
+                                    addedAt: '-',
+                                 },
+                                 'end'
+                              ),
                            }
+                           newWorkouts[workoutIndex] = newWorkout
                         }
                      }
                   }
@@ -887,7 +927,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
             }
             break
          default:
-            console.warn('Unknown action or item:', action, item)
+            console.log('Unknown action or item:', action, item)
             break
       }
       setModal(null)
@@ -968,11 +1008,11 @@ const Modal = ({ info, setModal }: IModalProps) => {
          const lastRecord =
             exerciseInWorkout?.records[exerciseInWorkout.records.length - 1]
          if (data?.selectedExerciseInfo?.hasReps) {
-            const prevReps = lastRecord?.reps || ''
+            const prevReps = lastRecord?.reps ?? ''
             setReps(prevReps.toString())
          }
          if (data?.selectedExerciseInfo?.hasWeight) {
-            const prevWeight = lastRecord?.weight || ''
+            const prevWeight = lastRecord?.weight ?? ''
             setWeight(prevWeight.toString())
          }
          if (data?.selectedExerciseInfo?.hasTime) {
@@ -1387,7 +1427,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                     className="w-full"
                                     ampm={false}
                                     minutesStep={1}
-                                    format="HH:mm"
+                                    format="HH:mm:ss"
                                     onChange={(newValue) => {
                                        setClockTime(newValue)
                                     }}
@@ -1416,14 +1456,16 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               onClick={() => {
                                  const newTime: string =
                                     action === 'setStartTime'
-                                       ? getWorkoutStartTime(
+                                       ? getWorkoutTime(
                                             true,
-                                            data?.activeWorkout
+                                            data?.activeWorkout,
+                                            'start'
                                          )
                                        : action === 'setEndTime'
-                                         ? getWorkoutEndTime(
+                                         ? getWorkoutTime(
                                               true,
-                                              data?.activeWorkout
+                                              data?.activeWorkout,
+                                              'end'
                                            )
                                          : ''
                                  setClockTime(dayjs(newTime))
@@ -1431,6 +1473,15 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               }}
                            >
                               із записів
+                           </button>
+                           <button
+                              className="button-action button-modal"
+                              onClick={() => {
+                                 setClockTime(dayjs('00:00:00', 'HH:mm:ss'))
+                                 setDate('0001-01-01')
+                              }}
+                           >
+                              прибрати
                            </button>
                         </div>
                      )}

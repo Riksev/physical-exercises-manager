@@ -1,7 +1,7 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import type { IModal, IWorkout } from '../../interfaces'
 import { useAppSelector } from '../../app/hooks'
-import { getWorkoutEndTime, getWorkoutStartTime } from '../../features/workout'
+import { getWorkoutTime } from '../../features/workout'
 
 interface IWorkoutStatisticsProps {
    activeWorkout: IWorkout
@@ -16,8 +16,8 @@ const WorkoutStatistics = ({
 }: IWorkoutStatisticsProps) => {
    const exercises = useAppSelector((state) => state.data.exercises)
 
-   const startTime = getWorkoutStartTime(false, activeWorkout)
-   const endTime = getWorkoutEndTime(false, activeWorkout)
+   const startTime = getWorkoutTime(false, activeWorkout, 'start')
+   const endTime = getWorkoutTime(false, activeWorkout, 'end')
    const [duration, setDuration] = useState<string>('-')
    const [volume, setVolume] = useState<number>(0)
    const [setsTotal, setSetsTotal] = useState<number>(0)

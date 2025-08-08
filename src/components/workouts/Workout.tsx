@@ -3,6 +3,7 @@ import {
    Pages,
    type IExercise,
    type IModal,
+   type IRecord,
    type IWorkout,
    type IWorkoutExercise,
 } from '../../interfaces'
@@ -10,7 +11,7 @@ import WorkoutStatistics from './WorkoutStatistics'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { Swiper as SwiperType } from 'swiper'
 import { setWorkouts } from '../../features/dataSlice'
-import { getWorkoutEndTime, getWorkoutStartTime } from '../../features/workout'
+import { getWorkoutTime } from '../../features/workout'
 
 interface IWorkoutProps {
    activeWorkout: IWorkout
@@ -54,7 +55,7 @@ const Workout = ({
             <div
                className={`block-border border-${activeWorkout.difficulty || 'medium'}`}
             >
-               <p className="mb-4 w-full text-left text-2xl font-medium">
+               <p className="my-1 mb-4 w-full text-left text-2xl font-medium">
                   Вправи:
                </p>
                <div>
@@ -67,7 +68,7 @@ const Workout = ({
                         const exerciseInfo =
                            exercises.find(
                               (ex) => ex._id === exercise.exercise_id
-                           ) || null
+                           ) ?? null
                         const exerciseParams =
                            exerciseInfo?.hasReps ||
                            exerciseInfo?.hasWeight ||
@@ -136,133 +137,6 @@ const Workout = ({
                                                 </button>
                                              </div>
                                              <div className="flex w-full flex-row items-center justify-end gap-x-4">
-                                                <input
-                                                   type="checkbox"
-                                                   id={`exercise-checkbox-${index}`}
-                                                   className="mx-1 accent-lime-500"
-                                                   checked={
-                                                      exercise?.done ?? true
-                                                   }
-                                                   onChange={(e) => {
-                                                      const newWorkouts =
-                                                         workouts.map((w) => {
-                                                            if (
-                                                               w._id ===
-                                                               activeWorkout._id
-                                                            ) {
-                                                               const newExercises =
-                                                                  w.exercises.map(
-                                                                     (
-                                                                        ex,
-                                                                        exIndex
-                                                                     ) => {
-                                                                        if (
-                                                                           exIndex ===
-                                                                           index
-                                                                        ) {
-                                                                           const newRecords =
-                                                                              ex.records.map(
-                                                                                 (
-                                                                                    record
-                                                                                 ) => {
-                                                                                    return {
-                                                                                       ...record,
-                                                                                       done: e
-                                                                                          .target
-                                                                                          .checked,
-                                                                                       addedAt:
-                                                                                          e
-                                                                                             .target
-                                                                                             .checked
-                                                                                             ? new Date().toISOString()
-                                                                                             : '-',
-                                                                                    }
-                                                                                 }
-                                                                              )
-                                                                           return {
-                                                                              ...ex,
-                                                                              records:
-                                                                                 newRecords,
-                                                                              done: e
-                                                                                 .target
-                                                                                 .checked,
-                                                                              addedAt:
-                                                                                 e
-                                                                                    .target
-                                                                                    .checked
-                                                                                    ? ex?.addedAt ===
-                                                                                      '-'
-                                                                                       ? new Date().toISOString()
-                                                                                       : ex?.addedAt
-                                                                                    : '-',
-                                                                           }
-                                                                        }
-                                                                        return ex
-                                                                     }
-                                                                  )
-                                                               const isWorkoutDone =
-                                                                  newExercises.every(
-                                                                     (ex) =>
-                                                                        ex.done ??
-                                                                        true
-                                                                  )
-                                                               return {
-                                                                  ...w,
-                                                                  exercises:
-                                                                     newExercises,
-                                                                  done: isWorkoutDone,
-                                                                  addedAt:
-                                                                     getWorkoutStartTime(
-                                                                        true,
-                                                                        {
-                                                                           ...w,
-                                                                           exercises:
-                                                                              newExercises,
-                                                                        }
-                                                                     ),
-                                                                  startTime:
-                                                                     getWorkoutStartTime(
-                                                                        true,
-                                                                        {
-                                                                           ...w,
-                                                                           addedAt:
-                                                                              '-',
-                                                                           startTime:
-                                                                              '-',
-                                                                           endTime:
-                                                                              '-',
-
-                                                                           exercises:
-                                                                              newExercises,
-                                                                        }
-                                                                     ),
-                                                                  endTime:
-                                                                     getWorkoutEndTime(
-                                                                        true,
-                                                                        {
-                                                                           ...w,
-                                                                           addedAt:
-                                                                              '-',
-                                                                           startTime:
-                                                                              '-',
-                                                                           endTime:
-                                                                              '-',
-
-                                                                           exercises:
-                                                                              newExercises,
-                                                                        }
-                                                                     ),
-                                                               }
-                                                            }
-                                                            return w
-                                                         })
-                                                      dispatch(
-                                                         setWorkouts(
-                                                            newWorkouts
-                                                         )
-                                                      )
-                                                   }}
-                                                />
                                                 <button
                                                    className="disabled:opacity-25"
                                                    disabled={index === 0}
@@ -372,6 +246,118 @@ const Workout = ({
                                                       <path d="M297.4 41.4C309.9 28.9 330.2 28.9 342.7 41.4L470.7 169.4C479.9 178.6 482.6 192.3 477.6 204.3C472.6 216.3 460.9 224 448 224L384 224L384 560C384 586.5 362.5 608 336 608L304 608C277.5 608 256 586.5 256 560L256 224L192 224C179.1 224 167.4 216.2 162.4 204.2C157.4 192.2 160.2 178.5 169.4 169.4L297.4 41.4z" />
                                                    </svg>
                                                 </button>
+                                                <input
+                                                   type="checkbox"
+                                                   id={`exercise-checkbox-${index}`}
+                                                   className="mx-1 accent-lime-500"
+                                                   checked={
+                                                      exercise?.done ?? true
+                                                   }
+                                                   onChange={(e) => {
+                                                      const newWorkouts =
+                                                         workouts.map((w) => {
+                                                            if (
+                                                               w._id ===
+                                                               activeWorkout._id
+                                                            ) {
+                                                               const newExercises =
+                                                                  w.exercises.map(
+                                                                     (
+                                                                        ex,
+                                                                        exIndex
+                                                                     ) => {
+                                                                        if (
+                                                                           exIndex ===
+                                                                           index
+                                                                        ) {
+                                                                           const newRecords =
+                                                                              ex.records.map(
+                                                                                 (
+                                                                                    record
+                                                                                 ) => {
+                                                                                    const newRecord: IRecord =
+                                                                                       {
+                                                                                          ...record,
+                                                                                          done: e
+                                                                                             .target
+                                                                                             .checked,
+                                                                                          addedAt:
+                                                                                             e
+                                                                                                .target
+                                                                                                .checked
+                                                                                                ? new Date().toISOString()
+                                                                                                : '-',
+                                                                                       }
+                                                                                    return newRecord
+                                                                                 }
+                                                                              )
+                                                                           const newExercisesFromWorkout: IWorkoutExercise =
+                                                                              {
+                                                                                 ...ex,
+                                                                                 records:
+                                                                                    newRecords,
+                                                                                 done: e
+                                                                                    .target
+                                                                                    .checked,
+                                                                                 addedAt:
+                                                                                    e
+                                                                                       .target
+                                                                                       .checked
+                                                                                       ? ex?.addedAt ===
+                                                                                         '-'
+                                                                                          ? new Date().toISOString()
+                                                                                          : ex?.addedAt
+                                                                                       : '-',
+                                                                              }
+                                                                           return newExercisesFromWorkout
+                                                                        }
+                                                                        return ex
+                                                                     }
+                                                                  )
+                                                               const isWorkoutDone =
+                                                                  newExercises.every(
+                                                                     (ex) =>
+                                                                        ex.done ??
+                                                                        true
+                                                                  )
+                                                               const newWorkout: IWorkout =
+                                                                  {
+                                                                     ...w,
+                                                                     exercises:
+                                                                        newExercises,
+                                                                     done: isWorkoutDone,
+                                                                     startTime:
+                                                                        getWorkoutTime(
+                                                                           true,
+                                                                           {
+                                                                              ...w,
+                                                                              exercises:
+                                                                                 newExercises,
+                                                                           },
+                                                                           'start'
+                                                                        ),
+                                                                     endTime:
+                                                                        getWorkoutTime(
+                                                                           true,
+                                                                           {
+                                                                              ...w,
+                                                                              exercises:
+                                                                                 newExercises,
+                                                                           },
+                                                                           'end'
+                                                                        ),
+                                                                  }
+                                                               return newWorkout
+                                                            }
+                                                            return w
+                                                         })
+                                                      dispatch(
+                                                         setWorkouts(
+                                                            newWorkouts
+                                                         )
+                                                      )
+                                                   }}
+                                                />
                                              </div>
                                           </div>
                                        </div>
@@ -491,18 +477,20 @@ const Workout = ({
                                                                            rIndex ===
                                                                            id
                                                                         ) {
-                                                                           return {
-                                                                              ...r,
-                                                                              done: e
-                                                                                 .target
-                                                                                 .checked,
-                                                                              addedAt:
-                                                                                 e
+                                                                           const newRecord: IRecord =
+                                                                              {
+                                                                                 ...r,
+                                                                                 done: e
                                                                                     .target
-                                                                                    .checked
-                                                                                    ? new Date().toISOString()
-                                                                                    : '-',
-                                                                           }
+                                                                                    .checked,
+                                                                                 addedAt:
+                                                                                    e
+                                                                                       .target
+                                                                                       .checked
+                                                                                       ? new Date().toISOString()
+                                                                                       : '-',
+                                                                              }
+                                                                           return newRecord
                                                                         }
                                                                         return r
                                                                      }
@@ -513,69 +501,53 @@ const Workout = ({
                                                                         r.done ??
                                                                         true
                                                                   )
+                                                               const newExerciseFromWorkout: IWorkoutExercise =
+                                                                  {
+                                                                     ...newExercises[
+                                                                        index
+                                                                     ],
+                                                                     done: isExerciseDone,
+                                                                     records:
+                                                                        newRecords,
+                                                                  }
                                                                newExercises[
                                                                   index
-                                                               ] = {
-                                                                  ...newExercises[
-                                                                     index
-                                                                  ],
-                                                                  done: isExerciseDone,
-                                                                  records:
-                                                                     newRecords,
-                                                               }
+                                                               ] =
+                                                                  newExerciseFromWorkout
                                                                const isWorkoutDone =
                                                                   newExercises.every(
                                                                      (ex) =>
                                                                         ex.done ??
                                                                         true
                                                                   )
-                                                               return {
-                                                                  ...w,
-                                                                  done: isWorkoutDone,
-                                                                  exercises:
-                                                                     newExercises,
-                                                                  addedAt:
-                                                                     getWorkoutStartTime(
-                                                                        true,
-                                                                        {
-                                                                           ...w,
-                                                                           exercises:
-                                                                              newExercises,
-                                                                        }
-                                                                     ),
-                                                                  startTime:
-                                                                     getWorkoutStartTime(
-                                                                        true,
-                                                                        {
-                                                                           ...w,
-                                                                           addedAt:
-                                                                              '-',
-                                                                           startTime:
-                                                                              '-',
-                                                                           endTime:
-                                                                              '-',
-
-                                                                           exercises:
-                                                                              newExercises,
-                                                                        }
-                                                                     ),
-                                                                  endTime:
-                                                                     getWorkoutEndTime(
-                                                                        true,
-                                                                        {
-                                                                           ...w,
-                                                                           addedAt:
-                                                                              '-',
-                                                                           startTime:
-                                                                              '-',
-                                                                           endTime:
-                                                                              '-',
-
-                                                                           exercises:
-                                                                              newExercises,
-                                                                        }
-                                                                     ),
-                                                               }
+                                                               const newWorkout: IWorkout =
+                                                                  {
+                                                                     ...w,
+                                                                     done: isWorkoutDone,
+                                                                     exercises:
+                                                                        newExercises,
+                                                                     startTime:
+                                                                        getWorkoutTime(
+                                                                           true,
+                                                                           {
+                                                                              ...w,
+                                                                              exercises:
+                                                                                 newExercises,
+                                                                           },
+                                                                           'start'
+                                                                        ),
+                                                                     endTime:
+                                                                        getWorkoutTime(
+                                                                           true,
+                                                                           {
+                                                                              ...w,
+                                                                              exercises:
+                                                                                 newExercises,
+                                                                           },
+                                                                           'end'
+                                                                        ),
+                                                                  }
+                                                               return newWorkout
                                                             }
                                                             return w
                                                          })

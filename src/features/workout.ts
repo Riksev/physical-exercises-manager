@@ -1,93 +1,45 @@
-import type { IWorkout } from '../interfaces'
+import type { IRecord, IWorkout, IWorkoutExercise } from '../interfaces'
 
-export const getWorkoutStartTime = (
-   fromRecords: boolean,
-   workout: IWorkout | undefined
-) => {
-   let start = '-'
-   if (!fromRecords) {
-      start = workout?.startTime || '-'
-   }
-   if (start === '-') {
-      if (
-         workout?.addedAt &&
-         workout?.addedAt !== '-' &&
-         (workout?.done ?? true)
-      ) {
-         start = workout.addedAt
+const getNewTime = (
+   time: string,
+   el: IWorkout | IWorkoutExercise | IRecord | undefined,
+   less: boolean
+): string => {
+   if (el?.addedAt && el?.addedAt !== '-') {
+      if (time === '-') {
+         return el.addedAt
       }
-      workout?.exercises.forEach((exercise) => {
-         if (
-            exercise?.addedAt &&
-            exercise?.addedAt !== '-' &&
-            (exercise?.done ?? true)
-         ) {
-            if (start === '-') {
-               start = exercise.addedAt
-            } else {
-               start = start < exercise.addedAt ? start : exercise.addedAt
-            }
-         }
-         exercise.records.forEach((record) => {
-            if (
-               record?.addedAt &&
-               record?.addedAt !== '-' &&
-               (record?.done ?? true)
-            ) {
-               if (start === '-') {
-                  start = record.addedAt
-               } else {
-                  start = start < record.addedAt ? start : record.addedAt
-               }
-            }
-         })
-      })
+      return less
+         ? time < el.addedAt
+            ? time
+            : el.addedAt
+         : time > el.addedAt
+           ? time
+           : el.addedAt
    }
-   return start
+   return time
 }
 
-export const getWorkoutEndTime = (
+export const getWorkoutTime = (
    fromRecords: boolean,
-   workout: IWorkout | undefined
+   workout: IWorkout | undefined,
+   whichTime: 'start' | 'end'
 ) => {
-   let end = '-'
+   let time = '-'
+   const isStartTime = whichTime === 'start'
    if (!fromRecords) {
-      end = workout?.endTime || '-'
-   }
-   if (end === '-') {
-      if (
-         workout?.addedAt &&
-         workout?.addedAt !== '-' &&
-         (workout?.done ?? true)
-      ) {
-         end = workout.addedAt
-      }
+      time =
+         whichTime === 'start'
+            ? (workout?.startTime ?? '-')
+            : (workout?.endTime ?? '-')
+   } else {
+      time = getNewTime(time, workout, isStartTime)
       workout?.exercises.forEach((exercise) => {
-         if (
-            exercise?.addedAt &&
-            exercise?.addedAt !== '-' &&
-            (exercise?.done ?? true)
-         ) {
-            if (end === '-') {
-               end = exercise.addedAt
-            } else {
-               end = end > exercise.addedAt ? end : exercise.addedAt
-            }
-         }
+         time = getNewTime(time, exercise, isStartTime)
          exercise.records.forEach((record) => {
-            if (
-               record?.addedAt &&
-               record?.addedAt !== '-' &&
-               (record?.done ?? true)
-            ) {
-               if (end === '-') {
-                  end = record.addedAt
-               } else {
-                  end = end > record.addedAt ? end : record.addedAt
-               }
-            }
+            time = getNewTime(time, record, isStartTime)
          })
       })
    }
-   return end
+   return time
 }
