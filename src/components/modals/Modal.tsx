@@ -1080,26 +1080,6 @@ const Modal = ({ info, setModal }: IModalProps) => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [])
 
-   const handleNumberInput = (
-      e: React.KeyboardEvent<HTMLInputElement>,
-      value: string,
-      onlyPositive: boolean = false,
-      onlyInt: boolean = false
-   ) => {
-      if (e.key === 'e' || e.key === 'E' || e.key === 'Enter') {
-         e.preventDefault()
-      }
-      if (value.length && (e.key === '-' || e.key === '+')) {
-         e.preventDefault()
-      }
-      if (onlyPositive && e.key === '-') {
-         e.preventDefault()
-      }
-      if (onlyInt && e.key === '.') {
-         e.preventDefault()
-      }
-   }
-
    return (
       !isLoading && (
          <div className="modal-bg">
@@ -1383,16 +1363,17 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  <div className="input-block">
                                     <label htmlFor="weight">Робоча вага:</label>
                                     <input
-                                       type="number"
-                                       step="any"
+                                       type="text"
+                                       inputMode="numeric"
                                        id="weight"
                                        placeholder="Введіть робочу вагу"
                                        value={weight}
                                        onChange={(e) => {
-                                          setWeight(e.target.value)
-                                       }}
-                                       onKeyDown={(e) => {
-                                          handleNumberInput(e, weight)
+                                          setWeight(
+                                             e.target.value
+                                                .replace(/[^-\d.,]/g, '')
+                                                .replace(/[,]/g, '.')
+                                          )
                                        }}
                                        onPaste={(e) => e.preventDefault()}
                                     />
@@ -1402,17 +1383,17 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  <div className="input-block">
                                     <label htmlFor="reps">Повторення:</label>
                                     <input
-                                       type="number"
-                                       step="any"
+                                       type="text"
+                                       inputMode="numeric"
                                        id="reps"
-                                       min="0"
                                        placeholder="Введіть кількість повторень"
                                        value={reps}
                                        onChange={(e) => {
-                                          setReps(e.target.value)
-                                       }}
-                                       onKeyDown={(e) => {
-                                          handleNumberInput(e, reps, true)
+                                          setReps(
+                                             e.target.value
+                                                .replace(/[^\d.,]/g, '')
+                                                .replace(/[,]/g, '.')
+                                          )
                                        }}
                                        onPaste={(e) => e.preventDefault()}
                                     />
@@ -1429,15 +1410,6 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                        onChange={(e) => {
                                           setTime(e.target.value)
                                        }}
-                                       onKeyDown={(e) => {
-                                          if (
-                                             e.key === '-' ||
-                                             e.key === 'e' ||
-                                             e.key === 'Enter'
-                                          ) {
-                                             e.preventDefault()
-                                          }
-                                       }}
                                        onPaste={(e) => e.preventDefault()}
                                     />
                                     {errorTime && (
@@ -1451,22 +1423,20 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  <div className="input-block">
                                     <label htmlFor="rpe">RPE:</label>
                                     <input
-                                       type="number"
-                                       step="0.5"
+                                       type="text"
+                                       inputMode="numeric"
                                        id="rpe"
-                                       min="0"
-                                       max="10"
                                        placeholder="Введіть RPE"
                                        value={rpe}
                                        onChange={(e) => {
-                                          const inputValue = e.target.value
+                                          let inputValue = e.target.value
+                                             .replace(/[^\d.,]/g, '')
+                                             .replace(/[,]/g, '.')
                                           if (parseFloat(inputValue) > 10.0) {
                                              e.target.value = '10'
+                                             inputValue = '10'
                                           }
-                                          setRPE(e.target.value)
-                                       }}
-                                       onKeyDown={(e) => {
-                                          handleNumberInput(e, rpe, true)
+                                          setRPE(inputValue)
                                        }}
                                        onPaste={(e) => e.preventDefault()}
                                     />
@@ -1476,17 +1446,17 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  <div className="input-block">
                                     <label htmlFor="rir">RIR:</label>
                                     <input
-                                       type="number"
-                                       step="1"
+                                       type="text"
+                                       inputMode="numeric"
                                        id="rir"
-                                       min="0"
                                        placeholder="Введіть RIR"
                                        value={rir}
                                        onChange={(e) => {
-                                          setRIR(e.target.value)
-                                       }}
-                                       onKeyDown={(e) => {
-                                          handleNumberInput(e, rir, true)
+                                          setRIR(
+                                             e.target.value
+                                                .replace(/[^\d.,]/g, '')
+                                                .replace(/[,]/g, '.')
+                                          )
                                        }}
                                        onPaste={(e) => e.preventDefault()}
                                     />
