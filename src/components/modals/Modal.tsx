@@ -1080,6 +1080,22 @@ const Modal = ({ info, setModal }: IModalProps) => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [])
 
+   const getNumberAsStr = (
+      value: string,
+      allowNegative: boolean = false
+   ): string => {
+      const inputValue = value.replace(/,/g, '.')
+      const hasLeadingMinus = inputValue.startsWith('-')
+      let cleanedValue = inputValue.replace(/[^\d.]/g, '')
+      const parts = cleanedValue.split('.')
+      if (parts.length > 2) {
+         cleanedValue = parts[0] + '.' + parts.slice(1).join('')
+      }
+      const finalValue =
+         allowNegative && hasLeadingMinus ? '-' + cleanedValue : cleanedValue
+      return finalValue
+   }
+
    return (
       !isLoading && (
          <div className="modal-bg">
@@ -1370,9 +1386,10 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                        value={weight}
                                        onChange={(e) => {
                                           setWeight(
-                                             e.target.value
-                                                .replace(/[^-\d.,]/g, '')
-                                                .replace(/[,]/g, '.')
+                                             getNumberAsStr(
+                                                e.target.value,
+                                                true
+                                             )
                                           )
                                        }}
                                        onPaste={(e) => e.preventDefault()}
@@ -1390,9 +1407,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                        value={reps}
                                        onChange={(e) => {
                                           setReps(
-                                             e.target.value
-                                                .replace(/[^\d.,]/g, '')
-                                                .replace(/[,]/g, '.')
+                                             getNumberAsStr(e.target.value)
                                           )
                                        }}
                                        onPaste={(e) => e.preventDefault()}
@@ -1429,9 +1444,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                        placeholder="Введіть RPE"
                                        value={rpe}
                                        onChange={(e) => {
-                                          let inputValue = e.target.value
-                                             .replace(/[^\d.,]/g, '')
-                                             .replace(/[,]/g, '.')
+                                          let inputValue = getNumberAsStr(
+                                             e.target.value
+                                          )
                                           if (parseFloat(inputValue) > 10.0) {
                                              e.target.value = '10'
                                              inputValue = '10'
@@ -1452,11 +1467,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                        placeholder="Введіть RIR"
                                        value={rir}
                                        onChange={(e) => {
-                                          setRIR(
-                                             e.target.value
-                                                .replace(/[^\d.,]/g, '')
-                                                .replace(/[,]/g, '.')
-                                          )
+                                          setRIR(getNumberAsStr(e.target.value))
                                        }}
                                        onPaste={(e) => e.preventDefault()}
                                     />

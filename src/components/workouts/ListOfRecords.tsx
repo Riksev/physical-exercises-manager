@@ -49,10 +49,11 @@ const ListOfRecords = ({
                         },
                      })
                   }}
+                  className="flex-1"
                >
                   <p>#{id + 1}</p>
                   {exerciseFromWorkoutInfo?.hasWeight &&
-                     (record.weight ?? 0) > 0 && (
+                     (record.weight ?? 0) !== 0 && (
                         <p>
                            <span className="text-sm">{record.weight} КГ</span>
                         </p>
