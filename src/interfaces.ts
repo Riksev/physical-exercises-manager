@@ -30,6 +30,8 @@ export interface IRecord {
    reps?: number
    weight?: number
    time?: string
+   rpe?: number
+   rir?: number
    addedAt?: string
    done?: boolean
 }
@@ -41,6 +43,8 @@ export interface IExercise {
    hasWeight?: boolean
    hasTime?: boolean
    notes?: string
+   hasRPE?: boolean
+   hasRIR?: boolean
 }
 
 export interface IModal {

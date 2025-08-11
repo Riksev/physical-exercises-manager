@@ -33,7 +33,7 @@ const ListOfWorkouts = ({
                   workout={training}
                   clicker={clicker}
                   controlOrder={controlOrder}
-                  {...(controlOrder ? { index } : {})}
+                  index={index}
                   {...(controlOrder ? { filteredLength: workouts.length } : {})}
                />
             ))

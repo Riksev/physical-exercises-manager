@@ -2,7 +2,6 @@ import type { Dispatch, SetStateAction } from 'react'
 import About from './About'
 import Calculators from './Calculators'
 import DataManager from './DataManager'
-import FAQ from './FAQ'
 import type { IModal } from '../../interfaces'
 
 interface IOtherProps {
@@ -16,7 +15,7 @@ const Other = ({ setModal }: IOtherProps) => {
          <DataManager setModal={setModal} />
          <Calculators />
          <About />
-         <FAQ />
+         {/* <FAQ /> */}
       </div>
    )
 }

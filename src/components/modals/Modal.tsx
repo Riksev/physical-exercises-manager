@@ -60,6 +60,12 @@ const Modal = ({ info, setModal }: IModalProps) => {
    const [hasTime, setHasTime] = useState<boolean>(
       data?.activeExercise?.hasTime ?? false
    )
+   const [hasRPE, setHasRPE] = useState<boolean>(
+      data?.activeExercise?.hasRPE ?? false
+   )
+   const [hasRIR, setHasRIR] = useState<boolean>(
+      data?.activeExercise?.hasRIR ?? false
+   )
    const workoutStartTime = getWorkoutTime(false, data?.activeWorkout, 'start')
    const workoutEndTime = getWorkoutTime(false, data?.activeWorkout, 'end')
 
@@ -84,13 +90,19 @@ const Modal = ({ info, setModal }: IModalProps) => {
    const [filteredExercises, setFilteredExercises] =
       useState<IExercise[]>(exercises)
    const [reps, setReps] = useState<string>(
-      (data?.selectedRecord?.reps ?? '').toString()
+      (data?.selectedRecord?.reps || '').toString()
    )
    const [weight, setWeight] = useState<string>(
-      (data?.selectedRecord?.weight ?? '').toString()
+      (data?.selectedRecord?.weight || '').toString()
    )
    const [time, setTime] = useState<string>(
-      (data?.selectedRecord?.time ?? '').toString()
+      (data?.selectedRecord?.time || '00:00:00').toString()
+   )
+   const [rpe, setRPE] = useState<string>(
+      (data?.selectedRecord?.rpe || '').toString()
+   )
+   const [rir, setRIR] = useState<string>(
+      (data?.selectedRecord?.rir || '').toString()
    )
    const [fileName, setFileName] = useState<string>(
       action === 'export' ? getDate() : ''
@@ -257,20 +269,26 @@ const Modal = ({ info, setModal }: IModalProps) => {
                      newTitle.push('Редагування запису')
                      newTitle.push(
                         [
-                           data?.selectedRecord?.weight ?? '-',
-                           data?.selectedRecord?.reps ?? '-',
-                           data?.selectedRecord?.time ?? '-',
-                        ].join('x')
+                           data?.selectedRecord?.weight,
+                           data?.selectedRecord?.reps,
+                           data?.selectedRecord?.time,
+                        ]
+                           .filter((el) => el != null)
+                           .map((el) => (el === '' ? '-' : el))
+                           .join('x')
                      )
                      break
                   case 'delete':
                      newTitle.push('Видалення запису')
                      newTitle.push(
                         [
-                           data?.selectedRecord?.weight ?? '-',
-                           data?.selectedRecord?.reps ?? '-',
-                           data?.selectedRecord?.time ?? '-',
-                        ].join('x')
+                           data?.selectedRecord?.weight,
+                           data?.selectedRecord?.reps,
+                           data?.selectedRecord?.time,
+                        ]
+                           .filter((el) => el != null)
+                           .map((el) => (el === '' ? '-' : el))
+                           .join('x')
                      )
                      break
                   default:
@@ -315,6 +333,8 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            hasReps,
                            hasWeight,
                            hasTime,
+                           hasRPE,
+                           hasRIR,
                         }
 
                         let inserted: boolean = false
@@ -351,6 +371,8 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               hasReps,
                               hasWeight,
                               hasTime,
+                              hasRPE,
+                              hasRIR,
                            }
                            newExercises[exerciseIndex] = newExercise
                         }
@@ -724,6 +746,12 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               ...(data?.selectedExerciseInfo?.hasTime && {
                                  time,
                               }),
+                              ...(data?.selectedExerciseInfo?.hasRPE && {
+                                 rpe: parseFloat(rpe || '0'),
+                              }),
+                              ...(data?.selectedExerciseInfo?.hasRIR && {
+                                 rir: parseFloat(rir || '0'),
+                              }),
                               addedAt: data?.selectedExerciseFromWorkout?.done
                                  ? new Date().toISOString()
                                  : '-',
@@ -770,13 +798,19 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            data?.selectedRecord?._id ??
                            new Date().getTime().toString(),
                         ...(data?.selectedExerciseInfo?.hasReps && {
-                           reps: parseFloat(reps),
+                           reps: parseFloat(reps || '0'),
                         }),
                         ...(data?.selectedExerciseInfo?.hasWeight && {
-                           weight: parseFloat(weight),
+                           weight: parseFloat(weight || '0'),
                         }),
                         ...(data?.selectedExerciseInfo?.hasTime && {
                            time: time,
+                        }),
+                        ...(data?.selectedExerciseInfo?.hasRPE && {
+                           rpe: parseFloat(rpe || '0'),
+                        }),
+                        ...(data?.selectedExerciseInfo?.hasRIR && {
+                           rir: parseFloat(rir || '0'),
                         }),
                      }
 
@@ -973,10 +1007,12 @@ const Modal = ({ info, setModal }: IModalProps) => {
    useEffect(() => {
       if (item === 'record' && (action === 'add' || action === 'edit')) {
          if (
-            data?.activeExercise?.hasTime &&
-            time.match(/^\d{2}:\d{2}:\d{2}$/)
+            data?.selectedExerciseInfo?.hasTime &&
+            !time.match(/^([0-1][0-9]|[2][0-3]):[0-5][0-9]:[0-5][0-9]$/)
          ) {
-            setErrorTime('Невірний формат часу. Використовуйте HH:MM:SS.')
+            setErrorTime(
+               'Невірний формат часу. Використовуйте HH:MM:SS (00-24 години).'
+            )
          } else {
             setErrorTime('')
          }
@@ -1020,21 +1056,49 @@ const Modal = ({ info, setModal }: IModalProps) => {
          const lastRecord =
             exerciseInWorkout?.records[exerciseInWorkout.records.length - 1]
          if (data?.selectedExerciseInfo?.hasReps) {
-            const prevReps = lastRecord?.reps ?? ''
+            const prevReps = lastRecord?.reps || ''
             setReps(prevReps.toString())
          }
          if (data?.selectedExerciseInfo?.hasWeight) {
-            const prevWeight = lastRecord?.weight ?? ''
+            const prevWeight = lastRecord?.weight || ''
             setWeight(prevWeight.toString())
          }
          if (data?.selectedExerciseInfo?.hasTime) {
-            const prevTime = lastRecord?.time ?? '00:00:00'
+            const prevTime = lastRecord?.time || '00:00:00'
             setTime(prevTime.toString())
+         }
+         if (data?.selectedExerciseInfo?.hasRPE) {
+            const prevRPE = lastRecord?.rpe || ''
+            setRPE(prevRPE.toString())
+         }
+         if (data?.selectedExerciseInfo?.hasRIR) {
+            const prevRIR = lastRecord?.rir || ''
+            setRIR(prevRIR.toString())
          }
       }
       setIsLoading(false)
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [])
+
+   const handleNumberInput = (
+      e: React.KeyboardEvent<HTMLInputElement>,
+      value: string,
+      onlyPositive: boolean = false,
+      onlyInt: boolean = false
+   ) => {
+      if (e.key === 'e' || e.key === 'E' || e.key === 'Enter') {
+         e.preventDefault()
+      }
+      if (value.length && (e.key === '-' || e.key === '+')) {
+         e.preventDefault()
+      }
+      if (onlyPositive && e.key === '-') {
+         e.preventDefault()
+      }
+      if (onlyInt && e.key === '.') {
+         e.preventDefault()
+      }
+   }
 
    return (
       !isLoading && (
@@ -1142,6 +1206,28 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                     }
                                  />
                               </div>
+                              <div className="checkbox-block">
+                                 <label htmlFor="rpe">Фіксувати RPE:</label>
+                                 <input
+                                    type="checkbox"
+                                    id="rpe"
+                                    checked={hasRPE}
+                                    onChange={(e) =>
+                                       setHasRPE(e.target.checked)
+                                    }
+                                 />
+                              </div>
+                              <div className="checkbox-block">
+                                 <label htmlFor="rir">Фіксувати RIR:</label>
+                                 <input
+                                    type="checkbox"
+                                    id="rir"
+                                    checked={hasRIR}
+                                    onChange={(e) =>
+                                       setHasRIR(e.target.checked)
+                                    }
+                                 />
+                              </div>
                            </>
                         )}
                      {(action === 'add' ||
@@ -1159,7 +1245,12 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                     onChange={(e) => {
                                        setDate(e.target.value)
                                     }}
-                                    placeholder="YYYY-MM-DD"
+                                    onBlur={(e) => {
+                                       if (e.target.value === '') {
+                                          e.target.value = 'mm/dd/yyyy'
+                                       }
+                                    }}
+                                    placeholder="mm/dd/yyyy"
                                     disabled={Boolean(!data?.activeWorkout)}
                                  />
                                  {errorDate && (
@@ -1297,16 +1388,11 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                        id="weight"
                                        placeholder="Введіть робочу вагу"
                                        value={weight}
-                                       onChange={(e) =>
+                                       onChange={(e) => {
                                           setWeight(e.target.value)
-                                       }
+                                       }}
                                        onKeyDown={(e) => {
-                                          if (
-                                             e.key === 'e' ||
-                                             e.key === 'Enter'
-                                          ) {
-                                             e.preventDefault()
-                                          }
+                                          handleNumberInput(e, weight)
                                        }}
                                        onPaste={(e) => e.preventDefault()}
                                     />
@@ -1326,13 +1412,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                           setReps(e.target.value)
                                        }}
                                        onKeyDown={(e) => {
-                                          if (
-                                             e.key === '-' ||
-                                             e.key === 'e' ||
-                                             e.key === 'Enter'
-                                          ) {
-                                             e.preventDefault()
-                                          }
+                                          handleNumberInput(e, reps, true)
                                        }}
                                        onPaste={(e) => e.preventDefault()}
                                     />
@@ -1365,6 +1445,51 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                           {errorTime}
                                        </p>
                                     )}
+                                 </div>
+                              )}
+                              {data?.selectedExerciseInfo?.hasRPE && (
+                                 <div className="input-block">
+                                    <label htmlFor="rpe">RPE:</label>
+                                    <input
+                                       type="number"
+                                       step="0.5"
+                                       id="rpe"
+                                       min="0"
+                                       max="10"
+                                       placeholder="Введіть RPE"
+                                       value={rpe}
+                                       onChange={(e) => {
+                                          const inputValue = e.target.value
+                                          if (parseFloat(inputValue) > 10.0) {
+                                             e.target.value = '10'
+                                          }
+                                          setRPE(e.target.value)
+                                       }}
+                                       onKeyDown={(e) => {
+                                          handleNumberInput(e, rpe, true)
+                                       }}
+                                       onPaste={(e) => e.preventDefault()}
+                                    />
+                                 </div>
+                              )}
+                              {data?.selectedExerciseInfo?.hasRIR && (
+                                 <div className="input-block">
+                                    <label htmlFor="rir">RIR:</label>
+                                    <input
+                                       type="number"
+                                       step="1"
+                                       id="rir"
+                                       min="0"
+                                       placeholder="Введіть RIR"
+                                       value={rir}
+                                       onChange={(e) => {
+                                          setRIR(e.target.value)
+                                       }}
+                                       onKeyDown={(e) => {
+                                          handleNumberInput(e, rir, true)
+                                       }}
+                                       onPaste={(e) => e.preventDefault()}
+                                    />
                                  </div>
                               )}
                            </>
