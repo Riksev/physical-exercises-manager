@@ -18,6 +18,8 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker'
 import dayjs from 'dayjs'
 import { getWorkoutTime } from '../../features/workout'
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import { setSettings } from '../../features/settingsSlice'
 
 interface IModalProps {
    info: IModal | null
@@ -31,6 +33,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
 
    const exercises = useAppSelector((state) => state.data.exercises)
    const workouts = useAppSelector((state) => state.data.workouts)
+   const settings = useAppSelector((state) => state.settings)
    const dispatch = useAppDispatch()
 
    const getDate = (date = data?.date?.toString()) => {
@@ -129,6 +132,10 @@ const Modal = ({ info, setModal }: IModalProps) => {
       data?.activeWorkout?.done !== undefined
          ? !data?.activeWorkout?.done
          : false
+   )
+
+   const [unitsType, setUnitsType] = useState<'metric' | 'imperial'>(
+      settings.settings.unitsType
    )
 
    const [errorName, setErrorName] = useState<string>('')
@@ -306,11 +313,17 @@ const Modal = ({ info, setModal }: IModalProps) => {
                   case 'export':
                      newTitle.push('Експорт даних')
                      break
+                  case 'import':
+                     newTitle.push('Імпорт даних')
+                     break
                   default:
                      newTitle.push('Дані')
                      break
                }
             }
+            break
+         case 'settings':
+            newTitle.push('Налаштування вебзастосунку')
             break
          default:
             newTitle.push('Модальне вікно')
@@ -972,6 +985,17 @@ const Modal = ({ info, setModal }: IModalProps) => {
                }
             }
             break
+         case 'settings':
+            {
+               dispatch(
+                  setSettings({
+                     settings: {
+                        unitsType,
+                     },
+                  })
+               )
+            }
+            break
          default:
             console.log('Unknown action or item:', action, item)
             break
@@ -1614,6 +1638,38 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            placeholder={`Введіть примітки до ${item === 'workout' ? 'тренування' : 'вправи'}...`}
                         ></textarea>
                      )}
+                     {item === 'settings' && action === 'set' && (
+                        <>
+                           <FormControl>
+                              <p className="p-2 font-medium">
+                                 Система вимірювання:
+                              </p>
+                              <RadioGroup
+                                 row
+                                 aria-labelledby="demo-controlled-radio-buttons-group"
+                                 name="controlled-radio-buttons-group"
+                                 className="flex w-full justify-around"
+                                 value={unitsType}
+                                 onChange={(e) =>
+                                    setUnitsType(
+                                       e.target.value as 'metric' | 'imperial'
+                                    )
+                                 }
+                              >
+                                 <FormControlLabel
+                                    value="female"
+                                    control={<Radio value="metric" />}
+                                    label="Метрична"
+                                 />
+                                 <FormControlLabel
+                                    value="female"
+                                    control={<Radio value="imperial" />}
+                                    label="Імперська"
+                                 />
+                              </RadioGroup>
+                           </FormControl>
+                        </>
+                     )}
                   </div>
                </div>
                {(action === 'add' ||
@@ -1621,7 +1677,8 @@ const Modal = ({ info, setModal }: IModalProps) => {
                   action === 'export' ||
                   action == 'setStartTime' ||
                   action == 'setEndTime' ||
-                  action === 'notes') && (
+                  action === 'notes' ||
+                  action === 'set') && (
                   <>
                      <h2 className="horizontal-line"></h2>
                   </>
@@ -1646,7 +1703,8 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               : action === 'edit' ||
                                   action == 'setStartTime' ||
                                   action == 'setEndTime' ||
-                                  action === 'notes'
+                                  action === 'notes' ||
+                                  action === 'set'
                                 ? 'зберегти'
                                 : action === 'delete'
                                   ? 'видалити'

@@ -26,6 +26,7 @@ const ListOfRecords = ({
    setModal,
 }: IListOfRecordsProps) => {
    const workouts = useAppSelector((state) => state.data.workouts)
+   const settings = useAppSelector((state) => state.settings.settings)
    const dispatch = useAppDispatch()
 
    return (
@@ -55,13 +56,16 @@ const ListOfRecords = ({
                   {exerciseFromWorkoutInfo?.hasWeight &&
                      (record.weight ?? 0) !== 0 && (
                         <p>
-                           <span className="text-sm">{record.weight} КГ</span>
+                           <span className="text-sm">
+                              {record.weight}{' '}
+                              {settings.unitsType === 'metric' ? 'kg' : 'lbs'}
+                           </span>
                         </p>
                      )}
                   {exerciseFromWorkoutInfo?.hasReps &&
                      (record.reps ?? 0) > 0 && (
                         <p>
-                           <span className="text-sm">{record.reps} ПВТ</span>
+                           <span className="text-sm">{record.reps} пвт</span>
                         </p>
                      )}
                   {exerciseFromWorkoutInfo?.hasTime && (

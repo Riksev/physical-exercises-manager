@@ -39,7 +39,8 @@ html,
    .button-edit,
    .button-setStartTime,
    .button-setEndTime,
-   .button-notes {
+   .button-notes,
+   .button-set {
       @apply bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 disabled:cursor-not-allowed disabled:bg-yellow-700;
    }
    .button-add,
