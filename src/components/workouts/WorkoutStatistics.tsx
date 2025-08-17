@@ -15,11 +15,13 @@ const WorkoutStatistics = ({
    setModal,
 }: IWorkoutStatisticsProps) => {
    const exercises = useAppSelector((state) => state.data.exercises)
+   const settings = useAppSelector((state) => state.settings.settings)
 
    const startTime = getWorkoutTime(false, activeWorkout, 'start')
    const endTime = getWorkoutTime(false, activeWorkout, 'end')
    const [duration, setDuration] = useState<string>('-')
    const [volume, setVolume] = useState<number>(0)
+   const [plannedVolume, setPlannedVolume] = useState<number>(0)
    const [setsTotal, setSetsTotal] = useState<number>(0)
    const [repsTotal, setRepsTotal] = useState<number>(0)
 
@@ -28,6 +30,7 @@ const WorkoutStatistics = ({
       sets?: number
       reps?: number
       volume?: number
+      plannedVolume?: number
    }
 
    const [exerciseInfo, setExerciseInfo] = useState<Map<string, ExerciseInfo>>(
@@ -78,6 +81,7 @@ const WorkoutStatistics = ({
             ExerciseInfo
          >()
          let workoutVolume: number = 0
+         let workoutPlannedVolume: number = 0
          let setsGlobal: number = 0
          let repsGlobal: number = 0
 
@@ -85,6 +89,7 @@ const WorkoutStatistics = ({
             let setsLocal: number = 0
             let repsLocal: number = 0
             let localVolume: number = 0
+            let localPlannedVolume: number = 0
 
             const exerciseData = exercises.find(
                (ex) => ex._id === exercise.exercise_id
@@ -97,12 +102,15 @@ const WorkoutStatistics = ({
                if (
                   exerciseData?.hasWeight &&
                   currentWeight &&
-                  currentWeight > 0 &&
-                  (record.done ?? true)
+                  currentWeight > 0
                ) {
                   const currentVolume = (currentReps ?? 1) * currentWeight
-                  localVolume += currentVolume
-                  workoutVolume += currentVolume
+                  if (record.done ?? true) {
+                     localVolume += currentVolume
+                     workoutVolume += currentVolume
+                  }
+                  localPlannedVolume += currentVolume
+                  workoutPlannedVolume += currentVolume
                }
 
                if (
@@ -142,6 +150,9 @@ const WorkoutStatistics = ({
                        volume:
                           (exerciseInfoLocal.get(exercise.exercise_id)
                              ?.volume ?? 0) + localVolume,
+                       plannedVolume:
+                          (exerciseInfoLocal.get(exercise.exercise_id)
+                             ?.plannedVolume ?? 0) + localPlannedVolume,
                     }
                   : {}),
             })
@@ -152,6 +163,7 @@ const WorkoutStatistics = ({
          setDuration(getDurationString(startTime, endTime))
          setExerciseInfo(exerciseInfoLocal)
          setVolume(workoutVolume)
+         setPlannedVolume(workoutPlannedVolume)
          setSetsTotal(setsGlobal)
          setRepsTotal(repsGlobal)
       }
@@ -252,8 +264,8 @@ const WorkoutStatistics = ({
                   )}
                   <tr>
                      <td>Всього</td>
-                     <td>{setsTotal}</td>
-                     <td>{repsTotal}</td>
+                     <td>{setsTotal === 0 ? '-' : setsTotal}</td>
+                     <td>{repsTotal === 0 ? '-' : repsTotal}</td>
                   </tr>
                </tbody>
             </table>
@@ -271,11 +283,16 @@ const WorkoutStatistics = ({
                <tbody>
                   {Array.from(exerciseInfo.entries()).map(
                      ([exerciseId, info]) => {
-                        if (info?.volume) {
+                        if (info?.volume && info?.plannedVolume) {
                            return (
                               <tr key={exerciseId}>
                                  <td>{info.name}</td>
-                                 <td>{info?.volume ?? '-'}</td>
+                                 <td>
+                                    {(info?.volume ?? '-') +
+                                       (settings.hasPlannedVolume
+                                          ? ' / ' + (info?.plannedVolume ?? '-')
+                                          : '')}
+                                 </td>
                               </tr>
                            )
                         }
@@ -283,7 +300,13 @@ const WorkoutStatistics = ({
                   )}
                   <tr>
                      <td>Всього</td>
-                     <td>{volume}</td>
+                     <td>
+                        {(volume === 0 ? '-' : volume) +
+                           (settings.hasPlannedVolume
+                              ? ' / ' +
+                                (plannedVolume === 0 ? '-' : plannedVolume)
+                              : '')}
+                     </td>
                   </tr>
                </tbody>
             </table>

@@ -20,6 +20,7 @@ const BlockWorkout = ({
 }: IBlockWorkoutProps) => {
    const exercises = useAppSelector((state) => state.data.exercises)
    const workouts = useAppSelector((state) => state.data.workouts)
+   const settings = useAppSelector((state) => state.settings.settings)
    const dispatch = useAppDispatch()
 
    return (
@@ -36,7 +37,11 @@ const BlockWorkout = ({
                   .toLocaleDateString('uk-UA', { weekday: 'long' })
                   .replace(/^./, (c) => c.toUpperCase())}
                <br></br>
-               {(workout?.done ?? true) ? '✅ ' : '❌ '}
+               {settings.hasPlanning
+                  ? (workout?.done ?? true)
+                     ? '✅ '
+                     : '❌ '
+                  : null}
                {workout?.name}
             </p>
             <div className="flex w-2/3 flex-col items-center justify-end gap-2 sm:w-1/3">
@@ -136,31 +141,6 @@ const BlockWorkout = ({
                            exerciseFromWorkoutInfo={exerciseInfo}
                            index={index}
                         />
-                        // <div className="mt-4 flex w-full flex-row flex-wrap items-stretch justify-center gap-1">
-                        //    {wex.records.map((record: IRecord, id: number) => (
-                        //       <div
-                        //          key={exerciseInfo._id + id + 1}
-                        //          className={`record-block ${(record?.done ?? true) ? 'border-lime-500' : ''}`}
-                        //       >
-                        //          <p>#{id + 1}</p>
-                        //          {exerciseInfo?.hasWeight && (
-                        //             <p>
-                        //                {record.weight ? record.weight : '-'}{' '}
-                        //                <span className="text-sm">КГ</span>
-                        //             </p>
-                        //          )}
-                        //          {exerciseInfo?.hasReps && (
-                        //             <p>
-                        //                {record.reps ? record.reps : '-'}{' '}
-                        //                <span className="text-sm">ПВТ</span>
-                        //             </p>
-                        //          )}
-                        //          {exerciseInfo?.hasTime && (
-                        //             <p>{record.time ? record.time : '-'}</p>
-                        //          )}
-                        //       </div>
-                        //    ))}
-                        // </div>
                      )}
                   </details>
                )

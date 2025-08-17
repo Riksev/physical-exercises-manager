@@ -33,7 +33,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
 
    const exercises = useAppSelector((state) => state.data.exercises)
    const workouts = useAppSelector((state) => state.data.workouts)
-   const settings = useAppSelector((state) => state.settings)
+   const settings = useAppSelector((state) => state.settings.settings)
    const dispatch = useAppDispatch()
 
    const getDate = (date = data?.date?.toString()) => {
@@ -135,7 +135,13 @@ const Modal = ({ info, setModal }: IModalProps) => {
    )
 
    const [unitsType, setUnitsType] = useState<'metric' | 'imperial'>(
-      settings.settings.unitsType
+      settings.unitsType
+   )
+   const [hasPlanning, setHasPlanning] = useState<boolean>(
+      settings.hasPlanning ?? true
+   )
+   const [hasPlannedVolume, setHasPlannedVolume] = useState<boolean>(
+      settings.hasPlannedVolume ?? true
    )
 
    const [errorName, setErrorName] = useState<string>('')
@@ -456,7 +462,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               ? '-'
                               : new Date().toISOString(),
                            endTime: isPlanned ? '-' : new Date().toISOString(),
-                           done: !isPlanned,
+                           done: settings.hasPlanning ? !isPlanned : true,
                         }
                         let isInserted = false
                         for (let i = 0; i < newWorkouts.length; i++) {
@@ -659,7 +665,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               addedAt: data?.activeWorkout?.done
                                  ? new Date().toISOString()
                                  : '-',
-                              done: data?.activeWorkout?.done ?? true,
+                              done: settings.hasPlanning
+                                 ? (data?.activeWorkout?.done ?? true)
+                                 : true,
                               records: [],
                            }
                            const newWorkout: IWorkout = {
@@ -768,24 +776,20 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               addedAt: data?.selectedExerciseFromWorkout?.done
                                  ? new Date().toISOString()
                                  : '-',
-                              done: data?.selectedExerciseFromWorkout?.done,
+                              done: settings.hasPlanning
+                                 ? (data?.selectedExerciseFromWorkout?.done ??
+                                   true)
+                                 : true,
                            }
                            const newRecords = [...exercise.records, newRecord]
-                           const isExerciseFromWorkoutDone = newRecords.every(
-                              (record) => record?.done ?? true
-                           )
                            const newExerciseFromWorkout: IWorkoutExercise = {
                               ...exercise,
-                              done: isExerciseFromWorkoutDone,
                               records: newRecords,
                            }
                            return newExerciseFromWorkout
                         }
                         return exercise
                      })
-                     const isWorkoutDone = newExercises.every(
-                        (ex) => ex?.done ?? true
-                     )
                      const newWorkout: IWorkout = {
                         ...newWorkouts[workoutIndex],
                         startTime: data?.selectedExerciseFromWorkout?.done
@@ -797,7 +801,6 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            ? new Date().toISOString()
                            : data?.activeWorkout?.endTime,
                         exercises: newExercises,
-                        done: isWorkoutDone,
                      }
                      newWorkouts[workoutIndex] = newWorkout
                   }
@@ -991,6 +994,8 @@ const Modal = ({ info, setModal }: IModalProps) => {
                   setSettings({
                      settings: {
                         unitsType,
+                        hasPlanning,
+                        hasPlannedVolume,
                      },
                   })
                )
@@ -1306,17 +1311,22 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                     }}
                                  />
                               </div>
-                              <div className="checkbox-block">
-                                 <label htmlFor="isPlanned">Заплановане:</label>
-                                 <input
-                                    type="checkbox"
-                                    id="isPlanned"
-                                    checked={isPlanned}
-                                    onChange={(e) =>
-                                       setIsPlanned(e.target.checked)
-                                    }
-                                 />
-                              </div>
+                              {settings.hasPlanning && (
+                                 <div className="checkbox-block">
+                                    <label htmlFor="isPlanned">
+                                       Заплановане:
+                                    </label>
+                                    <input
+                                       type="checkbox"
+                                       id="isPlanned"
+                                       checked={isPlanned}
+                                       onChange={(e) =>
+                                          setIsPlanned(e.target.checked)
+                                       }
+                                    />
+                                 </div>
+                              )}
+
                               <FormControl>
                                  <p className="p-2 font-medium">Складність</p>
                                  <RadioGroup
@@ -1634,7 +1644,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            id="notes"
                            value={notes}
                            onChange={(e) => setNotes(e.target.value)}
-                           className="rounded-2xl border p-4"
+                           className="rounded-2xl border p-4 placeholder:text-wrap"
                            placeholder={`Введіть примітки до ${item === 'workout' ? 'тренування' : 'вправи'}...`}
                         ></textarea>
                      )}
@@ -1668,6 +1678,32 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  />
                               </RadioGroup>
                            </FormControl>
+                           <div className="checkbox-block">
+                              <label htmlFor="hasPlanning">
+                                 Ввімкнути режим планування:
+                              </label>
+                              <input
+                                 type="checkbox"
+                                 id="hasPlanning"
+                                 checked={hasPlanning}
+                                 onChange={(e) =>
+                                    setHasPlanning(e.target.checked)
+                                 }
+                              />
+                           </div>
+                           <div className="checkbox-block">
+                              <label htmlFor="hasPlanning">
+                                 Показувати запланований об'єм:
+                              </label>
+                              <input
+                                 type="checkbox"
+                                 id="hasPlannedVolume"
+                                 checked={hasPlannedVolume}
+                                 onChange={(e) =>
+                                    setHasPlannedVolume(e.target.checked)
+                                 }
+                              />
+                           </div>
                         </>
                      )}
                   </div>
