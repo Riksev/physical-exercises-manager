@@ -113,7 +113,7 @@ html,
    }
 
    input[type='checkbox'] {
-      @apply ml-2 scale-200 cursor-pointer rounded accent-purple-500;
+      @apply ml-4 scale-200 cursor-pointer rounded accent-purple-500;
    }
 
    table {
