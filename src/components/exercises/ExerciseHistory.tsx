@@ -3,6 +3,7 @@ import { Pages, type IExercise, type IWorkout } from '../../interfaces'
 import { useAppSelector } from '../../app/hooks'
 import ListOfWorkouts from '../workouts/ListOfWorkouts'
 import { Swiper as SwiperType } from 'swiper'
+import { useTranslation } from 'react-i18next'
 
 interface IExerciseHistoryProps {
    activeExercise: IExercise | null
@@ -20,6 +21,7 @@ const ExerciseHistory = ({
    setActiveWorkout,
 }: IExerciseHistoryProps) => {
    const workouts = useAppSelector((state) => state.data.workouts)
+   const { t } = useTranslation()
 
    const [dateBegin, setDateBegin] = useState<string>('')
    const [dateEnd, setDateEnd] = useState<string>('')
@@ -61,31 +63,33 @@ const ExerciseHistory = ({
 
    useEffect(() => {
       if (!dateBegin.match(/^\d{4}-\d{2}-\d{2}$/)) {
-         setErrorDateBegin('Невірний формат дати (YYYY-MM-DD).')
+         setErrorDateBegin(t('exercises.exercise.history.wrongDateFormat'))
       } else {
          setErrorDateBegin('')
       }
-   }, [dateBegin])
+   }, [dateBegin, t])
 
    useEffect(() => {
       if (!dateEnd.match(/^\d{4}-\d{2}-\d{2}$/)) {
-         setErrorDateEnd('Невірний формат дати (YYYY-MM-DD).')
+         setErrorDateEnd(t('exercises.exercise.history.wrongDateFormat'))
       } else {
          setErrorDateEnd('')
       }
-   }, [dateEnd])
+   }, [dateEnd, t])
 
    return (
       <div className="app-page">
          <h2 className="horizontal-line title">{activeExercise?.name}</h2>
          <details className="details">
             <summary>
-               Фільтри{' '}
+               {t('exercises.exercise.history.filters')}{' '}
                <span className="text-red-500">{isFiltered ? '✅' : '❌'}</span>
             </summary>
             <div className="flex w-full flex-col items-center justify-between gap-2">
                <div className="input-block-row">
-                  <label htmlFor="dateBegin">Від:</label>
+                  <label htmlFor="dateBegin">
+                     {t('exercises.exercise.history.from')}
+                  </label>
                   <input
                      type="date"
                      id="dateBegin"
@@ -100,7 +104,9 @@ const ExerciseHistory = ({
                   <p className="error-message">{errorDateBegin}</p>
                )}
                <div className="input-block-row">
-                  <label htmlFor="dateEnd">До:</label>
+                  <label htmlFor="dateEnd">
+                     {t('exercises.exercise.history.to')}
+                  </label>
                   <input
                      type="date"
                      id="dateEnd"
@@ -151,7 +157,7 @@ const ExerciseHistory = ({
                   }}
                   disabled={errorDateBegin !== '' || errorDateEnd !== ''}
                >
-                  застосувати
+                  {t('exercises.exercise.history.apply')}
                </button>
                <button
                   className="button-action button-modal"
@@ -186,7 +192,7 @@ const ExerciseHistory = ({
                      setIsFiltered(false)
                   }}
                >
-                  скинути
+                  {t('exercises.exercise.history.reset')}
                </button>
             </div>
          </details>
@@ -196,10 +202,10 @@ const ExerciseHistory = ({
                setIsHistoryOpen(false)
             }}
          >
-            назад
+            {t('exercises.exercise.history.back')}
          </button>
          {records.length === 0 ? (
-            <p>Записи відсутні.</p>
+            <p>{t('exercises.exercise.history.noRecords')}</p>
          ) : (
             <ListOfWorkouts workouts={records} clicker={handleClick} />
          )}

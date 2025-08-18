@@ -3,6 +3,7 @@ import ListOfExercises from './ListOfExercises'
 import type { IExercise, IModal, IWorkout } from '../../interfaces'
 import Exercise from './Exercise'
 import { Swiper as SwiperType } from 'swiper'
+import { useTranslation } from 'react-i18next'
 
 interface IExercisesProps {
    exercises: IExercise[]
@@ -26,6 +27,7 @@ const Exercises = ({
    const [searchName, setSearchName] = useState<string>('')
    const [filteredExercises, setFilteredExercises] =
       useState<IExercise[]>(exercises)
+   const { t } = useTranslation()
 
    useEffect(() => {
       setFilteredExercises(exercises)
@@ -35,13 +37,15 @@ const Exercises = ({
       <>
          {!activeExercise ? (
             <div className="app-page">
-               <h2 className="horizontal-line title">Список вправ</h2>
+               <h2 className="horizontal-line title">{t('exercises.title')}</h2>
                <div className="input-block">
-                  <label htmlFor="searchName">Пошук за назвою:</label>
+                  <label htmlFor="searchName">
+                     {t('exercises.searchLabel')}
+                  </label>
                   <input
                      type="text"
                      id="searchName"
-                     placeholder="Введіть назву вправи"
+                     placeholder={t('exercises.searchPlaceholder')}
                      autoComplete="off"
                      value={searchName}
                      onChange={(e) => {
@@ -62,7 +66,7 @@ const Exercises = ({
                   }}
                   disabled={exercises.length === 0}
                >
-                  пошук
+                  {t('exercises.search')}
                </button>
                <h2 className="horizontal-line my-1"></h2>
                <button
@@ -75,7 +79,7 @@ const Exercises = ({
                      })
                   }}
                >
-                  додати
+                  {t('exercises.add')}
                </button>
                <ListOfExercises
                   exercises={filteredExercises}

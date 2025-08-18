@@ -2,6 +2,7 @@ import { useState, type Dispatch, type SetStateAction } from 'react'
 import type { IExercise, IModal, IWorkout } from '../../interfaces'
 import ExerciseHistory from './ExerciseHistory'
 import { Swiper as SwiperType } from 'swiper'
+import { useTranslation } from 'react-i18next'
 
 interface IExerciseProps {
    activeExercise: IExercise
@@ -21,6 +22,7 @@ const Exercise = ({
    setActiveWorkout,
 }: IExerciseProps) => {
    const [isHistoryOpen, setIsHistoryOpen] = useState<boolean>(false)
+   const { t } = useTranslation()
 
    return !isHistoryOpen ? (
       <div className="app-page">
@@ -32,10 +34,10 @@ const Exercise = ({
                   setIsHistoryOpen(true)
                }}
             >
-               Записи
+               {t('exercises.exercise.records')}
             </button>
             <button className="button-action button-full" disabled>
-               Статистика
+               {t('exercises.exercise.statistics')}
             </button>
             <a
                className="button-full flex items-center justify-center rounded-2xl bg-white font-bold transition-all delay-200 hover:bg-gray-300 active:bg-gray-300"
@@ -77,7 +79,7 @@ const Exercise = ({
                   })
                }}
             >
-               нотатки
+               {t('exercises.exercise.notes')}
             </button>
             <button
                className="button-edit button-full"
@@ -89,7 +91,7 @@ const Exercise = ({
                   })
                }}
             >
-               редагувати
+               {t('exercises.exercise.edit')}
             </button>
             <button
                className="button-delete button-full"
@@ -101,7 +103,7 @@ const Exercise = ({
                   })
                }}
             >
-               видалити
+               {t('exercises.exercise.delete')}
             </button>
             <button
                className="button-action button-full"
@@ -109,7 +111,7 @@ const Exercise = ({
                   setActiveExercise(null)
                }}
             >
-               назад
+               {t('exercises.exercise.back')}
             </button>
          </div>
       </div>

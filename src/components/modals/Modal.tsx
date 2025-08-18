@@ -20,6 +20,10 @@ import { getWorkoutTime } from '../../features/workout'
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { setSettings } from '../../features/settingsSlice'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import { useTranslation } from 'react-i18next'
 
 interface IModalProps {
    info: IModal | null
@@ -35,6 +39,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
    const workouts = useAppSelector((state) => state.data.workouts)
    const settings = useAppSelector((state) => state.settings.settings)
    const dispatch = useAppDispatch()
+   const { t } = useTranslation()
 
    const getDate = (date = data?.date?.toString()) => {
       const now = new Date(date || Date.now())
@@ -134,6 +139,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
          : false
    )
 
+   const [language, setLanguage] = useState<'uk' | 'en' | 'ru'>(
+      settings.language ?? 'uk'
+   )
    const [unitsType, setUnitsType] = useState<'metric' | 'imperial'>(
       settings.unitsType
    )
@@ -168,13 +176,13 @@ const Modal = ({ info, setModal }: IModalProps) => {
 
       const file = event.target.files?.[0]
       if (!file) {
-         setErrorImport('Будь ласка, оберіть файл для імпорту.')
+         setErrorImport(t('modal.import.errors.noFile'))
          setFileName('')
          return
       }
 
       if (file.type !== 'application/json') {
-         setErrorImport('Будь ласка, оберіть файл формату JSON (.json).')
+         setErrorImport(t('modal.import.errors.invalidType'))
          setFileName('')
          return
       }
@@ -189,21 +197,17 @@ const Modal = ({ info, setModal }: IModalProps) => {
             if (typeof fileContent === 'string') {
                const parsedData = JSON.parse(fileContent)
                importData(parsedData)
-               setInfoImport('Дані успішно імпортовано.')
+               setInfoImport(t('modal.import.success'))
             } else {
-               setErrorImport(
-                  'Помилка: Не вдалося прочитати вміст файлу як текст.'
-               )
+               setErrorImport(t('modal.import.errors.notText'))
             }
          } catch (parseError) {
-            setErrorImport(
-               'Помилка парсингу JSON: Переконайтеся, що файл містить дійсний JSON.'
-            )
-            console.error('Помилка парсингу JSON:', parseError)
+            setErrorImport(t('modal.import.errors.corruptedJSON'))
+            console.error(parseError)
          }
       }
       reader.onerror = () => {
-         setErrorImport('Помилка читання файлу. Будь ласка, спробуйте ще раз.')
+         setErrorImport(t('modal.import.errors.readingProblem'))
       }
       reader.readAsText(file)
    }
@@ -214,61 +218,61 @@ const Modal = ({ info, setModal }: IModalProps) => {
          case 'exercise':
             switch (action) {
                case 'add':
-                  newTitle.push('Додавання вправи')
+                  newTitle.push(t('modal.titles.exercise.add'))
                   break
                case 'edit':
-                  newTitle.push('Редагування вправи')
+                  newTitle.push(t('modal.titles.exercise.edit'))
                   newTitle.push(data?.activeExercise?.name ?? '')
                   break
                case 'delete':
-                  newTitle.push('Видалення вправи')
+                  newTitle.push(t('modal.titles.exercise.delete'))
                   break
                case 'notes':
-                  newTitle.push('Примітки до вправи')
+                  newTitle.push(t('modal.titles.exercise.notes'))
                   break
                default:
-                  newTitle.push('Вправа')
+                  newTitle.push(t('modal.titles.exercise.default'))
                   break
             }
             break
          case 'workout':
             switch (action) {
                case 'add':
-                  newTitle.push('Додавання тренування')
+                  newTitle.push(t('modal.titles.workout.add'))
                   break
                case 'edit':
-                  newTitle.push('Редагування тренування')
+                  newTitle.push(t('modal.titles.workout.edit'))
                   newTitle.push(data?.activeWorkout?.date ?? '')
                   newTitle.push(data?.activeWorkout?.name ?? '')
                   break
                case 'delete':
-                  newTitle.push('Видалення тренування')
+                  newTitle.push(t('modal.titles.workout.delete'))
                   break
                case 'setStartTime':
-                  newTitle.push('Встановлення часу початку тренування')
+                  newTitle.push(t('modal.titles.workout.setStartTime'))
                   break
                case 'setEndTime':
-                  newTitle.push('Встановлення часу кінця тренування')
+                  newTitle.push(t('modal.titles.workout.setEndTime'))
                   break
                case 'notes':
-                  newTitle.push('Примітки до тренування')
+                  newTitle.push(t('modal.titles.workout.notes'))
                   break
                default:
-                  newTitle.push('Тренування')
+                  newTitle.push(t('modal.titles.workout.default'))
                   break
             }
             break
          case 'exerciseFromWorkout':
             switch (action) {
                case 'add':
-                  newTitle.push('Додавання вправи до тренування')
+                  newTitle.push(t('modal.titles.exerciseFromWorkout.add'))
                   break
                case 'delete':
-                  newTitle.push('Видалення з тренування вправи')
+                  newTitle.push(t('modal.titles.exerciseFromWorkout.delete'))
                   newTitle.push(data?.selectedExerciseInfo?.name ?? '')
                   break
                default:
-                  newTitle.push('Вправа з тренування')
+                  newTitle.push(t('modal.titles.exerciseFromWorkout.default'))
                   break
             }
             break
@@ -276,10 +280,10 @@ const Modal = ({ info, setModal }: IModalProps) => {
             {
                switch (action) {
                   case 'add':
-                     newTitle.push('Додавання запису')
+                     newTitle.push(t('modal.titles.record.add'))
                      break
                   case 'edit':
-                     newTitle.push('Редагування запису')
+                     newTitle.push(t('modal.titles.record.edit'))
                      newTitle.push(
                         [
                            data?.selectedRecord?.weight,
@@ -292,7 +296,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                      )
                      break
                   case 'delete':
-                     newTitle.push('Видалення запису')
+                     newTitle.push(t('modal.titles.record.delete'))
                      newTitle.push(
                         [
                            data?.selectedRecord?.weight,
@@ -305,7 +309,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                      )
                      break
                   default:
-                     newTitle.push('Запис')
+                     newTitle.push(t('modal.titles.record.default'))
                      break
                }
             }
@@ -314,25 +318,25 @@ const Modal = ({ info, setModal }: IModalProps) => {
             {
                switch (action) {
                   case 'delete':
-                     newTitle.push('Видалення даних')
+                     newTitle.push(t('modal.titles.data.delete'))
                      break
                   case 'export':
-                     newTitle.push('Експорт даних')
+                     newTitle.push(t('modal.titles.data.export'))
                      break
                   case 'import':
-                     newTitle.push('Імпорт даних')
+                     newTitle.push(t('modal.titles.data.import'))
                      break
                   default:
-                     newTitle.push('Дані')
+                     newTitle.push(t('modal.titles.data.default'))
                      break
                }
             }
             break
          case 'settings':
-            newTitle.push('Налаштування вебзастосунку')
+            newTitle.push(t('modal.titles.settings'))
             break
          default:
-            newTitle.push('Модальне вікно')
+            newTitle.push(t('modal.titles.default'))
             break
       }
       setTitle(newTitle)
@@ -993,6 +997,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                dispatch(
                   setSettings({
                      settings: {
+                        language,
                         unitsType,
                         hasPlanning,
                         hasPlannedVolume,
@@ -1016,7 +1021,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
          if (clockTime && clockTime.isValid()) {
             setErrorClock('')
          } else {
-            setErrorClock('Будь ласка, виберіть дійсний час.')
+            setErrorClock(t('modal.errors.invalidClockTime'))
          }
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1025,7 +1030,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
    useEffect(() => {
       if (item === 'exercise' && (action === 'add' || action === 'edit')) {
          if (exerciseName === '') {
-            setErrorName('Назва вправи не може бути порожньою.')
+            setErrorName(t('modal.errors.emptyExerciseName'))
          } else {
             setErrorName('')
          }
@@ -1039,9 +1044,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
             data?.selectedExerciseInfo?.hasTime &&
             !time.match(/^([0-1][0-9]|[2][0-3]):[0-5][0-9]:[0-5][0-9]$/)
          ) {
-            setErrorTime(
-               'Невірний формат часу. Використовуйте HH:MM:SS (00-24 години).'
-            )
+            setErrorTime(t('moda.errors.invalidTimeFormat'))
          } else {
             setErrorTime('')
          }
@@ -1052,7 +1055,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
    useEffect(() => {
       if (item === 'data' && action === 'export') {
          if (fileName === '') {
-            setErrorFileName('Назва файлу не може бути порожньою.')
+            setErrorFileName(t('modal.errors.emptyFileName'))
          } else {
             setErrorFileName('')
          }
@@ -1068,7 +1071,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
             action === 'edit')
       ) {
          if (!date.match(/^\d{4}-\d{2}-\d{2}$/)) {
-            setErrorDate('Невірний формат дати. Використовуйте YYYY-MM-DD.')
+            setErrorDate(t('modal.errors.invalidDateFormat'))
          } else {
             setErrorDate('')
          }
@@ -1168,11 +1171,15 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         item === 'exercise' && (
                            <>
                               <div className="input-block">
-                                 <label htmlFor="name">Назва вправи</label>
+                                 <label htmlFor="name">
+                                    {t('modal.exerciseName')}
+                                 </label>
                                  <input
                                     type="text"
                                     id="name"
-                                    placeholder="Введіть назву вправи"
+                                    placeholder={t(
+                                       'modal.exerciseNamePlaceholder'
+                                    )}
                                     autoComplete="off"
                                     value={exerciseName}
                                     onChange={(e) => {
@@ -1194,7 +1201,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               </div>
                               <div className="checkbox-block">
                                  <label htmlFor="reps">
-                                    Фікусувати кількість повторень:
+                                    {t('modal.fixReps')}
                                  </label>
                                  <input
                                     type="checkbox"
@@ -1207,7 +1214,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               </div>
                               <div className="checkbox-block">
                                  <label htmlFor="weight">
-                                    Фіксувати робочу вагу:
+                                    {t('modal.fixWeight')}
                                  </label>
                                  <input
                                     type="checkbox"
@@ -1220,7 +1227,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               </div>
                               <div className="checkbox-block">
                                  <label htmlFor="time">
-                                    Фіксувати час виконання:
+                                    {t('modal.fixTime')}
                                  </label>
                                  <input
                                     type="checkbox"
@@ -1232,7 +1239,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  />
                               </div>
                               <div className="checkbox-block">
-                                 <label htmlFor="rpe">Фіксувати RPE:</label>
+                                 <label htmlFor="rpe">
+                                    {t('modal.fixRPE')}
+                                 </label>
                                  <input
                                     type="checkbox"
                                     id="rpe"
@@ -1243,7 +1252,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  />
                               </div>
                               <div className="checkbox-block">
-                                 <label htmlFor="rir">Фіксувати RIR:</label>
+                                 <label htmlFor="rir">
+                                    {t('modal.fixRIR')}
+                                 </label>
                                  <input
                                     type="checkbox"
                                     id="rir"
@@ -1262,7 +1273,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         item === 'workout' && (
                            <>
                               <div className="input-block">
-                                 <label htmlFor="date">Дата</label>
+                                 <label htmlFor="date">{t('modal.date')}</label>
                                  <input
                                     type="date"
                                     id="date"
@@ -1270,12 +1281,6 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                     onChange={(e) => {
                                        setDate(e.target.value)
                                     }}
-                                    onBlur={(e) => {
-                                       if (e.target.value === '') {
-                                          e.target.value = 'mm/dd/yyyy'
-                                       }
-                                    }}
-                                    placeholder="mm/dd/yyyy"
                                     disabled={Boolean(!data?.activeWorkout)}
                                  />
                                  {errorDate && (
@@ -1289,12 +1294,14 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            <>
                               <div className="input-block">
                                  <label htmlFor="workoutName">
-                                    Назва тренування
+                                    {t('modal.workoutName')}
                                  </label>
                                  <input
                                     type="text"
                                     id="workoutName"
-                                    placeholder="Введіть назву тренування"
+                                    placeholder={t(
+                                       'modal.workoutNamePlaceholder'
+                                    )}
                                     autoComplete="off"
                                     value={workoutName}
                                     onChange={(e) => {
@@ -1314,7 +1321,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               {settings.hasPlanning && (
                                  <div className="checkbox-block">
                                     <label htmlFor="isPlanned">
-                                       Заплановане:
+                                       {t('modal.planned')}
                                     </label>
                                     <input
                                        type="checkbox"
@@ -1326,9 +1333,10 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                     />
                                  </div>
                               )}
-
                               <FormControl>
-                                 <p className="p-2 font-medium">Складність</p>
+                                 <p className="p-2 font-medium">
+                                    {t('modal.difficulty')}
+                                 </p>
                                  <RadioGroup
                                     row
                                     aria-labelledby="demo-controlled-radio-buttons-group"
@@ -1359,12 +1367,14 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         <>
                            <div className="input-block">
                               <label htmlFor="searchNameInModal">
-                                 Пошук за назвою:
+                                 {t('modal.searchByExerciseName')}
                               </label>
                               <input
                                  type="text"
                                  id="searchNameInModal"
-                                 placeholder="Введіть назву вправи"
+                                 placeholder={t(
+                                    'modal.searchByExerciseNamePlaceholder'
+                                 )}
                                  autoComplete="off"
                                  value={searchName}
                                  onChange={(e) => {
@@ -1392,7 +1402,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  )
                               }}
                            >
-                              пошук
+                              {t('modal.search')}
                            </button>
                            <h2 className="horizontal-line"></h2>
                            <ListOfExercises
@@ -1411,12 +1421,16 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            <>
                               {data?.selectedExerciseInfo?.hasWeight && (
                                  <div className="input-block">
-                                    <label htmlFor="weight">Робоча вага:</label>
+                                    <label htmlFor="weight">
+                                       {t('modal.recordWeight')}
+                                    </label>
                                     <input
                                        type="text"
                                        inputMode="numeric"
                                        id="weight"
-                                       placeholder="Введіть робочу вагу"
+                                       placeholder={t(
+                                          'modal.recordWeightPlaceholder'
+                                       )}
                                        value={weight}
                                        onChange={(e) => {
                                           setWeight(
@@ -1432,12 +1446,16 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               )}
                               {data?.selectedExerciseInfo?.hasReps && (
                                  <div className="input-block">
-                                    <label htmlFor="reps">Повторення:</label>
+                                    <label htmlFor="reps">
+                                       {t('modal.recordReps')}
+                                    </label>
                                     <input
                                        type="text"
                                        inputMode="numeric"
                                        id="reps"
-                                       placeholder="Введіть кількість повторень"
+                                       placeholder={t(
+                                          'modal.recordRepsPlaceholder'
+                                       )}
                                        value={reps}
                                        onChange={(e) => {
                                           setReps(
@@ -1450,11 +1468,15 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               )}
                               {data?.selectedExerciseInfo?.hasTime && (
                                  <div className="input-block">
-                                    <label htmlFor="time">Час виконання:</label>
+                                    <label htmlFor="time">
+                                       {t('modal.recordTime')}
+                                    </label>
                                     <input
                                        type="text"
                                        id="time"
-                                       placeholder="Введіть час виконання HH:MM:SS"
+                                       placeholder={t(
+                                          'modal.recordTimePlaceholder'
+                                       )}
                                        value={time}
                                        onChange={(e) => {
                                           setTime(e.target.value)
@@ -1475,7 +1497,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                        type="text"
                                        inputMode="numeric"
                                        id="rpe"
-                                       placeholder="Введіть RPE"
+                                       placeholder={t('modal.rpePlaceholder')}
                                        value={rpe}
                                        onChange={(e) => {
                                           let inputValue = getNumberAsStr(
@@ -1498,7 +1520,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                        type="text"
                                        inputMode="numeric"
                                        id="rir"
-                                       placeholder="Введіть RIR"
+                                       placeholder={t('modal.rirPlaceholder')}
                                        value={rir}
                                        onChange={(e) => {
                                           setRIR(getNumberAsStr(e.target.value))
@@ -1511,11 +1533,13 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         )}
                      {item === 'data' && action === 'export' && (
                         <div className="input-block">
-                           <label htmlFor="fileName">Назва файлу</label>
+                           <label htmlFor="fileName">
+                              {t('modal.fileName')}
+                           </label>
                            <input
                               type="text"
                               id="fileName"
-                              placeholder="Введіть назву файлу"
+                              placeholder={t('modal.fileNamePlaceholder')}
                               autoComplete="off"
                               value={fileName}
                               onChange={(e) => {
@@ -1542,7 +1566,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                               htmlFor="json-upload"
                               className="focus:ring-opacity-75 button-add button-modal mb-4 cursor-pointer rounded-2xl px-0 text-center font-bold uppercase shadow-md transition-all focus:ring-green-600 focus:outline-none not-only:focus:ring-2"
                            >
-                              Обрати JSON файл для імпорту
+                              {t('modal.chooseFileForImport')}
                            </label>
                            <input
                               id="json-upload"
@@ -1555,7 +1579,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            />
                            {fileName && (
                               <p className="info-message">
-                                 Обрано файл:{' '}
+                                 {t('modal.chosenFileForImport')}{' '}
                                  <span className="font-bold">{fileName}</span>
                               </p>
                            )}
@@ -1571,7 +1595,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         action === 'setEndTime') && (
                         <div className="flex w-full flex-col items-center justify-center gap-2">
                            <div className="input-block">
-                              <p className="mb-2 ml-1">Час</p>
+                              <p className="mb-2 ml-1">{t('modal.time')}</p>
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
                                  <TimePicker
                                     defaultValue={dayjs(new Date())}
@@ -1601,7 +1625,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  setDate(dayjs(new Date()).format('YYYY-MM-DD'))
                               }}
                            >
-                              поточний час
+                              {t('modal.currentTime')}
                            </button>
                            <button
                               className="button-action button-modal"
@@ -1624,7 +1648,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  setDate(newTime.split('T')[0])
                               }}
                            >
-                              із записів
+                              {t('modal.fromRecords')}
                            </button>
                            <button
                               className="button-action button-modal"
@@ -1633,7 +1657,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  setDate('0001-01-01')
                               }}
                            >
-                              прибрати
+                              {t('modal.erase')}
                            </button>
                         </div>
                      )}
@@ -1645,14 +1669,30 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            value={notes}
                            onChange={(e) => setNotes(e.target.value)}
                            className="rounded-2xl border p-4 placeholder:text-wrap"
-                           placeholder={`Введіть примітки до ${item === 'workout' ? 'тренування' : 'вправи'}...`}
+                           placeholder={t('modal.notesPlaceholder')}
                         ></textarea>
                      )}
                      {item === 'settings' && action === 'set' && (
                         <>
+                           <FormControl fullWidth>
+                              <InputLabel id="demo-simple-select-label">
+                                 {t('modal.language')}
+                              </InputLabel>
+                              <Select
+                                 labelId="demo-simple-select-label"
+                                 id="demo-simple-select"
+                                 value={language}
+                                 label={t('modal.language')}
+                                 onChange={(e) => setLanguage(e.target.value)}
+                              >
+                                 <MenuItem value={'uk'}>Укаїнська</MenuItem>
+                                 <MenuItem value={'en'}>English</MenuItem>
+                                 <MenuItem value={'ru'}>Русский</MenuItem>
+                              </Select>
+                           </FormControl>
                            <FormControl>
                               <p className="p-2 font-medium">
-                                 Система вимірювання:
+                                 {t('modal.unitsSystem')}
                               </p>
                               <RadioGroup
                                  row
@@ -1669,18 +1709,18 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  <FormControlLabel
                                     value="female"
                                     control={<Radio value="metric" />}
-                                    label="Метрична"
+                                    label={t('modal.metric')}
                                  />
                                  <FormControlLabel
                                     value="female"
                                     control={<Radio value="imperial" />}
-                                    label="Імперська"
+                                    label={t('modal.imperial')}
                                  />
                               </RadioGroup>
                            </FormControl>
                            <div className="checkbox-block">
                               <label htmlFor="hasPlanning">
-                                 Ввімкнути режим планування:
+                                 {t('modal.planningState')}
                               </label>
                               <input
                                  type="checkbox"
@@ -1693,7 +1733,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            </div>
                            <div className="checkbox-block">
                               <label htmlFor="hasPlanning">
-                                 Показувати запланований об'єм:
+                                 {t('modal.showPlannedVolume')}
                               </label>
                               <input
                                  type="checkbox"
@@ -1735,18 +1775,18 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            )}
                         >
                            {action === 'add'
-                              ? 'додати'
+                              ? t('modal.add')
                               : action === 'edit' ||
                                   action == 'setStartTime' ||
                                   action == 'setEndTime' ||
                                   action === 'notes' ||
                                   action === 'set'
-                                ? 'зберегти'
+                                ? t('modal.save')
                                 : action === 'delete'
-                                  ? 'видалити'
+                                  ? t('modal.delete')
                                   : action === 'export'
-                                    ? 'експортувати'
-                                    : 'unknown'}
+                                    ? t('modal.export')
+                                    : t('modal.unknown')}
                         </button>
                      </>
                   )}

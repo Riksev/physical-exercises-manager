@@ -1,4 +1,5 @@
 import { useEffect, useState, type JSX } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const CalculatorWeightPercents = () => {
    const [weight, setWeight] = useState<string>('')
@@ -7,13 +8,15 @@ const CalculatorWeightPercents = () => {
       null
    )
 
+   const { t } = useTranslation()
+
    useEffect(() => {
       if (weight === '') {
-         setErrorWeight('Поле не може бути порожнім.')
+         setErrorWeight(t('other.calculators.weightPercents.errorEmptyField'))
       } else {
          setErrorWeight('')
       }
-   }, [weight])
+   }, [weight, t])
 
    const handleCalculate = () => {
       const percents = Array.from({ length: 21 }, (_, i) => i * 5)
@@ -29,8 +32,8 @@ const CalculatorWeightPercents = () => {
             <table className="mt-4">
                <thead>
                   <tr>
-                     <th>Відсоток</th>
-                     <th>Вага</th>
+                     <th>{t('other.calculators.weightPercents.percent')}</th>
+                     <th>{t('other.calculators.weightPercents.weight')}</th>
                   </tr>
                </thead>
                <tbody>{rows}</tbody>
@@ -50,18 +53,29 @@ const CalculatorWeightPercents = () => {
       setCalculatedRows(null)
    }, [weight])
 
+   useEffect(() => {
+      if (calculatedRows !== null) {
+         handleCalculate()
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [t])
+
    return (
       <details className="details">
-         <summary>Калькулятор відсотків ваги</summary>
+         <summary>{t('other.calculators.weightPercents.title')}</summary>
          <h2 className="horizontal-line"></h2>
          <div className="input-block">
-            <label htmlFor="percentsWeight">Вага:</label>
+            <label htmlFor="percentsWeight">
+               {t('other.calculators.weightPercents.weight')}:
+            </label>
             <input
                type="number"
                step="any"
                id="percentsWeight"
                min="0"
-               placeholder="Введіть вагу"
+               placeholder={t(
+                  'other.calculators.weightPercents.weightPlaceholder'
+               )}
                value={weight}
                onChange={(e) => setWeight(e.target.value)}
                onKeyDown={(e) => {
@@ -78,13 +92,13 @@ const CalculatorWeightPercents = () => {
             disabled={errorWeight !== ''}
             onClick={handleCalculate}
          >
-            порахувати
+            {t('other.calculators.weightPercents.calculate')}
          </button>
          <button
             className="button-action button-full mt-4"
             onClick={handleClear}
          >
-            очистити
+            {t('other.calculators.weightPercents.clear')}
          </button>
          {calculatedRows}
       </details>

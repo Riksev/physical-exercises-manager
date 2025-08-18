@@ -1,4 +1,5 @@
 import { useEffect, useState, type JSX } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const CalculatorOneRep = () => {
    const [reps, setReps] = useState<string>('')
@@ -9,21 +10,23 @@ const CalculatorOneRep = () => {
 
    const [results, setResults] = useState<JSX.Element | null>(null)
 
+   const { t } = useTranslation()
+
    useEffect(() => {
       if (reps === '') {
-         setErrorReps('Поле не може бути порожнім.')
+         setErrorReps(t('other.calculators.oneRep.errorEmptyField'))
       } else {
          setErrorReps('')
       }
-   }, [reps])
+   }, [reps, t])
 
    useEffect(() => {
       if (weight === '') {
-         setErrorWeight('Поле не може бути порожнім.')
+         setErrorWeight(t('other.calculators.oneRep.errorEmptyField'))
       } else {
          setErrorWeight('')
       }
-   }, [weight])
+   }, [weight, t])
 
    const handleCalculate = () => {
       const EpleysFormula = parseFloat(weight) * (1.0 + parseFloat(reps) / 30.0)
@@ -91,7 +94,7 @@ const CalculatorOneRep = () => {
 
       setResults(
          <p className="mt-2 pl-1 text-xl">
-            Ваш максимум у діапазоні:<br></br>
+            {t('other.calculators.oneRep.infoMaxWeight')}:<br></br>
             {`${minPossibleWeight.toFixed(1)} - ${maxPossibleWeight.toFixed(1)}`}
          </p>
       )
@@ -107,18 +110,27 @@ const CalculatorOneRep = () => {
       setResults(null)
    }, [weight, reps])
 
+   useEffect(() => {
+      if (results !== null) {
+         handleCalculate()
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [t])
+
    return (
       <details className="details">
-         <summary>Калькулятор одноповторного максимума</summary>
+         <summary>{t('other.calculators.oneRep.title')}</summary>
          <h2 className="horizontal-line"></h2>
          <div className="input-block">
-            <label htmlFor="oneRepWeight">Вага:</label>
+            <label htmlFor="oneRepWeight">
+               {t('other.calculators.oneRep.weight')}:
+            </label>
             <input
                type="number"
                step="any"
                id="oneRepWeight"
                min="0"
-               placeholder="Введіть вагу"
+               placeholder={t('other.calculators.oneRep.weightPlaceholder')}
                value={weight}
                onChange={(e) => setWeight(e.target.value)}
                onKeyDown={(e) => {
@@ -131,13 +143,15 @@ const CalculatorOneRep = () => {
             {errorWeight && <p className="error-message">{errorWeight}</p>}
          </div>
          <div className="input-block mt-4">
-            <label htmlFor="oneRepReps">Повторення:</label>
+            <label htmlFor="oneRepReps">
+               {t('other.calculators.oneRep.reps')}:
+            </label>
             <input
                type="number"
                step="any"
                id="oneRepReps"
                min="0"
-               placeholder="Введіть кількість повторень"
+               placeholder={t('other.calculators.oneRep.repsPlaceholder')}
                value={reps}
                onChange={(e) => {
                   setReps(e.target.value)
@@ -158,7 +172,7 @@ const CalculatorOneRep = () => {
                handleCalculate()
             }}
          >
-            порахувати
+            {t('other.calculators.oneRep.calculate')}
          </button>
          <button
             className="button-action button-full mt-4"
@@ -166,7 +180,7 @@ const CalculatorOneRep = () => {
                handleClear()
             }}
          >
-            очистити
+            {t('other.calculators.oneRep.clear')}
          </button>
          {results}
       </details>

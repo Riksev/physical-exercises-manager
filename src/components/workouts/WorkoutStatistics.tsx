@@ -2,6 +2,7 @@ import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import type { IModal, IWorkout } from '../../interfaces'
 import { useAppSelector } from '../../app/hooks'
 import { getWorkoutTime } from '../../features/workout'
+import { useTranslation } from 'react-i18next'
 
 interface IWorkoutStatisticsProps {
    activeWorkout: IWorkout
@@ -16,6 +17,7 @@ const WorkoutStatistics = ({
 }: IWorkoutStatisticsProps) => {
    const exercises = useAppSelector((state) => state.data.exercises)
    const settings = useAppSelector((state) => state.settings.settings)
+   const { t } = useTranslation()
 
    const startTime = getWorkoutTime(false, activeWorkout, 'start')
    const endTime = getWorkoutTime(false, activeWorkout, 'end')
@@ -69,7 +71,7 @@ const WorkoutStatistics = ({
             Math.ceil((diff % 60000) / 1000)
          ).padStart(2, '0')
 
-         return `${hours} год. ${minutes} хв. ${seconds} сек.`
+         return `${hours}:${minutes}:${seconds}`
       }
       return '-'
    }
@@ -171,13 +173,16 @@ const WorkoutStatistics = ({
 
    return (
       <details className="details">
-         <summary>Статистика</summary>
+         <summary>{t('workouts.workout.statistics.title')}</summary>
          <details className="details mt-4">
-            <summary className="text-center font-bold uppercase">час</summary>
+            <summary className="text-center font-bold uppercase">
+               {t('workouts.workout.statistics.time')}
+            </summary>
             <h2 className="horizontal-line"></h2>
             <div className="flex w-full flex-row items-center justify-between gap-2">
                <p>
-                  Початок: <br className="block sm:hidden"></br>
+                  {t('workouts.workout.statistics.begin')}:{' '}
+                  <br className="block sm:hidden"></br>
                   {startTime === '-'
                      ? startTime
                      : getTimeString(new Date(startTime))}
@@ -204,7 +209,8 @@ const WorkoutStatistics = ({
             </div>
             <div className="flex w-full flex-row items-center justify-between gap-2">
                <p>
-                  Кінець: <br className="block sm:hidden"></br>
+                  {t('workouts.workout.statistics.end')}:{' '}
+                  <br className="block sm:hidden"></br>
                   {endTime === '-' ? endTime : getTimeString(new Date(endTime))}
                </p>
                <button
@@ -228,17 +234,18 @@ const WorkoutStatistics = ({
                </button>
             </div>
             <p>
-               Тривалість: <br className="block sm:hidden"></br>
+               {t('workouts.workout.statistics.duration')}:{' '}
+               <br className="block sm:hidden"></br>
                {duration}
             </p>
          </details>
          <details className="details">
             <summary className="text-center font-bold uppercase">
-               кількість
+               {t('workouts.workout.statistics.count')}
             </summary>
             <h2 className="horizontal-line"></h2>
             <p>
-               Кількість вправ:{' '}
+               {t('workouts.workout.statistics.exercisesCount')}:{' '}
                {
                   new Set(activeWorkout.exercises.map((ex) => ex.exercise_id))
                      .size
@@ -247,9 +254,15 @@ const WorkoutStatistics = ({
             <table className="mt-4">
                <thead>
                   <tr>
-                     <th scope="col">вправа</th>
-                     <th scope="col">підходи</th>
-                     <th scope="col">повтори</th>
+                     <th scope="col">
+                        {t('workouts.workout.statistics.exercise')}
+                     </th>
+                     <th scope="col">
+                        {t('workouts.workout.statistics.sets')}
+                     </th>
+                     <th scope="col">
+                        {t('workouts.workout.statistics.reps')}
+                     </th>
                   </tr>
                </thead>
                <tbody>
@@ -263,7 +276,7 @@ const WorkoutStatistics = ({
                      )
                   )}
                   <tr>
-                     <td>Всього</td>
+                     <td>{t('workouts.workout.statistics.total')}</td>
                      <td>{setsTotal === 0 ? '-' : setsTotal}</td>
                      <td>{repsTotal === 0 ? '-' : repsTotal}</td>
                   </tr>
@@ -271,13 +284,19 @@ const WorkoutStatistics = ({
             </table>
          </details>
          <details className="details">
-            <summary className="text-center font-bold uppercase">об'єм</summary>
+            <summary className="text-center font-bold uppercase">
+               {t('workouts.workout.statistics.volume')}
+            </summary>
             <h2 className="horizontal-line"></h2>
             <table>
                <thead>
                   <tr>
-                     <th scope="col">вправа</th>
-                     <th scope="col">об'єм</th>
+                     <th scope="col">
+                        {t('workouts.workout.statistics.exercise')}
+                     </th>
+                     <th scope="col">
+                        {t('workouts.workout.statistics.volume')}
+                     </th>
                   </tr>
                </thead>
                <tbody>
@@ -299,7 +318,7 @@ const WorkoutStatistics = ({
                      }
                   )}
                   <tr>
-                     <td>Всього</td>
+                     <td>{t('workouts.workout.statistics.total')}</td>
                      <td>
                         {(volume === 0 ? '-' : volume) +
                            (settings.hasPlannedVolume

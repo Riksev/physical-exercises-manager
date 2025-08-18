@@ -10,11 +10,14 @@ import { Swiper as SwiperType } from 'swiper'
 import Modal from './components/modals/Modal'
 import dayjs from 'dayjs'
 import IconImage from './assets/icon.svg'
+import { useTranslation } from 'react-i18next'
 
 function App() {
-   // General data
    const exercises = useAppSelector((state) => state.data.exercises)
    const workouts = useAppSelector((state) => state.data.workouts)
+   const settings = useAppSelector((state) => state.settings.settings)
+
+   const { i18n } = useTranslation()
 
    const swiperRef = useRef<SwiperType | null>(null)
 
@@ -61,6 +64,10 @@ function App() {
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [exercises])
+
+   useEffect(() => {
+      i18n.changeLanguage(settings.language)
+   }, [i18n, settings.language])
 
    return (
       <div className="app-bg relative pt-6">

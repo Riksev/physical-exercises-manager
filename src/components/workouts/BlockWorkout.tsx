@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { setWorkouts } from '../../features/dataSlice'
 import type { IWorkout } from '../../interfaces'
@@ -22,6 +23,7 @@ const BlockWorkout = ({
    const workouts = useAppSelector((state) => state.data.workouts)
    const settings = useAppSelector((state) => state.settings.settings)
    const dispatch = useAppDispatch()
+   const { t } = useTranslation()
 
    return (
       <div
@@ -51,7 +53,7 @@ const BlockWorkout = ({
                      clicker(workout)
                   }}
                >
-                  заповнити
+                  {t('workouts.fillWorkout')}
                </button>
                {controlOrder && (filteredLength ?? 0) > 1 && (
                   <div className="flex w-full flex-row items-center justify-center gap-x-4">
@@ -133,7 +135,9 @@ const BlockWorkout = ({
                         {exerciseInfo.name}
                      </summary>
                      {!exerciseHasParams || wex.records.length === 0 ? (
-                        <p className="mt-4 block text-left">Записи відсутні.</p>
+                        <p className="mt-4 block text-left">
+                           {t('workouts.noRecords')}
+                        </p>
                      ) : (
                         <ListOfRecords
                            workout={workout}

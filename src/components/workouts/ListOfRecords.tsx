@@ -9,7 +9,7 @@ import type {
 } from '../../interfaces'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { setWorkouts } from '../../features/dataSlice'
-
+import { useTranslation } from 'react-i18next'
 interface IListOfRecordsProps {
    workout: IWorkout
    exerciseFromWorkout: IWorkoutExercise
@@ -28,6 +28,7 @@ const ListOfRecords = ({
    const workouts = useAppSelector((state) => state.data.workouts)
    const settings = useAppSelector((state) => state.settings.settings)
    const dispatch = useAppDispatch()
+   const { t } = useTranslation()
 
    return (
       <div className="my-4 flex w-full flex-row flex-wrap items-stretch justify-center gap-1">
@@ -58,14 +59,22 @@ const ListOfRecords = ({
                         <p>
                            <span className="text-sm">
                               {record.weight}{' '}
-                              {settings.unitsType === 'metric' ? 'kg' : 'lbs'}
+                              {settings.unitsType === 'metric'
+                                 ? settings.language === 'en'
+                                    ? 'kg'
+                                    : 'кг'
+                                 : settings.language === 'en'
+                                   ? 'lbs'
+                                   : 'фунт'}
                            </span>
                         </p>
                      )}
                   {exerciseFromWorkoutInfo?.hasReps &&
                      (record.reps ?? 0) > 0 && (
                         <p>
-                           <span className="text-sm">{record.reps} пвт</span>
+                           <span className="text-sm">
+                              {record.reps} {t('workouts.workout.reps')}
+                           </span>
                         </p>
                      )}
                   {exerciseFromWorkoutInfo?.hasTime && (

@@ -15,8 +15,8 @@ import dayjs, { Dayjs } from 'dayjs'
 import 'dayjs/locale/uk'
 import 'dayjs/locale/en'
 import 'dayjs/locale/ru'
-import { enUS, ukUA, ruRU } from '@mui/x-date-pickers/locales'
 import { Swiper as SwiperType } from 'swiper'
+import { useTranslation } from 'react-i18next'
 
 interface IWorkoutsProps {
    filteredWorkouts: IWorkout[]
@@ -44,31 +44,13 @@ const Workouts = ({
    setActiveExercise,
 }: IWorkoutsProps) => {
    const workouts = useAppSelector((state) => state.data.workouts)
+   const { t, i18n } = useTranslation()
 
    const localeInfo = useMemo(() => {
-      const browserLang = navigator.language
-
-      if (browserLang.includes('uk')) {
-         return {
-            dayjsLocale: 'uk',
-            muiLocaleText:
-               ukUA.components.MuiLocalizationProvider.defaultProps.localeText,
-         }
-      }
-      if (browserLang.includes('ru')) {
-         return {
-            dayjsLocale: 'ru',
-            muiLocaleText:
-               ruRU.components.MuiLocalizationProvider.defaultProps.localeText,
-         }
-      }
-
       return {
-         dayjsLocale: 'en',
-         muiLocaleText:
-            enUS.components.MuiLocalizationProvider.defaultProps.localeText,
+         dayjsLocale: i18n.language,
       }
-   }, [])
+   }, [i18n.language])
 
    const getWorkoutsOnDate = (dateJS: Dayjs): IWorkout[] => {
       const dateRaw = dateJS.format('YYYY-MM-DD')
@@ -128,12 +110,11 @@ const Workouts = ({
 
    return !activeWorkout ? (
       <div className="app-page">
-         <h2 className="horizontal-line title">Мої тренування</h2>
+         <h2 className="horizontal-line title">{t('workouts.title')}</h2>
          <div className="w-full">
             <LocalizationProvider
                dateAdapter={AdapterDayjs}
                adapterLocale={localeInfo.dayjsLocale}
-               localeText={localeInfo.muiLocaleText}
             >
                <Box>
                   <DateCalendar
@@ -172,7 +153,7 @@ const Workouts = ({
                })
             }}
          >
-            додати
+            {t('workouts.add')}
          </button>
          <ListOfWorkouts
             workouts={filteredWorkouts}

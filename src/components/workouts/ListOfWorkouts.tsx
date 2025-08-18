@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useAppSelector } from '../../app/hooks'
 import type { IWorkout } from '../../interfaces'
 import BlockWorkout from './BlockWorkout'
@@ -14,17 +15,15 @@ const ListOfWorkouts = ({
    controlOrder,
 }: IListOfWorkoutsProps) => {
    const exercises = useAppSelector((state) => state.data.exercises)
+   const { t } = useTranslation()
 
    return (
       <div className="mt-2 flex w-full flex-col gap-4">
          {workouts.length === 0 ? (
             exercises.length === 0 ? (
-               <p>
-                  Перейдіть у "ВПРАВИ" та створіть хоч одну вправу для додавання
-                  тренувань.
-               </p>
+               <p>{t('workouts.noExercises')}</p>
             ) : (
-               <p>Записи тренувань відсутні.</p>
+               <p>{t('workouts.noWorkouts')}</p>
             )
          ) : (
             workouts.map((training, index) => (

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { IExercise } from '../../interfaces'
 import BlockExercise from './BlockExercise'
 
@@ -12,6 +13,8 @@ const ListOfExercises = ({
    clicker,
    showAll = false,
 }: IListOfExercisesProps) => {
+   const { t } = useTranslation()
+
    return (
       <div className="flex w-full flex-col gap-4">
          {showAll && (
@@ -33,7 +36,7 @@ const ListOfExercises = ({
          ))}
          {exercises.length === 0 && !showAll && (
             <p className="text-xl font-semibold text-gray-700">
-               Вправ не знайдено.
+               {t('exercises.exercises.noExercises')}
             </p>
          )}
       </div>

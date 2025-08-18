@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
 interface ISettings {
+   language: 'uk' | 'en' | 'ru'
    unitsType: 'metric' | 'imperial'
    hasPlanning: boolean
    hasPlannedVolume: boolean
@@ -10,8 +11,29 @@ interface ISettingsState {
    settings: ISettings
 }
 
+const getLanguageFromNavigator = () => {
+   const languages = navigator.languages
+   for (const lang of languages) {
+      if (
+         lang.startsWith('uk') ||
+         lang.startsWith('en') ||
+         lang.startsWith('ru')
+      ) {
+         return lang.startsWith('uk')
+            ? 'uk'
+            : lang.startsWith('ru')
+              ? 'ru'
+              : 'en'
+      }
+   }
+   return 'en'
+}
+
 const initialState: ISettingsState = {
    settings: {
+      language:
+         JSON.parse(localStorage.getItem('settings') ?? '{}')?.language ??
+         getLanguageFromNavigator(),
       unitsType:
          JSON.parse(localStorage.getItem('settings') ?? '{}')?.unitsType ===
          'imperial'
@@ -31,6 +53,7 @@ const settingsSlice = createSlice({
    initialState,
    reducers: {
       setSettings: (state, action: PayloadAction<ISettingsState>) => {
+         state.settings.language = action.payload.settings.language
          state.settings.unitsType = action.payload.settings.unitsType
          state.settings.hasPlanning = action.payload.settings.hasPlanning
          state.settings.hasPlannedVolume =

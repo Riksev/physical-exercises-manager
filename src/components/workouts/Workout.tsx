@@ -13,6 +13,7 @@ import { Swiper as SwiperType } from 'swiper'
 import { setWorkouts } from '../../features/dataSlice'
 import { getWorkoutTime } from '../../features/workout'
 import ListOfRecords from './ListOfRecords'
+import { useTranslation } from 'react-i18next'
 
 interface IWorkoutProps {
    activeWorkout: IWorkout
@@ -37,6 +38,7 @@ const Workout = ({
    const workouts = useAppSelector((state) => state.data.workouts)
    const settings = useAppSelector((state) => state.settings.settings)
    const dispatch = useAppDispatch()
+   const { t } = useTranslation()
 
    return (
       <div className="app-page">
@@ -46,7 +48,14 @@ const Workout = ({
             <p className="sm:hidden"></p>
             {activeWorkout?.date &&
                new Date(activeWorkout.date)
-                  .toLocaleDateString('uk-UA', { weekday: 'long' })
+                  .toLocaleDateString(
+                     settings.language === 'ru'
+                        ? 'ru-RU'
+                        : settings.language === 'en'
+                          ? 'en-GB'
+                          : 'uk-UA',
+                     { weekday: 'long' }
+                  )
                   .replace(/^./, (c) => c.toUpperCase())}
             <p>
                {settings.hasPlanning
@@ -62,12 +71,12 @@ const Workout = ({
                className={`block-border border-${activeWorkout.difficulty || 'medium'}`}
             >
                <p className="my-1 mb-4 w-full text-left text-2xl font-medium">
-                  Вправи:
+                  {t('workouts.workout.exercises')}:
                </p>
                <div>
                   {activeWorkout.exercises.length === 0 ? (
                      <p className="error-info mb-4 text-center">
-                        Вправи відсутні.
+                        {t('workouts.workout.noExercises')}
                      </p>
                   ) : (
                      activeWorkout.exercises.map((exercise, index) => {
@@ -378,7 +387,9 @@ const Workout = ({
                                  <h2 className="horizontal-line"></h2>
                                  {!exerciseParams ? (
                                     <p className="my-4 block text-left">
-                                       Вправа не містить параметрів.
+                                       {t(
+                                          'workouts.workout.exerciseHasNoParams'
+                                       )}
                                     </p>
                                  ) : (
                                     <ListOfRecords
@@ -404,7 +415,7 @@ const Workout = ({
                         })
                      }}
                   >
-                     додати
+                     {t('workouts.workout.add')}
                   </button>
                </div>
             </div>
@@ -423,7 +434,7 @@ const Workout = ({
                   })
                }}
             >
-               нотатки
+               {t('workouts.workout.notes')}
             </button>
             <button
                className="button-edit button-full"
@@ -435,7 +446,7 @@ const Workout = ({
                   })
                }}
             >
-               редагувати
+               {t('workouts.workout.edit')}
             </button>
             <button
                className="button-delete button-full"
@@ -447,7 +458,7 @@ const Workout = ({
                   })
                }}
             >
-               видалити
+               {t('workouts.workout.delete')}
             </button>
             <button
                className="button-action button-full"
@@ -455,7 +466,7 @@ const Workout = ({
                   setActiveWorkout(null)
                }}
             >
-               назад
+               {t('workouts.workout.back')}
             </button>
          </div>
       </div>

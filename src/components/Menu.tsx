@@ -1,6 +1,7 @@
 import { type Dispatch, type SetStateAction } from 'react'
 import { Pages, type IExercise, type IWorkout } from '../interfaces'
 import { Swiper as SwiperType } from 'swiper'
+import { useTranslation } from 'react-i18next'
 
 interface IMenuProps {
    activePage: number
@@ -17,6 +18,8 @@ const Menu = ({
    setActiveWorkout,
    swiperRef,
 }: IMenuProps) => {
+   const { t } = useTranslation()
+
    const handleClick = (page: number) => {
       switch (page) {
          case Pages.EXERCISES:
@@ -102,7 +105,7 @@ const Menu = ({
                }}
             >
                <p className="truncate text-lg font-bold text-white uppercase select-none max-[400px]:text-sm">
-                  вправи
+                  {t('menu.exercises')}
                </p>
             </div>
             <div
@@ -112,7 +115,7 @@ const Menu = ({
                }}
             >
                <p className="truncate text-lg font-bold text-white uppercase select-none max-[400px]:text-sm">
-                  тренування
+                  {t('menu.workouts')}
                </p>
             </div>
             <div
@@ -122,7 +125,7 @@ const Menu = ({
                }}
             >
                <p className="truncate text-lg font-bold text-white uppercase select-none max-[400px]:text-sm">
-                  інше
+                  {t('menu.other')}
                </p>
             </div>
          </div>

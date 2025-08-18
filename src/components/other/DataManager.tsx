@@ -1,15 +1,18 @@
 import { type Dispatch, type SetStateAction } from 'react'
 import type { IModal } from '../../interfaces'
+import { useTranslation } from 'react-i18next'
 
 interface IDataManagerProps {
    setModal: Dispatch<SetStateAction<IModal | null>>
 }
 
 const DataManager = ({ setModal }: IDataManagerProps) => {
+   const { t } = useTranslation()
+
    return (
       <>
          <details className="details">
-            <summary>Керування даними</summary>
+            <summary>{t('other.dataManager.title')}</summary>
             <div className="mt-4 flex flex-col gap-4 py-2">
                <button
                   className="button-action button-full"
@@ -21,7 +24,7 @@ const DataManager = ({ setModal }: IDataManagerProps) => {
                      })
                   }}
                >
-                  експорт даних
+                  {t('other.dataManager.export')}
                </button>
                <button
                   className="button-action button-full"
@@ -33,7 +36,7 @@ const DataManager = ({ setModal }: IDataManagerProps) => {
                      })
                   }}
                >
-                  імпорт даних
+                  {t('other.dataManager.import')}
                </button>
                <button
                   className="button-delete button-full"
@@ -45,7 +48,7 @@ const DataManager = ({ setModal }: IDataManagerProps) => {
                      })
                   }}
                >
-                  повне видалення
+                  {t('other.dataManager.delete')}
                </button>
             </div>
          </details>
