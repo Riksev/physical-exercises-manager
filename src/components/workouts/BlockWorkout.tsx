@@ -36,7 +36,14 @@ const BlockWorkout = ({
                <span className="responsive-break-off">{' - '}</span>
                <span className="responsive-break-on"> </span>
                {new Date(workout.date)
-                  .toLocaleDateString('uk-UA', { weekday: 'long' })
+                  .toLocaleDateString(
+                     settings.language === 'ru'
+                        ? 'ru-RU'
+                        : settings.language === 'en'
+                          ? 'en-GB'
+                          : 'uk-UA',
+                     { weekday: 'long' }
+                  )
                   .replace(/^./, (c) => c.toUpperCase())}
                <br></br>
                {settings.hasPlanning
