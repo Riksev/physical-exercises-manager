@@ -36,7 +36,7 @@ const ListOfExercises = ({
          ))}
          {exercises.length === 0 && !showAll && (
             <p className="text-xl font-semibold text-gray-700">
-               {t('exercises.exercises.noExercises')}
+               {t('exercises.noExercises')}
             </p>
          )}
       </div>
