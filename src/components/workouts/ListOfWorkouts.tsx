@@ -1,18 +1,26 @@
 import { useTranslation } from 'react-i18next'
 import { useAppSelector } from '../../app/hooks'
-import type { IWorkout } from '../../interfaces'
+import type { IExercise, IWorkout } from '../../interfaces'
 import BlockWorkout from './BlockWorkout'
+import { Swiper as SwiperType } from 'swiper'
+import type { Dispatch, SetStateAction } from 'react'
 
 interface IListOfWorkoutsProps {
    workouts: IWorkout[]
    clicker: (workout: IWorkout) => void
    controlOrder?: boolean
+   swiperRef: React.RefObject<SwiperType | null>
+   setActivePage: Dispatch<SetStateAction<number>>
+   setActiveExercise: Dispatch<SetStateAction<IExercise | null>>
 }
 
 const ListOfWorkouts = ({
    workouts,
    clicker,
    controlOrder,
+   swiperRef,
+   setActivePage,
+   setActiveExercise,
 }: IListOfWorkoutsProps) => {
    const exercises = useAppSelector((state) => state.data.exercises)
    const { t } = useTranslation()
@@ -33,6 +41,9 @@ const ListOfWorkouts = ({
                   clicker={clicker}
                   controlOrder={controlOrder}
                   index={index}
+                  swiperRef={swiperRef}
+                  setActivePage={setActivePage}
+                  setActiveExercise={setActiveExercise}
                   {...(controlOrder ? { filteredLength: workouts.length } : {})}
                />
             ))

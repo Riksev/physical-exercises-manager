@@ -11,6 +11,7 @@ interface IExerciseHistoryProps {
    swiperRef: React.RefObject<SwiperType | null>
    setActivePage: Dispatch<SetStateAction<number>>
    setActiveWorkout: Dispatch<SetStateAction<IWorkout | null>>
+   setActiveExercise: Dispatch<SetStateAction<IExercise | null>>
 }
 
 const ExerciseHistory = ({
@@ -19,6 +20,7 @@ const ExerciseHistory = ({
    swiperRef,
    setActivePage,
    setActiveWorkout,
+   setActiveExercise,
 }: IExerciseHistoryProps) => {
    const workouts = useAppSelector((state) => state.data.workouts)
    const { t } = useTranslation()
@@ -207,7 +209,13 @@ const ExerciseHistory = ({
          {records.length === 0 ? (
             <p>{t('exercises.exercise.history.noRecords')}</p>
          ) : (
-            <ListOfWorkouts workouts={records} clicker={handleClick} />
+            <ListOfWorkouts
+               workouts={records}
+               clicker={handleClick}
+               swiperRef={swiperRef}
+               setActiveExercise={setActiveExercise}
+               setActivePage={setActivePage}
+            />
          )}
       </div>
    )

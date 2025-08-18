@@ -159,6 +159,9 @@ const Workouts = ({
             workouts={filteredWorkouts}
             clicker={setActiveWorkout}
             controlOrder={true}
+            swiperRef={swiperRef}
+            setActiveExercise={setActiveExercise}
+            setActivePage={setActivePage}
          />
       </div>
    ) : (

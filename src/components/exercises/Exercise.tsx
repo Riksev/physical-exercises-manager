@@ -122,6 +122,7 @@ const Exercise = ({
          swiperRef={swiperRef}
          setActivePage={setActivePage}
          setActiveWorkout={setActiveWorkout}
+         setActiveExercise={setActiveExercise}
       />
    )
 }
