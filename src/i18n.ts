@@ -44,6 +44,7 @@ const resources = {
             fillWorkout: 'заповнити',
             workout: {
                exerciseHasNoParams: 'Вправа не містить параметрів.',
+               noExercises: 'Записи відсутні.',
                exercises: 'Вправи',
                add: 'додати',
                notes: 'нотатки',
@@ -254,6 +255,7 @@ const resources = {
             fillWorkout: 'fill',
             workout: {
                exerciseHasNoParams: 'Exercise has no parameters.',
+               noExercises: 'No records found.',
                exercises: 'Exercises',
                add: 'add',
                notes: 'notes',
@@ -462,6 +464,7 @@ const resources = {
             fillWorkout: 'заполнить',
             workout: {
                exerciseHasNoParams: 'Упражнение не содержит параметров.',
+               noExercises: 'Записи отсутствуют.',
                exercises: 'Упражнения',
                add: 'добавить',
                notes: 'заметки',
