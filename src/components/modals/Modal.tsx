@@ -1044,7 +1044,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
             data?.selectedExerciseInfo?.hasTime &&
             !time.match(/^([0-1][0-9]|[2][0-3]):[0-5][0-9]:[0-5][0-9]$/)
          ) {
-            setErrorTime(t('moda.errors.invalidTimeFormat'))
+            setErrorTime(t('modal.errors.invalidTimeFormat'))
          } else {
             setErrorTime('')
          }

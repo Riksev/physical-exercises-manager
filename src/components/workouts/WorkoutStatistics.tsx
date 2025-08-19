@@ -277,8 +277,8 @@ const WorkoutStatistics = ({
                   )}
                   <tr>
                      <td>{t('workouts.workout.statistics.total')}</td>
-                     <td>{setsTotal === 0 ? '-' : setsTotal}</td>
-                     <td>{repsTotal === 0 ? '-' : repsTotal}</td>
+                     <td>{setsTotal}</td>
+                     <td>{repsTotal}</td>
                   </tr>
                </tbody>
             </table>
@@ -302,14 +302,14 @@ const WorkoutStatistics = ({
                <tbody>
                   {Array.from(exerciseInfo.entries()).map(
                      ([exerciseId, info]) => {
-                        if (info?.volume && info?.plannedVolume) {
+                        if (info?.volume || info?.plannedVolume) {
                            return (
                               <tr key={exerciseId}>
                                  <td>{info.name}</td>
                                  <td>
-                                    {(info?.volume ?? '-') +
+                                    {info?.volume +
                                        (settings.hasPlannedVolume
-                                          ? ' / ' + (info?.plannedVolume ?? '-')
+                                          ? ' / ' + info?.plannedVolume
                                           : '')}
                                  </td>
                               </tr>
@@ -320,10 +320,9 @@ const WorkoutStatistics = ({
                   <tr>
                      <td>{t('workouts.workout.statistics.total')}</td>
                      <td>
-                        {(volume === 0 ? '-' : volume) +
+                        {volume +
                            (settings.hasPlannedVolume
-                              ? ' / ' +
-                                (plannedVolume === 0 ? '-' : plannedVolume)
+                              ? ' / ' + plannedVolume
                               : '')}
                      </td>
                   </tr>
