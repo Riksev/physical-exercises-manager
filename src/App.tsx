@@ -69,6 +69,20 @@ function App() {
       i18n.changeLanguage(settings.language)
    }, [i18n, settings.language])
 
+   useEffect(() => {
+      if (
+         (settings.theme === 'system' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches) ||
+         settings.theme === 'dark'
+      ) {
+         document.documentElement.classList.remove('bg-light')
+         document.documentElement.classList.add('bg-dark')
+      } else {
+         document.documentElement.classList.remove('bg-dark')
+         document.documentElement.classList.add('bg-light')
+      }
+   }, [settings.theme])
+
    return (
       <div
          className={`app-bg relative pt-6 ${(settings.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) || settings.theme === 'dark' ? 'theme-dark' : ''}`}

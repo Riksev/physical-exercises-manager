@@ -11,6 +11,28 @@ html,
    clip-path: circle(40% at 50% 50%);
 }
 
+.bg-dark {
+   background-color: black;
+   background-image: repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.1) 0,
+      rgba(255, 255, 255, 0.1) 2px,
+      transparent 2px,
+      transparent 10px
+   );
+}
+
+.bg-light {
+   background-color: white;
+   background-image: repeating-linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0.1) 0,
+      rgba(0, 0, 0, 0.1) 2px,
+      transparent 2px,
+      transparent 10px
+   );
+}
+
 @layer base {
    html {
       @apply overflow-y-hidden;
