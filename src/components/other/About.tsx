@@ -8,7 +8,7 @@ const About = () => {
          <summary>{t('other.about.title')}</summary>
          <div className="mt-4 flex flex-col text-left">
             <p>{t('other.about.gymanote')}</p>
-            <p>{t('other.about.version')}: v3.1.</p>
+            <p>{t('other.about.version')}: v3.2.</p>
             <p>
                {t('other.about.developer')}:{' '}
                <a

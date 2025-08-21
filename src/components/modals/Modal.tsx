@@ -24,6 +24,7 @@ import InputLabel from '@mui/material/InputLabel'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { useTranslation } from 'react-i18next'
+import FormLabel from '@mui/material/FormLabel'
 
 interface IModalProps {
    info: IModal | null
@@ -139,6 +140,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
          : false
    )
 
+   const [theme, setTheme] = useState<'system' | 'light' | 'dark'>(
+      settings.theme ?? 'system'
+   )
    const [language, setLanguage] = useState<'uk' | 'en' | 'ru'>(
       settings.language ?? 'uk'
    )
@@ -1001,6 +1005,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         unitsType,
                         hasPlanning,
                         hasPlannedVolume,
+                        theme,
                      },
                   })
                )
@@ -1594,7 +1599,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                      {(action === 'setStartTime' ||
                         action === 'setEndTime') && (
                         <div className="flex w-full flex-col items-center justify-center gap-2">
-                           <div className="input-block">
+                           <div className="input-block mb-2">
                               <p className="mb-2 ml-1">{t('modal.time')}</p>
                               <LocalizationProvider dateAdapter={AdapterDayjs}>
                                  <TimePicker
@@ -1673,16 +1678,52 @@ const Modal = ({ info, setModal }: IModalProps) => {
                         ></textarea>
                      )}
                      {item === 'settings' && action === 'set' && (
-                        <>
-                           <FormControl fullWidth>
+                        <div className="block-settings">
+                           <FormControl className="!mb-4 w-full">
+                              <FormLabel id="demo-theme-toggle">
+                                 {t('modal.settings.theme')}
+                              </FormLabel>
+                              <RadioGroup
+                                 className="flex w-full justify-around"
+                                 aria-labelledby="demo-theme-toggle"
+                                 name="theme-toggle"
+                                 row
+                                 value={theme}
+                                 onChange={(event) =>
+                                    setTheme(
+                                       event.target.value as
+                                          | 'system'
+                                          | 'light'
+                                          | 'dark'
+                                    )
+                                 }
+                              >
+                                 <FormControlLabel
+                                    value="system"
+                                    control={<Radio />}
+                                    label={t('modal.settings.system')}
+                                 />
+                                 <FormControlLabel
+                                    value="light"
+                                    control={<Radio />}
+                                    label={t('modal.settings.light')}
+                                 />
+                                 <FormControlLabel
+                                    value="dark"
+                                    control={<Radio />}
+                                    label={t('modal.settings.dark')}
+                                 />
+                              </RadioGroup>
+                           </FormControl>
+                           <FormControl fullWidth className="!mb-2">
                               <InputLabel id="demo-simple-select-label">
-                                 {t('modal.language')}
+                                 {t('modal.settings.language')}
                               </InputLabel>
                               <Select
                                  labelId="demo-simple-select-label"
                                  id="demo-simple-select"
                                  value={language}
-                                 label={t('modal.language')}
+                                 label={t('modal.settings.language')}
                                  onChange={(e) => setLanguage(e.target.value)}
                               >
                                  <MenuItem value={'uk'}>Укаїнська</MenuItem>
@@ -1690,9 +1731,9 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  <MenuItem value={'ru'}>Русский</MenuItem>
                               </Select>
                            </FormControl>
-                           <FormControl>
+                           <FormControl className="!mb-2">
                               <p className="p-2 font-medium">
-                                 {t('modal.unitsSystem')}
+                                 {t('modal.settings.unitsSystem')}
                               </p>
                               <RadioGroup
                                  row
@@ -1709,18 +1750,18 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  <FormControlLabel
                                     value="female"
                                     control={<Radio value="metric" />}
-                                    label={t('modal.metric')}
+                                    label={t('modal.settings.metric')}
                                  />
                                  <FormControlLabel
                                     value="female"
                                     control={<Radio value="imperial" />}
-                                    label={t('modal.imperial')}
+                                    label={t('modal.settings.imperial')}
                                  />
                               </RadioGroup>
                            </FormControl>
                            <div className="checkbox-block">
                               <label htmlFor="hasPlanning">
-                                 {t('modal.planningState')}
+                                 {t('modal.settings.planningState')}
                               </label>
                               <input
                                  type="checkbox"
@@ -1733,7 +1774,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                            </div>
                            <div className="checkbox-block">
                               <label htmlFor="hasPlanning">
-                                 {t('modal.showPlannedVolume')}
+                                 {t('modal.settings.showPlannedVolume')}
                               </label>
                               <input
                                  type="checkbox"
@@ -1744,7 +1785,7 @@ const Modal = ({ info, setModal }: IModalProps) => {
                                  }
                               />
                            </div>
-                        </>
+                        </div>
                      )}
                   </div>
                </div>

@@ -5,6 +5,7 @@ interface ISettings {
    unitsType: 'metric' | 'imperial'
    hasPlanning: boolean
    hasPlannedVolume: boolean
+   theme: 'system' | 'light' | 'dark'
 }
 
 interface ISettingsState {
@@ -45,6 +46,9 @@ const initialState: ISettingsState = {
       hasPlannedVolume:
          JSON.parse(localStorage.getItem('settings') ?? '{}')
             ?.hasPlannedVolume ?? true,
+      theme:
+         JSON.parse(localStorage.getItem('settings') ?? '{}')?.theme ??
+         'system',
    },
 }
 
@@ -58,6 +62,7 @@ const settingsSlice = createSlice({
          state.settings.hasPlanning = action.payload.settings.hasPlanning
          state.settings.hasPlannedVolume =
             action.payload.settings.hasPlannedVolume
+         state.settings.theme = action.payload.settings.theme
          localStorage.setItem('settings', JSON.stringify(state.settings))
       },
    },

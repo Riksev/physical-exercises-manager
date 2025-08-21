@@ -70,7 +70,9 @@ function App() {
    }, [i18n, settings.language])
 
    return (
-      <div className="app-bg relative pt-6">
+      <div
+         className={`app-bg relative pt-6 ${(settings.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) || settings.theme === 'dark' ? 'theme-dark' : ''}`}
+      >
          <div className="absolute top-0 z-10000 flex w-full flex-row items-center justify-center gap-2 rounded-b-2xl bg-gradient-to-br from-fuchsia-900 to-blue-600 py-2 shadow-xl select-none">
             <img
                src={IconImage}

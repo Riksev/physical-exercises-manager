@@ -32,6 +32,10 @@ html,
       @apply rounded-2xl text-lg font-bold uppercase transition-all delay-100 disabled:opacity-50;
    }
 
+   .theme-dark button {
+      @apply text-shadow-sm/40 text-shadow-black;
+   }
+
    .button-delete {
       @apply bg-rose-500 hover:bg-rose-800 active:bg-rose-900 disabled:cursor-not-allowed disabled:bg-rose-900;
    }
@@ -43,17 +47,39 @@ html,
    .button-set {
       @apply bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 disabled:cursor-not-allowed disabled:bg-yellow-700;
    }
+
+   .theme-dark .button-edit,
+   .theme-dark .button-setStartTime,
+   .theme-dark .button-setEndTime,
+   .theme-dark .button-notes,
+   .theme-dark .button-set {
+      @apply bg-yellow-700 hover:bg-yellow-800 active:bg-yellow-900 disabled:bg-yellow-900;
+   }
+
    .button-add,
    .button-export {
       @apply bg-lime-500 hover:bg-lime-600 active:bg-lime-700 disabled:cursor-not-allowed disabled:bg-lime-700;
+   }
+
+   .theme-dark .button-add,
+   .theme-dark .button-export {
+      @apply bg-lime-700 hover:bg-lime-800 active:bg-lime-900 disabled:bg-lime-900;
    }
 
    .button-action {
       @apply bg-sky-500 hover:bg-sky-600 active:bg-sky-700 disabled:cursor-not-allowed disabled:bg-sky-700;
    }
 
+   .theme-dark .button-action {
+      @apply bg-sky-700 hover:bg-sky-800 active:bg-sky-900 disabled:bg-sky-900;
+   }
+
    .button-close {
       @apply flex h-10 w-10 items-center justify-center rounded-full border-0 bg-white p-0 text-center text-5xl leading-none font-bold text-red-500 hover:bg-red-100;
+   }
+
+   .theme-dark .button-close {
+      @apply bg-black;
    }
 
    .button-close span {
@@ -70,6 +96,10 @@ html,
 
    .horizontal-line {
       @apply my-4 w-full rounded-2xl border-b-2 border-black/70 text-3xl font-bold;
+   }
+
+   .theme-dark .horizontal-line {
+      @apply border-white/70;
    }
 
    .title {
@@ -128,8 +158,16 @@ html,
       @apply overflow-x-auto border-2 bg-gray-200 p-2 text-center font-bold capitalize;
    }
 
+   .theme-dark th {
+      @apply bg-gray-900 text-white;
+   }
+
    td {
       @apply overflow-x-auto border-2 p-2 text-center;
+   }
+
+   .theme-dark td {
+      @apply bg-gray-900/50 text-white;
    }
 
    .flex-row {
@@ -152,6 +190,10 @@ html,
       @apply mb-2 w-full cursor-pointer rounded-2xl border-2 border-gray-400 bg-gradient-to-br from-lime-100/33 to-cyan-100/66 p-3 text-left text-lg font-semibold shadow-lg transition-all hover:shadow-xl;
    }
 
+   .theme-dark .details {
+      @apply from-fuchsia-700/40 to-cyan-700/60 text-shadow-sm/40 text-shadow-black;
+   }
+
    summary {
       @apply cursor-pointer text-xl font-bold;
    }
@@ -164,8 +206,16 @@ html,
       @apply mx-4 flex max-h-[80vh] w-full flex-col rounded-2xl border-2 border-black/70 bg-white p-6 font-medium shadow-lg sm:w-2/3 lg:w-1/3;
    }
 
+   .theme-dark .modal-content {
+      @apply border-white/70 bg-black shadow-white/50;
+   }
+
    .modal-header {
       @apply sticky top-0 z-120 mb-8 flex items-center justify-between border-b-2 border-black/70 bg-white pb-4;
+   }
+
+   .theme-dark .modal-header {
+      @apply border-b-white/70 bg-black text-white;
    }
 
    .modal-header h2 {
@@ -210,6 +260,10 @@ html,
 
    .app-bg {
       @apply flex w-full flex-col items-center bg-gradient-to-br from-fuchsia-200 to-cyan-200 xl:w-1/2;
+   }
+
+   .app-bg.theme-dark {
+      @apply from-black to-black text-white;
    }
 
    .app-page {
@@ -269,6 +323,10 @@ html,
       @apply flex justify-center rounded-xl border bg-gradient-to-br from-fuchsia-300 to-cyan-300 p-1 shadow-lg transition-all duration-200 hover:border-gray-600 hover:shadow-xl active:border-gray-500;
    }
 
+   .theme-dark .MuiBox-root {
+      @apply from-fuchsia-700 to-cyan-700 text-shadow-sm/40 text-shadow-black;
+   }
+
    .MuiDateCalendar-root {
       @apply !w-full sm:!w-9/10 md:!w-4/5;
    }
@@ -285,9 +343,42 @@ html,
       }
    }
 
+   .theme-dark .MuiPickersCalendarHeader-switchViewIcon,
+   .theme-dark .MuiPickersArrowSwitcher-rightArrowIcon,
+   .theme-dark .MuiPickersArrowSwitcher-leftArrowIcon {
+      @apply !text-white;
+   }
+
    .MuiYearCalendar-root,
    .MuiDayCalendar-root {
       @apply !w-full;
+   }
+
+   .theme-dark .MuiPickersInputBase-root {
+      @apply !bg-white;
+   }
+
+   .theme-dark .MuiFormLabel-root {
+      @apply !text-white;
+   }
+
+   .theme-dark .block-settings .MuiRadio-colorPrimary {
+      @apply !text-white;
+   }
+
+   .theme-dark .block-settings .MuiRadio-colorPrimary.Mui-checked {
+      @apply !text-fuchsia-500;
+   }
+
+   .theme-dark .block-settings .MuiInputBase-root {
+      @apply !text-white ring-1 ring-white;
+   }
+   .theme-dark .block-settings .MuiInputBase-root.Mui-focused {
+      @apply ring-0;
+   }
+
+   .theme-dark .block-settings .MuiSelect-icon {
+      @apply !text-white;
    }
 
    .MuiPickersArrowSwitcher-rightArrowIcon,
@@ -313,8 +404,18 @@ html,
       @apply !m-0 !font-bold;
    }
 
+   .theme-dark .MuiPickersCalendarHeader-label,
+   .theme-dark .MuiDayCalendar-weekDayLabel {
+      @apply !text-white;
+   }
+
    .MuiButtonBase-root.MuiPickersDay-root.MuiPickersDay-dayWithMargin {
       @apply !m-0;
+   }
+
+   .theme-dark
+      .MuiButtonBase-root.MuiPickersDay-root.MuiPickersDay-dayWithMargin {
+      @apply !text-white;
    }
 
    .MuiButtonBase-root.MuiPickersDay-root {
@@ -325,8 +426,12 @@ html,
       @apply animate-pulse !bg-fuchsia-700 !font-bold !text-black;
    }
 
+   .theme-dark .Mui-selected {
+      @apply !bg-fuchsia-500 !text-white;
+   }
+
    .multiple-workouts {
-      @apply !bg-violet-500;
+      @apply !bg-orange-500;
    }
 
    .easy-workout {
@@ -367,5 +472,18 @@ html,
 
    .record-block {
       @apply w-fit rounded-2xl border-2 p-2 text-center shadow-2xs outline-1 outline-black/50;
+   }
+
+   .block-exercise {
+      @apply w-full cursor-pointer rounded-2xl bg-gradient-to-tr from-fuchsia-500 to-cyan-500 px-4 py-2 text-center font-semibold transition-all hover:font-bold hover:drop-shadow-lg hover:saturate-200 active:font-bold active:drop-shadow-lg active:saturate-200;
+   }
+
+   .theme-dark .block-exercise {
+      @apply from-fuchsia-700 to-cyan-700 text-shadow-sm/40 text-shadow-black;
+   }
+
+   .theme-dark .icon-search,
+   .theme-dark .icon-copy {
+      @apply fill-white/90;
    }
 }
