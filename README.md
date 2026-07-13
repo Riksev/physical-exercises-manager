@@ -17,7 +17,7 @@ A frontend application designed to manage, track, and structure physical exercis
 
 ```bash
 # Clone the repository
-git clone [https://github.com/Riksev/physical-exercises-manager.git](https://github.com/Riksev/physical-exercises-manager.git)
+git clone https://github.com/Riksev/physical-exercises-manager.git
 
 # Install dependencies
 npm install
